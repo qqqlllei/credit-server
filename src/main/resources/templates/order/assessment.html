@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>订单详情</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/example.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contract.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>
+
+</head>
+<body>
+<div class="weui-tab">
+
+    <div class="weui-cells order-text-area" style="margin-top:0">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p class="order-text-title">初评中</p>
+                <p class="order-text-font">2小时内反馈评估值</p>
+            </div>
+            <div class="weui-cell__ft order-text-custname" th:text="${buss.custName}" />
+        </div>
+    </div>
+
+
+    <div class="weui-cells" style="margin-top:0">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                订单编号：<span th:text="${buss.bussNo}" />
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                提交订单时间：<span th:text="${buss.submitTime}" />
+            </div>
+        </div>
+
+
+        <div class="weui-cell">
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                <input type="button" id="moreOrder" class="weui-btn weui-btn_mini weui-btn_primary weui-btn-background-color-blue" value="再报一单" />
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script>
+    var path ="/"+window.location.pathname.split("/")[1];
+    $("#moreOrder").click(function(){
+        window.location.href=path+"/order/orderView";
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>选择产品</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/example.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contract.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>
+</head>
+<body>
+<div class="weui-msg">
+
+        <div th:if="${shortTerm != null}" class="weui-msg__text-area contract-text-area_one" th:onclick="|selectProduct('${shortTerm.prdId}','短期贷')|" >
+            <h2 class="weui-msg__title contract-title" >——&nbsp;&nbsp;&nbsp;&nbsp;短期贷&nbsp;&nbsp;&nbsp;&nbsp;——</h2>
+            <p class="weui-msg__opr-area contract-opr-area" >审批金额：<span th:text="${shortTerm.appAmount}" />万&nbsp;&nbsp;&nbsp;&nbsp;最高期限：<span th:text="${shortTerm.term}+1" />个月</p>
+            <p class="weui-msg__opr-area">
+            <div class="weui-flex">
+                <div class="weui-flex__item" >
+                    <div class="placeholder">
+                        <div class="weui-msg__text-area contract-text-area" >
+                            <h2 class="weui-msg__title contract-title_one" >期限</h2>
+                            <h2 class="weui-msg__title contract-title_one_content" >
+                                1-<span th:text="${shortTerm.term}+1" />个月</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-flex__item">
+                    <div class="placeholder">
+                        <div class="weui-msg__text-area contract-text-area" >
+                            <h2 class="weui-msg__title contract-title_one" >月息</h2>
+                            <h2 class="weui-msg__title contract-title_one_content" ><span th:text="${shortTerm.interestRate}" />%起</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-flex__item">
+                    <div class="weui-msg__text-area contract-text-area">
+                        <h2 class="weui-msg__title contract-title_one" >抵押率</h2>
+                        <h2 class="weui-msg__title contract-title_one_content" >8.5成</h2>
+                    </div>
+                </div>
+                <div class="weui-flex__item">
+                    <div class="weui-msg__text-area contract-text-area" >
+                        <h2 class="weui-msg__title contract-title_one" >月服务费</h2>
+                        <h2 class="weui-msg__title contract-title_one_content" ><span th:text="${shortTerm.serviceRate}" />%</h2>
+                    </div>
+                </div>
+            </div>
+            </p>
+        </div>
+
+
+
+        <div th:if="${longTerm != null}" class="weui-msg__text-area contract-text-area_two" th:onclick="|selectProduct('${longTerm.prdId}','长期贷')|">
+            <h2 class="weui-msg__title contract-title" >——&nbsp;&nbsp;&nbsp;&nbsp;长期贷&nbsp;&nbsp;&nbsp;&nbsp;——</h2>
+            <p class="weui-msg__opr-area contract-opr-area">审批金额：<span th:text="${longTerm.appAmount}" />万&nbsp;&nbsp;&nbsp;&nbsp;最高期限：
+                <span th:if="${longTerm.term == '0'}">12</span>
+                <span th:if="${longTerm.term == '1'}">24</span>
+                <span th:if="${longTerm.term == '2'}">36</span>
+                个月
+            </p>
+            <p class="weui-msg__opr-area">
+            <div class="weui-flex">
+                <div class="weui-flex__item" >
+                    <div class="placeholder">
+                        <div class="weui-msg__text-area contract-text-area">
+                            <h2 class="weui-msg__title contract-title_two" >期限</h2>
+                            <h2 class="weui-msg__title contract-title_two_content" style="">12-
+                                <span th:if="${longTerm.term == '0'}">12</span>
+                                <span th:if="${longTerm.term == '1'}">24</span>
+                                <span th:if="${longTerm.term == '2'}">36</span>
+                                个月</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-flex__item">
+                    <div class="placeholder">
+                        <div class="weui-msg__text-area contract-text-area" >
+                            <h2 class="weui-msg__title contract-title_two">月息</h2>
+                            <h2 class="weui-msg__title contract-title_two_content"><span th:text="${longTerm.interestRate}" />%起</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui-flex__item">
+                    <div class="weui-msg__text-area contract-text-area" >
+                        <h2 class="weui-msg__title contract-title_two" >抵押率</h2>
+                        <h2 class="weui-msg__title contract-title_two_content">8.0成</h2>
+                    </div>
+                </div>
+                <div class="weui-flex__item">
+                    <div class="weui-msg__text-area contract-text-area">
+                        <h2 class="weui-msg__title contract-title_two" >月服务费</h2>
+                        <h2 class="weui-msg__title contract-title_two_content"><span th:text="${longTerm.serviceRate}" />%</h2>
+                    </div>
+                </div>
+            </div>
+            </p>
+        </div>
+</div>
+<script type="text/javascript">
+
+    var path ="/"+window.location.pathname.split("/")[1];
+
+    function selectProduct(id,name) {
+
+
+        weui.confirm('', {
+            title: '确定要选择'+name+'吗?',
+            buttons: [{
+                label: '取消',
+                type: 'default',
+                onClick: function(){}
+            }, {
+                label: '确定',
+                type: 'primary',
+                onClick: function(){
+                    window.location.href=path+'/contract/generate?prdId='+id;
+                }
+            }]
+        });
+    }
+</script>
+
+</body>
+</html>

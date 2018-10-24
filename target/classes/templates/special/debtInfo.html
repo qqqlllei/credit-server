@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,height=device-height,  initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>请填写您当前债务金额</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery-weui.min.css}" />
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.2.0.js}"></script>
+    <style type="text/css">
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        html,body{
+            background-color: #eeeeee;
+            -webkit-tap-highlight-color:rgba(0,0,0,0);
+            width: 100%;
+            height: 100%;}
+        .weui-cells {
+            margin-top: 0;
+        }
+        .btn {
+            height: 46px;
+            width: 90%;
+            margin: 40px auto 0;
+            color: #FFFFFF;
+            text-align: center;
+            line-height: 46px;
+            background-color: #dd4d46;
+        }
+        .weui-toast.weui-toast--forbidden.weui-toast--visible {
+            width: auto;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">债务金额</label></div>
+            <div class="weui-cell__bd">
+              <input class="weui-input" id="money" type="text" placeholder="请输入债务金额" />
+            </div>
+        </div>
+    </div>
+
+    <div class="btn checked" id="btnCheck">提交</div>
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+
+    var path ="/"+window.location.pathname.split("/")[1];
+    var borrowerId=[[${borrowerId}]];
+    var orderId=[[${orderId}]];
+    var guaranteeId=[[${guaranteeId}]];
+
+    $('.btn').click(function(){
+        if ($('#money').val() === '') {
+            $.toast("请输入债务金额", "forbidden");
+            return
+        } else {
+            if (checkNumber($('#money').val())) {
+                $.toast("请输入数字", "forbidden");
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    url: path+'/special/debt/add',
+                    data: {
+                        'amount': $('#money').val(),
+                        'borrowerId': borrowerId,
+                        'orderId': orderId,
+                        'guaranteeId': guaranteeId
+                    },
+                    success: function(data){
+                        if((data && data.resultMsg && data.resultCode =='0001')){
+                            $.alert(data.resultMsg);
+                        }
+                        if((data && data.resultMsg && data.resultCode =='0002')){
+                            $.alert({
+                                text: data.resultMsg,
+                                onOK: function () {
+                                    wx.closeWindow()
+                                }
+                            });
+                        }
+                        if(data && data.resultCode =='0000'){
+                            window.location.replace(path+'/special/order/successView')
+                        }
+
+                    },
+                    error: function(xhr, type){
+                        $.alert("系统繁忙，稍后再试!");
+                    }
+                });
+            }
+        }
+    });
+    //验证字符串是否是数字
+    function checkNumber(theObj) {
+      var reg = /^[0-9]+.?[0-9]*$/;
+      if (!reg.test(theObj)) {
+        return true;
+      }
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>生成合同</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/example.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contract.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>
+</head>
+<body>
+<form id="form" th:action="@{/contract/prepareApproval}" method="post">
+
+
+    <input type="hidden" id="maxAmount" th:value="${pro.appAmount}" />
+    <input type="hidden" id="maxTerm" th:value="${pro.term}" />
+    <input type="hidden" id="loanType" name="loanType" th:value="${pro.loanType}" />
+    <input type="hidden" id="bussNo" name="bussNo" th:value="${pro.bussNo}" />
+    <div class="weui-msg">
+        <div class="weui-msg__text-area contract-text-area_one" style="margin: 10px;padding: 0;">
+            <h2 class="weui-msg__title contract-title" >——&nbsp;&nbsp;&nbsp;&nbsp;借款合同&nbsp;&nbsp;&nbsp;&nbsp;——</h2>
+            <p class="weui-msg__opr-area" >
+            <div class="generate-contract-opr-area" >
+                <div class="weui-cell__hd">
+                    <label class="weui-label generate-label">金额</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input generate-label_value" id="amount" name="amount" type="number" oninput="monthRepaymentCalculation()" />
+                </div>
+                <div class="weui-cell__ft contract-opr-area" style="margin-right: 5px;">
+                    万元
+                </div>
+            </div>
+
+            <div class="generate-contract-opr-area">
+                <div class="weui-cell__hd">
+                    <label class="weui-label generate-label">期限</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <div class="weui-slider-box">
+                        <div class="weui-slider" id="sliderStep">
+                            <div class="weui-slider__inner">
+                                <div style="width: 0;" class="weui-slider__track"></div>
+                                <div style="left: 0;" class="weui-slider__handler"></div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="term" name="term" value="1"/>
+                        <div id="sliderValue" ></div><div style="margin-right: 5px;">个月</div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="weui-flex" >
+                <div class="weui-flex__item" >
+                    <div class="generate-contract-opr-area"  >
+                        <div class="weui-cell__hd">
+                            <label class="weui-label generate-label">利率</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input class="weui-input generate-label_value" type="number" readonly="readonly" name="interestRate" id="interestRate" th:value="${pro.interestRate}" />
+                        </div>%
+                    </div>
+                </div>
+
+                <div class="weui-flex__item" >
+                    <div class="generate-contract-opr-area">
+                        <div class="weui-cell__hd">
+                            <label class="weui-label generate-label">月还款</label>
+                        </div>
+                        <div class="weui-cell__bd" id="monthRepayment">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </p>
+
+
+
+
+
+            <div class="contract-text-area_white">
+                <h2 class="weui-msg__title contract-title_blue" >——&nbsp;&nbsp;&nbsp;&nbsp;服务合同&nbsp;&nbsp;&nbsp;&nbsp;——</h2>
+                <p class="weui-msg__opr-area" >
+
+                <div class="weui-flex" >
+                    <div class="weui-flex__item" >
+                        <div class="generate-contract-opr-area_color"  >
+                            <div class="weui-cell__hd">
+                                <label class="weui-label generate-label">返费率</label>
+                            </div>
+                            <div class="weui-cell__bd ">
+                                <input class="weui-input generate-label_value" placeholder="返费率" type="number" id="returnRate" oninput="returnRateCalculation();" />
+                            </div>%
+                        </div>
+                    </div>
+
+                    <div class="weui-flex__item" >
+                        <div class="generate-contract-opr-area_color">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label generate-label">基础费率</label>
+                            </div>
+                            <input type="hidden"  name="baseAmountRate" th:value="${pro.serviceRate}" />
+                            <div class="weui-cell__bd " id="baseAmountRate" th:text="${pro.serviceRate}">
+
+                            </div><div style="margin-right: 5px;">%</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="weui-flex" >
+                    <div class="weui-flex__item" >
+                        <div class="generate-contract-opr-area_color"  >
+                            <div class="weui-cell__hd">
+                                <label class="weui-label generate-label">返费</label>
+                            </div>
+                            <div class="weui-cell__bd  generate-label_value" id="returnAmount">
+
+                            </div>元
+                        </div>
+                    </div>
+
+                    <div class="weui-flex__item" >
+                        <div class="generate-contract-opr-area_color">
+                            <div class="weui-cell__hd">
+                                <label class="weui-label generate-label">总服务费</label>
+                            </div>
+
+                            <div class="weui-cell__bd " id="totalServiceRate">
+                                0元
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                </p>
+            </div>
+            <div class="generate-contract-opr-area" >
+                <div class="weui-cell__hd">
+                    <label class="weui-label generate-label">总点位</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input generate-label_value" type="number"  placeholder="请输入总点位" id="totalPoint" name="totalPoint" oninput="totalPointCalculation();"  />
+                </div>
+                <div class="weui-cell__ft contract-opr-area" style="margin-right: 5px;">
+                    %
+                </div>
+            </div>
+        </div>
+
+        <div class="weui_btn_area">
+            <a href="javascript:void(0);" id="showMyOrders" style="margin: 10px;" class="weui-btn weui-btn_primary">下一步</a>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    /*<![CDATA[*/
+
+    var maxAmount = $("#maxAmount").val(); //批贷金额
+
+    $("#amount").attr('placeholder','请输入50到'+parseInt(maxAmount)+'的整数');
+
+    var maxTerm = $("#maxTerm").val();// 批贷期限
+    var loanType = $("#loanType").val(); //批贷类型
+
+    if(loanType == '01'){
+
+
+        $("#sliderValue").html(1);
+
+        if(maxTerm !=0){
+            weui.slider('#sliderStep', {
+                step: 100/maxTerm,
+                defaultValue: 0,
+                onChange: function(percent){
+
+                    $("#sliderValue").html((parseInt(percent*maxTerm/100)+1));
+                    $("#term").val((parseInt(percent*maxTerm/100)+1));
+
+                    returnRateCalculation();
+                }
+            });
+        }
+
+    }else{
+        $("#sliderValue").html(12);
+
+        if(maxTerm !=0){
+            weui.slider('#sliderStep', {
+                step: 100/maxTerm,
+                defaultValue: 0,
+                onChange: function(percent){
+
+                    $("#sliderValue").html((parseInt(percent*maxTerm/100)+1)*12);
+                    $("#term").val((parseInt(percent*maxTerm/100)+1)*12);
+
+                    returnRateCalculation();
+                }
+            });
+        }else{
+            $("#term").val(12);
+        }
+    }
+
+
+
+
+    $("#showMyOrders").click(function () {
+
+
+        var amount = $("#amount").val(); //金额
+
+        if(amount == "" || amount < 50 || amount > Number(maxAmount)){
+            weui.alert("请填写50至"+parseInt(maxAmount)+"之间的整数");
+            return ;
+        }
+
+        var returnRate = $("#returnRate").val();//返费率
+
+        if(returnRate == "" || returnRate < 0){
+            weui.alert("返费率请填写不小于0的数值");
+            return ;
+        }
+
+
+        $("#form").submit();
+    });
+
+
+
+
+    function monthRepaymentCalculation() {
+
+        var amount = $("#amount").val(); //金额
+
+        if(amount == null || amount =="" ) amount=0;
+        if(amount > 1200){
+            amount = 1200;
+            $("#amount").val(amount);
+        }
+
+        amount = parseInt(amount);
+
+        $("#amount").val(amount);
+        var interestRate = $("#interestRate").val();//利率
+        var monthRepayment = (amount * interestRate*100).toFixed(0);
+        $("#monthRepayment").html(monthRepayment+"元");
+
+        returnRateCalculation();
+    }
+
+
+    function returnRateCalculation() {
+
+
+        var returnRate = $("#returnRate").val();//返费率
+
+
+
+        if(returnRate == null || returnRate =="" ) returnRate=0.0;
+        var amount = $("#amount").val(); //金额
+        if(amount == null || amount =="" ) amount=0.0;
+
+        var sliderValue = $("#sliderValue").html().trim();//期限
+        var returnAmount = (amount * sliderValue *returnRate * 100).toFixed(0);//返费
+        $("#returnAmount").html(returnAmount);
+
+        var baseAmountRate = $("#baseAmountRate").html().trim(); //基础费率
+
+        var interestRate = $("#interestRate").val();//利率
+
+        var totalServiceRate = (amount * sliderValue * (Number(returnRate) + Number(baseAmountRate)) *100).toFixed(0); //总服务费率
+        $("#totalServiceRate").html(totalServiceRate+"元");
+
+
+        var totalPoint = (Number(returnRate) + Number(baseAmountRate)+Number(interestRate)).toFixed(2);
+        $("#totalPoint").val(totalPoint);
+
+    }
+
+    function totalPointCalculation() {
+
+
+        var totalPoint = $("#totalPoint").val(); //总点位
+
+        if(totalPoint =="" ) return ;
+
+        var baseAmountRate = $("#baseAmountRate").html().trim(); //基础费率
+
+        var interestRate = $("#interestRate").val();//利率
+
+        var returnRate = (Number(totalPoint) - Number(baseAmountRate) - Number(interestRate)).toFixed(2)   ;//返费率
+
+        $("#returnRate").val(returnRate);
+
+        if( returnRate < 0 ) return ;
+
+        var amount = $("#amount").val(); //金额
+        if(amount == null || amount =="" ) amount=0.0;
+
+        var sliderValue = $("#sliderValue").html().trim();//期限
+        var returnAmount = (amount * sliderValue *returnRate * 100).toFixed(0);//返费
+        $("#returnAmount").html(returnAmount);
+
+        var totalServiceRate = (amount * sliderValue * (Number(returnRate) + Number(baseAmountRate)) *100).toFixed(0); //总服务费率
+        $("#totalServiceRate").html(totalServiceRate+"元");
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

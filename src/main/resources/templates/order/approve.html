@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>订单详情</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/example.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contract.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>
+
+</head>
+<body>
+<div class="weui-tab">
+
+    <input type="hidden" id="bussNo" th:value="${buss.bussNo}" />
+    <input type="hidden" id="visitorPhone" th:value="${visitorPhone}" />
+    <div class="weui-cells order-text-area" style="margin-top:0">
+        <div class="weui-cell">
+            <div th:if="${buss.taskStatus == '07'}" class="weui-cell__bd">
+                <p class="order-text-title">预审批</p>
+                <p class="order-text-font">请补充资料以获取完整批贷函</p>
+            </div>
+            <div class="weui-cell__ft order-text-custname" th:text="${buss.custName}" />
+        </div>
+    </div>
+
+
+    <div class="weui-cells" style="margin-top:0">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                订单编号：<span th:text="${buss.bussNo}" />
+            </div>
+        </div>
+
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                金额：<span  th:text="${#numbers.formatDecimal(buss.appAmt, 1, 0)}" />万元
+            </div>
+        </div>
+
+
+        <div class="weui-cell" th:if="${buss.taskStatus == '07'}">
+            <div class="weui-cell__bd">
+                期限：<span th:text="${buss.term}" />个月
+            </div>
+        </div>
+
+        <div class="weui-cell" th:if="${buss.taskStatus == '07'}" >
+            <div class="weui-cell__bd">
+                预审批结论：<span th:text="${buss.remark}" />
+            </div>
+        </div>
+
+
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                抵押物坐落：<span th:text="${buss.guaPlace}" />
+            </div>
+        </div>
+
+
+        <div class="weui-cell">
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                <input  type="button" id="callVisitorPhone" class="weui-btn weui-btn_mini weui-btn_primary weui-btn-background-color-blue" value="联系下户员" />
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var path ="/"+window.location.pathname.split("/")[1];
+
+    $("#callVisitorPhone").click(function () {
+
+        window.location.href = 'tel://' +$("#visitorPhone").val();
+    });
+
+
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>报单成功</title>
+    <link rel="stylesheet" th:href="@{/css/weui.min.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/jweixin-1.2.0.js}"></script>
+    <style type="text/css">
+	    body {
+            background-color: #eeeeee;
+    		-webkit-tap-highlight-color:rgba(0,0,0,0);
+ 		  }
+		.weui-btn_primary{
+       	background-color:  #dd4d46;
+       	}
+       #successDiv {
+		    text-align: center;
+		    /*display: none;*/
+		}
+		#successDiv .weui-cell:before {
+		    border-top: 0;
+		    height:0;
+		}
+		#successDiv .weui-cell {
+		    margin-top: 35px;
+		}
+		.successImg {
+		    font-size: 0;
+		    padding-top: 50px;
+		    padding-bottom: 16px;
+		
+		}
+		.successImg img{
+		    width: 60px;
+		    height: 60px;
+		    margin: auto;
+		}
+		.successTitle {
+		    padding-bottom: 9px;
+		}
+		.fs16 {
+		    font-size: 16px;
+		    color: #333;
+		}
+		.fs12 {
+		    font-size: 12px;
+		    color: rgb(102,102,102);
+		}
+    </style>
+</head>
+<body>
+    <div class="successDiv" id="successDiv">
+	    <div class="successInfo">
+	        <div class="successImg">
+				<img th:src="@{/image/succ.png}" />
+			</div>
+	        <div class="successTitle fs16">报单成功</div>
+	        <div class="orderInfo fs12">
+	            <span id="orderNum">我们将很快与您联系，请保持电话畅通</span>
+	        </div>
+	    </div>
+	    <div class="weui-cell">
+	        <div class="weui-cell__bd">
+	            <div class="weui_btn_area">
+	                <a href="javascript:void(0);" id="showMyOrders" onclick="jump()" style="color:#fff;" class="weui-btn weui-btn_primary weui-order-btn h44 fs16">确认</a>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+<script type="text/javascript">
+	function  jump(){
+        setTimeout(function(){wx.closeWindow()}, 200);
+	}
+</script>
+</body>
+</html>

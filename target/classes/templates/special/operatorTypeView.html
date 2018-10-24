@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>请选择您的身份</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <!--<link rel="stylesheet" th:href="@{/css/jquery-weui.min.css}" />-->
+    <!--<link rel="stylesheet" th:href="@{/css/reset.css}" />-->
+    <!--<link rel="stylesheet" th:href="@{/css/wx-mortgage-msg.css}" />-->
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <!--<script type="text/javascript" th:src="@{/js/jquery-weui.js}"></script>-->
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.2.0.js}"></script>
+    <!--<script type="text/javascript" th:src="@{/js/wx-mortgage-common.js}"></script>-->
+    <style type="text/css">
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        html,body{
+            background-color: #eeeeee;
+            -webkit-tap-highlight-color:rgba(0,0,0,0);
+            width: 100%;
+            height: 100%;
+        }
+        .weui-cells {
+            margin-top: 0;
+            background-color: transparent;
+        }
+        .weui-cell {
+            height: 80px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+        .weui-cell__bd {
+            margin-left: 20px;
+        }
+        .weui-cells:after, .weui-cells:before {
+            display: none;
+        }
+        .weui-cell:after, .weui-cell:before {
+            display: none;
+        }
+        img{
+        	width:60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells">
+        <div class="weui-cell weui-cell_access" onclick="jump(1)">
+            <div class="weui-cell__hd">
+                <img th:src="@{/image/oneself.png}"/>
+            </div>
+            <div class="weui-cell__bd">
+                <p>本人办理</p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+        <div class="weui-cell weui-cell_access" onclick="jump(2)">
+            <div class="weui-cell__hd">
+                <img th:src="@{/image/agency.png}"/>
+            </div>
+            <div class="weui-cell__bd">
+                <p>代理他人办理</p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+    </div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var path ="/"+window.location.pathname.split("/")[1];
+	function jump(status){
+		if(status === 1){
+//		    window.location.replace(path+"/special/borrower/borrowerInfoView?fromAgent=00")
+		    window.location.href=path+"/special/borrower/borrowerInfoView?fromAgent=00";
+			console.log('1')
+		}else{
+//            window.location.replace(path+"/special/order/addBrokerView?fromAgent=01")
+            window.location.href=path+"/special/order/addBrokerView?fromAgent=01";
+			console.log('2')
+		}
+	}
+
+    /*]]>*/
+</script>
+</body>
+</html>

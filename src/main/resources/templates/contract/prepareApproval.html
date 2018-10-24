@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>批贷函</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/example.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contract.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>
+</head>
+<body>
+<input type="hidden" id="totalPoint" th:value="${totalPoint}"/>
+<input type="hidden" id="bussNo" th:value="${bussNo}"/>
+<input type="hidden" id="loanType" th:value="${loanType}"/>
+
+<div class="weui-msg" id="main">
+    <div class="weui-msg__text-area contract-text-area_one" style="margin: 10px;padding: 0;">
+        <h2 class="weui-msg__title contract-title" >——&nbsp;&nbsp;&nbsp;&nbsp;贷款要素&nbsp;&nbsp;&nbsp;&nbsp;——</h2>
+        <p class="weui-msg__opr-area" >
+        <div class="weui-flex">
+            <div class="weui-flex__item" >
+                <div class="placeholder">
+                    <div class="weui-msg__text-area contract-text-area" >
+                        <h2 class="weui-msg__title contract-title_one" >金额（万元）</h2>
+                        <h2 class="weui-msg__title contract-title_one_content" id="amount" th:text="${amount}" />
+                    </div>
+                </div>
+            </div>
+            <div class="weui-flex__item">
+                <div class="placeholder">
+                    <div class="weui-msg__text-area contract-text-area" >
+                        <h2 class="weui-msg__title contract-title_one" >期限（月）</h2>
+                        <h2 class="weui-msg__title contract-title_one_content" id="term" th:text="${term}" />
+                    </div>
+                </div>
+            </div>
+            <div class="weui-flex__item">
+                <div class="weui-msg__text-area contract-text-area">
+                    <h2 class="weui-msg__title contract-title_one" >利率（%）</h2>
+                    <h2 class="weui-msg__title contract-title_one_content" id="rate" th:text="${interestRate}" />
+                </div>
+            </div>
+        </div>
+        </p>
+
+        <div class="contract-text-area_white">
+            <h2 class="weui-msg__title contract-title_blue" >——&nbsp;&nbsp;&nbsp;&nbsp;面签内容&nbsp;&nbsp;&nbsp;&nbsp;——</h2>
+            <p class="weui-msg__opr-area" >
+            <div class="weui-flex" >
+                <div class="weui-flex__item" >
+                    <div class="generate-contract-opr-area_color"  >
+                        <div class="weui-cell__bd  generate-label_value" id="returnAmount" th:text="${viewStr}" />
+                    </div>
+                </div>
+            </div>
+
+
+            </p>
+        </div>
+        <div class="contract-text-area_color" >
+            <h2 class="weui-msg__title contract-title" >——&nbsp;&nbsp;&nbsp;&nbsp;放款条件&nbsp;&nbsp;&nbsp;&nbsp;——</h2>
+            <p class="weui-msg__opr-area" >
+            <div class="weui-flex" >
+                <div class="weui-flex__item" >
+                    <div class="generate-contract-opr-area"  >
+                        <div class="weui-cell__bd  generate-label_value">
+                            <span th:text="${loanCond}" /><br />
+                            <span th:text="${loanOder}" /><br />
+                            放款前缴纳服务费<span th:text="${#strings.substringBefore(serviceAmount,'.')}" />元
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </p>
+        </div>
+    </div>
+
+    <div class="weui_btn_area">
+        <a th:if="${isSubmit !=true}" href="javascript:void(0);" id="submitContract" style="margin: 10px;" class="weui-btn weui-btn_primary">提交</a>
+    </div>
+
+
+</div>
+
+<div class="weui-msg" id="successMessage" style="display: none;">
+    <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
+    <div class="weui-msg__text-area">
+        <h2 class="weui-msg__title">合同已生成，请联系完成签约</h2><div><span id="timeDiv" style="color: red;">3</span>&nbsp;&nbsp;&nbsp;秒后自动返回主页</div>
+    </div>
+    <div class="weui-msg__extra-area">
+        <div class="weui-footer">
+            <p class="weui-footer__links">
+                <a href="javascript:void(0);" class="weui-footer__link">大望金服</a>
+            </p>
+            <p class="weui-footer__text">Copyright © 2008-2016 weui.io</p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    var path ="/"+window.location.pathname.split("/")[1];
+
+
+    $("#submitContract").click(function () {
+
+        $("#submitContract").hide();
+
+        var amount = $("#amount").html().trim(); //金额
+
+        var term = $("#term").html().trim(); //期限
+
+        var totalPoint = $("#totalPoint").val(); //总点位
+
+        var bussNo = $("#bussNo").val();
+
+        var loanType = $("#loanType").val(); //产品类型
+
+        var data={};
+        data.amount = amount;
+        data.term = term;
+        data.totalPoint = totalPoint;
+        data.bussNo = bussNo;
+        data.loanType = loanType;
+        data.platformRate = 0;
+
+        $.ajax({
+            type: 'POST',
+            dataType    : 'json',
+            url: path+'/contract/submitContInfo',
+            data:data,
+            success: function(ret){
+
+                if((ret && ret.resultMsg)){
+                    weui.alert(ret.resultMsg);
+                }
+
+                if(ret && ret.resultCode =='0000'){
+                    $("#main").hide();
+                    $("#successMessage").show();
+                    countDown();
+                    window.setTimeout(closeWindow,3000);
+                }
+
+                if(ret && ret.resultCode =='0001'){
+                    weui.alert('系统繁忙，稍后再试!')
+                }
+            },
+            error: function(xhr, type){
+                weui.alert('系统繁忙，稍后再试!')
+            }
+        });
+
+
+
+    });
+
+
+    function countDown(){
+        var sTime = 3;     //倒计时的时间
+        var timer = setInterval(function () {
+            if(sTime == 1){
+                window.clearInterval(timer);
+            }
+            sTime--;
+            $("#timeDiv").html(sTime);
+        },1000);
+    }
+
+    function closeWindow(){
+        wx.closeWindow();
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>

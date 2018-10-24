@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>我的订单列表</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/example.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>
+
+</head>
+<body class="">
+<div  id="main" >
+    <div class="page__bd">
+        <div class="page__bd">
+            <div class="weui-search-bar" id="searchBar">
+                <form class="weui-search-bar__form" th:action="@{/order/search}">
+                    <div class="weui-search-bar__box">
+                        <i class="weui-icon-search"></i>
+                        <input type="search" class="weui-search-bar__input" name="content" placeholder="搜索" required="" />
+                        <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                    </div>
+                    <label class="weui-search-bar__label" id="searchText" style="transform-origin: 0px 0px 0px; opacity: 1; transform: scale(1, 1);">
+                        <i class="weui-icon-search"></i>
+                        <span>搜索</span>
+                    </label>
+                </form>
+                <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+            </div>
+        </div>
+    </div>
+    <div class="weui-tab" id="tab">
+        <div class="weui-navbar">
+            <div class="weui-navbar__item weui-bar__item_on" id="allDiv">全部</div>
+            <div class="weui-navbar__item" id="doingDiv">进行中</div>
+            <div class="weui-navbar__item" id="repaymentDiv">待还款</div>
+            <div class="weui-navbar__item" id="settledDiv">已结清</div>
+            <div class="weui-navbar__item" id="lapsedDiv">已失效</div>
+        </div>
+        <div class="weui-tab__panel">
+            <div class="weui-tab__content list0" id="list0" >
+
+            </div>
+            <div class="weui-tab__content list1" id="list1" >
+
+            </div>
+            <div class="weui-tab__content list2" id="list2" >
+
+            </div>
+            <div class="weui-tab__content list3" id="list3" >
+
+            </div>
+            <div class="weui-tab__content list4" id="list4" >
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /*<![CDATA[*/
+    weui.tab('#tab', {
+        defaultIndex: 0,
+    });
+
+    var $searchBar = $('#searchBar'),
+            $searchResult = $('#searchResult'),
+            $searchText = $('#searchText'),
+            $searchInput = $('#searchInput'),
+            $searchSuccess = $('#success'),
+            $searchCancel = $('#searchCancel');
+
+
+    var path ="/"+window.location.pathname.split("/")[1];
+
+
+    $("#doingDiv").click(function(){
+        loadUserBuss("1","list1");
+    });
+    $("#repaymentDiv").click(function(){
+        loadUserBuss("2","list2");
+    });
+    $("#settledDiv").click(function(){
+        loadUserBuss("3","list3");
+    });
+    $("#lapsedDiv").click(function(){
+        loadUserBuss("4","list4");
+    });
+
+
+    loadUserBuss("0","list0");//默认查询所有信息
+
+    function hideSearchResult(){
+        $searchResult.hide();
+        $searchInput.val('');
+        $(".searchContent").html("");
+        $(".searchInfor").html("");
+        $('#tab').show();
+    }
+    function cancelSearch(){
+        hideSearchResult();
+        $searchBar.removeClass('weui-search-bar_focusing');
+        $searchText.show();
+
+    }
+
+    $searchText.on('click', function(){
+        $searchBar.addClass('weui-search-bar_focusing');
+        $searchInput.focus();
+        $('#tab').hide();
+
+    });
+    $searchInput
+            .on('blur', function () {
+                if(!this.value.length) cancelSearch();
+            })
+            .on('input', function(e){
+                if(this.value.length) {
+                    $searchResult.show();
+                    // orderSearch()
+                } else {
+                    $searchResult.hide();
+                    $('#tab').hide();
+                }
+            })
+    ;
+
+    $searchSuccess.on('click', function(){
+        os()
+    });
+    $searchCancel.on('click', function(){
+        cancelSearch();
+        $searchInput.blur();
+    });
+
+    function os(){
+        $(".searchContent").html("");
+        orderSearch();
+    }
+
+    function loadUserBuss(status,divId){
+
+        if($("#"+divId).attr("init") == 'true') return ; //已经请求过，直接返回
+
+        var data={};
+        data.status=status;
+        $.ajax({
+            type: 'POST',
+            dataType    : 'json',
+            url:path+'/order/list',
+            data:data,
+            success: function(data){
+                if(data && data.resultCode =='0000'){
+                    buildShowInfoDiv(data,divId);
+                    $("#"+divId).attr('init',true);
+                }
+            },
+            error: function(xhr, type){
+                weui.alert('系统繁忙，稍后再试!')
+            }
+        });
+    }
+
+    function buildShowInfoDiv(data,divId){
+        for(i in data.data){
+
+            var bussNo = data.data[i].bussNo;
+
+            var items='<div class="weui-cells" onclick="selectOneOrder(\''+bussNo+'\')">'
+            items+='<div class="weui-cell">'
+            items+='<div class="weui-cell__bd">'
+            items+='<p>提交订单时间</p>'
+            items+='</div>'
+            items+='<div class="weui-cell__ft">'+data.data[i].submitTime+'</div>'
+            items+='</div>'
+            items+='<div class="weui-cell">'
+            items+='<div class="weui-cell__bd">'
+            items+='<p>订单编号</p>'
+            items+='</div>'
+            items+='<div class="weui-cell__ft bussNo">'+data.data[i].bussNo+'</div>'
+            items+='</div>'
+            items+='<div class="weui-cell">'
+            items+='<div class="weui-cell__bd">'
+            items+='<p>借款人</p>'
+            items+='</div>'
+            items+='<div class="weui-cell__ft">'+data.data[i].custName+'</div>'
+            items+='</div>'
+            items+='<div class="weui-cell">'
+            items+='<div class="weui-cell__bd">'
+            items+='<p>订单状态</p>'
+            items+='</div>'
+            items+='<div class="weui-cell__ft">'+data.data[i].status+'</div>'
+            items+='</div>'
+            items+='</div>'
+            $("#"+divId).append(items);
+        }
+    }
+
+    function selectOneOrder(bussNo) {
+
+        window.location.href=path+'/order/detail?bussNo='+bussNo;
+    }
+
+
+    /*]]>*/
+</script>
+</body>
+</html>

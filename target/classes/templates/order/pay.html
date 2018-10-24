@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="viewport"
+          content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <title>猎人金服</title>
+    <!--<link rel="stylesheet"  href="weui.min.css">
+	<link rel="stylesheet"  href="jquery-weui.min.css"/>
+    
+    <script type="text/javascript" src="jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="weui.min.js"></script>
+  	<script type="text/javascript" src="jquery-weui.min.js"></script>-->
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery-weui.min.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <!--<script type="text/javascript" th:src="@{/js/weui.min.js}"></script>-->
+    <script type="text/javascript" th:src="@{/js/jquery-weui.min.js}"></script>
+    <!--<script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>-->
+    <script type="text/javascript" th:src="@{/js/validate_bank.js}"></script>
+	<style>
+				.weui-cell{
+            padding:15px 15px;
+            font-size:14px;
+        }
+        .weui-cell_vcode{
+            padding:6px 15px;
+        }
+        .nochoice{
+            color:#afafaf;
+        }
+        .weui-cells:before{
+            left:12px;
+        }
+        .weui-cells:after{
+            border-bottom:0px solid #d9d9d9;left:12px;
+        }
+        body {
+            background-color: #f2f2f2;
+        }
+
+        .weui-cells {
+            margin-top: 0px;
+            font-size: 16px;
+        }
+
+        /*input[readonly] {*/
+            /*background-color: #fff;*/
+        /*}*/
+
+        input.weui-input {
+            /*text-align: right;*/
+            color:#333333;
+        }
+
+        input#bank {
+            color: #333;
+        }
+
+        .weui-cell_vcode {
+            padding-right: 0px;
+        }
+        .weui-vcode-btn {
+        	padding: 0 10px 0 10px;
+        }
+
+        #getCode {
+            margin: 7px 0;
+            height: 24px;
+            line-height: 24px;
+            font-size: 14px;
+            border-radius: 0px;
+            display: block;
+            /*background-color: #247FD2;*/
+            color: #3894f7;
+            /*border-left: none;*/
+            text-align: center;
+        }
+
+        #codetime {
+            display: none;
+            margin: 7px 0;
+            height: 24px;
+            line-height: 24px;
+            border-radius: 0px;
+            -webkit-appearance: none;
+            border: 0px none;
+            color: #1292ff;
+            background-color: #fff;
+            border-left: 1px solid #e5e5e5;
+            outline: none;
+        }
+
+        .payF {
+            margin-top: 30px;
+        }
+
+        .payF:before {
+            border-top: 0 none;
+        }
+        .weui-cell__hd{
+            width:38%;
+        }
+        .bankIcon {
+            position: relative;
+        }
+        .rightIcon {
+            width: 20px;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            -o-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            -moz-transform: translateY(-50%);
+            -webkit-transform: translateY(-50%);
+        }
+        .reline:before{height:0px;border-top:0 none;}
+        .weui-toast,.weui-toast_content
+        {
+            font-size:14px !important;
+        }
+        input[readonly] {
+            color:#afafaf;
+        }
+        input{
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+        }
+
+    </style>
+
+</head>
+<body>
+<input name="type" id="type" value="save" hidden="hidden"/>
+<input type="hidden" name="bussNo" th:value="${bussNo}" />
+<input type="hidden" id="signNo" />
+<div class="weui-cells reline">
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <label>金额</label>
+        </div>
+        <div class="weui-cell__ft">
+            <!--<input class="weui-input" type="text" name="name" id="name" th:text="${cardName}" />-->
+            <div class="weui-cell__ft nochoice" id="money" th:text="${amt}+'元'"></div>
+        </div>
+    </div>
+</div>
+<div class="weui-cells reline" style="margin-top: 10px;">
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <label>持卡人姓名</label>
+        </div>
+        <div class="weui-cell__ft">
+            <!--<input class="weui-input" type="text" name="name" id="name" th:text="${cardName}" />-->
+            <input type="hidden" id="name" th:value="${channelStaffBankinfo.name}" />
+            <div class="weui-cell__ft nochoice"  id="custName" name="name" ></div>
+        </div>
+    </div>
+</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <label>身份证号</label>
+        </div>
+        <div class="weui-cell__ft">
+            <input type="hidden" id="idCardNo" th:value="${channelStaffBankinfo.certNo}" />
+            <div class="weui-cell__ft" id="cardNo" name="cardNo" readonly="readonly" th:text="${channelStaffBankinfo.certNo}"></div>
+            <!--<input class="weui-input" type="text" name="idCardNo" id="idCardNo"  th:text="${certNo}"/>-->
+        </div>
+    </div>
+</div>
+
+<div class="weui-cells reline" style="margin-top: 10px;">
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <label>持卡类型</label>
+        </div>
+        <div class="weui-cell__ft">
+            <input readonly="readonly" class="weui-input btns" type="text" name="cardType" id="cardType" value="借记卡"/>
+        </div>
+    </div>
+</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <label>持卡人卡号</label>
+        </div>
+        <div class="weui-cell__ft">
+            <input type="hidden" id="cardNumber" th:value="${channelStaffBankinfo.bankCard}" />
+            <input class="weui-input btns" readonly="readonly" name="num" id="num" th:value="${channelStaffBankinfo.bankCard}"/>
+        </div>
+    </div>
+</div>
+<!--<div class="weui-cells">-->
+    <!--<a class="weui-cell weui-cell_access" href="javascript:;">-->
+    <!--<div class="weui-cell bankIcon">
+        <div class="weui-cell__hd">
+            <label>所属银行</label>
+        </div>-->
+        <!--<div class="weui-cell__ft" id="choiceCard">
+            请选择银行
+        </div>-->
+        <!--<div class="weui-cell__ft" id='dropdown'>
+            <input class="weui-input" onfocus="stopDialog(event)" onmousedown="stopDialog(event)" readonly="readonly"
+                   type="text" id="bank" name="bank" value=""/>
+        </div>
+        <img class="rightIcon" src="/img/rightIcon.png"/>-->
+        <!--</a>-->
+    <!--</div>
+</div>-->
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <label>所属银行</label>
+        </div>
+        <div class="weui-cell__ft">
+            <input class="weui-input btns" readonly="readonly" type="text" name="bankCard" id="bankCard" placeholder="" />
+        </div>
+    </div>
+</div>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+            <label>预留手机号</label>
+        </div>
+        <div class="weui-cell__ft">
+            <input class="weui-input" type="tel" maxlength="11" pattern="[0-9]*" name="mobile" id="mobile" th:value="${channelStaffBankinfo.mobile}" placeholder="请输入预留手机号"/>
+        </div>
+    </div>
+</div>
+<div class="weui-cells weui-cells-t">
+    <div class="weui-cell weui-cell_vcode">
+        <div class="weui-cell__hd">
+            <label class="weui-label">验证码</label>
+        </div>
+        <div class="weui-cell__bd">
+            <input style="text-align: left;" name="captcha" id="captcha" class="weui-input" type="tel" maxlength="6"
+                   placeholder="请输入验证码"/>
+        </div>
+        <div class="weui-cell__ft">
+            <a id="getCode" class="weui-vcode-btn" onclick="getCodeFun()">获取验证码</a>
+            <input type="button" id="codetime" style="width: 90px;" class="weui-vcode-btn" value='180/180'/>
+        </div>
+    </div>
+</div>
+<div class="weui-cell payF">
+    <div class="weui-cell__bd">
+        <div class="weui_btn_area">
+            <div id="preservation" onclick="saveOrder()"
+                 style="width: 100%; height: 100%; color: #ffffff; border-radius: 5px; font-size: 16px; text-align: center; line-height: 46px; background-color: #247FD2;">
+                支付
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var path ="/"+window.location.pathname.split("/")[1];
+    $(function () {
+        $("#custName").html($('#name').val().substring(0,1)+"*");
+        $("#num").val($('#cardNumber').val().substring(0,6)+'*******'+$('#cardNumber').val().slice(-3));
+        $("#cardNo").html($('#idCardNo').val().substring(0,8)+'******'+$('#idCardNo').val().slice(-4));
+        $('#bankCard').val(getBankInfoByCardNo($('#cardNumber').val().trim()));
+    })
+
+
+    //    获取验证码
+    function getCodeFun () {
+        var mobile = $('#mobile').val().trim();
+			  if (mobile === '') {
+            $.alert("请输入手机号");
+            return false;
+        }
+        if (!isPoneAvailable(mobile)) {
+            $.alert("请输入正确的手机号");
+            return false;
+        }
+        var timenums = 180;
+        $('#getCode').hide();
+        $('#codetime').val(timenums + '/180');
+        $('#codetime').show();
+        var timer = setInterval(function () {
+            timenums--
+            if (timenums === 0) {
+                $('#getCode').show();
+                $('#codetime').hide();
+                clearInterval(timer);
+            } else {
+                $('#codetime').val(timenums + '/180');
+            }
+        }, 1000);
+        sendRegSMS();
+    };
+//  发送验证码
+    function sendRegSMS () {
+        var data={};
+        data.mobile = $('#mobile').val();
+        data.amt=[[${amt}]];
+        data.cardNo=[[${channelStaffBankinfo.certNo}]];
+        data.name=[[${channelStaffBankinfo.name}]];
+        data.cardType=$('#cardType').val();
+        data.cardNumber=$('#cardNumber').val();
+        data.bankCard=$('#bankCard').val();
+        data.bussNo=[[${bussNo}]];
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            contentType: "application/json",
+            url: path+'/survey/sendCheckCode',
+            data: JSON.stringify(data),
+            success: function(res){
+                if  (res.resultCode == '0000')  {
+                    $("#signNo").val(res.signNo);
+                    $.alert("验证码发送成功");
+                }else if(res.resultCode == '9999') {
+                    $.alert(res.resultMsg);
+                } else {
+                    $.alert(res.resultMsg);
+//                    return false;
+                }
+            },
+            error: function(xhr, type){
+                $.alert("系统繁忙，稍后再试!");
+            }
+        });
+    }
+    
+     //    手机号验证
+    function isPoneAvailable(ihpone) {
+        var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        if (!myreg.test(ihpone)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+//  支付
+		function saveOrder () {
+            $.showLoading("支付中...");
+            var captcha = $('#captcha').val();
+            var data={};
+            var bussNo=[[${bussNo}]];
+            data.captcha = captcha;
+            data.mobile = $('#mobile').val();
+            data.amt=[[${amt}]];
+            data.cardNo=[[${channelStaffBankinfo.certNo}]];
+            data.name=[[${channelStaffBankinfo.name}]];
+            data.cardType=$('#cardType').val();
+            data.cardNumber=$('#cardNumber').val();
+            data.bankCard=$('#bankCard').val();
+            data.bussNo=[[${bussNo}]];
+            data.signNo=$('#signNo').val();
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: path+'/survey/pay',
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function(res){
+                $.hideLoading("支付中...");
+                if  (res.resultCode == '0000')  {
+//                    setTimeout(function () {
+
+                        window.location.href=path+"/survey/paySuccess?bussNo="+res.bussNo+"&amt="+res.amt;
+//                    },1000)
+                }else if(res.resultCode == '0001') {
+                    $.alert(res.resultMsg);
+                }else if(res.resultCode == '0003') {
+                    $.alert(res.resultMsg);
+                }else if(res.resultCode == '9999') {
+                    $.alert(res.resultMsg);
+                }else{
+                    window.location.href=path+"/survey/payFailed?bussNo="+bussNo;
+                }
+            },
+            error: function(xhr, type){
+                $.hideLoading("支付中...");
+                $.alert("系统繁忙，稍后再试!");
+            }
+        });
+		}
+
+    // 下拉框输入法无法弹出
+    function stopDialog(dialog) {
+        $(dialog).on('focus mousedown', function (e) {
+            $(':focus').blur();
+            e.preventDefault();
+        });
+
+    }
+    stopDialog('.btns')
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>我的订单列表</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/example.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>
+
+</head>
+<body>
+<div  id="main" >
+    <div class="page__bd">
+        <div class="page__bd">
+            <div class="weui-search-bar" id="searchBar">
+                <form class="weui-search-bar__form" th:action="@{/order/search}">
+                    <div class="weui-search-bar__box">
+                        <i class="weui-icon-search"></i>
+                        <input type="search" class="weui-search-bar__input" name="content" placeholder="搜索" required="" />
+                        <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                    </div>
+                    <label class="weui-search-bar__label" id="searchText" style="transform-origin: 0px 0px 0px; opacity: 1; transform: scale(1, 1);">
+                        <i class="weui-icon-search"></i>
+                        <span>搜索</span>
+                    </label>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="page__bd">
+            <div th:each="buss : ${list}" class="weui-cells" th:onclick="|selectOneOrder('${buss.bussNo}')|">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>提交订单时间</p>
+                    </div>
+                    <div class="weui-cell__ft" th:text="${buss.submitTime}"></div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>订单编号</p>
+                    </div>
+                    <div class="weui-cell__ft bussNo" th:text="${buss.bussNo}"></div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>借款人</p>
+                    </div>
+                    <div class="weui-cell__ft" th:text="${buss.custName}"></div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>订单状态</p>
+                    </div>
+                    <div class="weui-cell__ft" th:text="${buss.status}"></div>
+                </div>
+            </div>
+    </div>
+</div>
+
+<script>
+
+    var path ="/"+window.location.pathname.split("/")[1];
+    var $searchBar = $('#searchBar'),
+            $searchText = $('#searchText'),
+            $searchInput = $('#searchInput');
+    $searchText.on('click', function(){
+        $searchBar.addClass('weui-search-bar_focusing');
+        $searchInput.focus();
+
+    });
+
+    $searchText.on('click', function(){
+        $searchBar.addClass('weui-search-bar_focusing');
+        $searchInput.focus();
+    });
+
+    function selectOneOrder(bussNo) {
+
+        window.location.href=path+'/order/detail?bussNo='+bussNo;
+    }
+
+
+</script>
+</body>
+</html>

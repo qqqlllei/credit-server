@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>订单详情</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/example.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contract.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>
+
+</head>
+<body>
+<div class="weui-tab">
+
+    <input type="hidden" id="bussNo" th:value="${buss.bussNo}" />
+    <div class="weui-cells order-text-area" style="margin-top:0">
+        <div class="weui-cell">
+            <div th:if="${assignStatus == '00'}" class="weui-cell__bd">
+                <p class="order-text-title">待预约</p>
+                <p class="order-text-font">请预约下户以完成批贷</p>
+            </div>
+            <div th:if="${assignStatus == '01' or assignStatus == '001'}" class="weui-cell__bd">
+                <p class="order-text-title">分配中</p>
+                <p class="order-text-font">正在为您分配下户员，请耐心等待</p>
+            </div>
+
+            <div th:if="${assignStatus == '03'}" class="weui-cell__bd">
+                <p class="order-text-title">待支付</p>
+                <p class="order-text-font" id="messageInfo">系统已为您分配成功，请在<span id="timeCount"></span>内支付</p>
+            </div>
+
+            <div th:if="${assignStatus == '04' or assignStatus == '041'}" class="weui-cell__bd">
+                <p class="order-text-title">分配成功</p>
+                <p class="order-text-font">请及时联系下户员并将资料准备齐全</p>
+            </div>
+            <div class="weui-cell__ft order-text-custname" th:text="${buss.custName}" />
+        </div>
+    </div>
+
+
+    <div class="weui-cells" style="margin-top:0">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                订单编号：<span th:text="${buss.bussNo}" />
+            </div>
+        </div>
+
+        <div class="weui-cell" th:if="${assignStatus == '03'|| assignStatus == '04' || assignStatus == '041' || assignStatus == '05'}">
+            <div class="weui-cell__bd">
+                下户员：<span th:text="${visitorName}" />
+            </div>
+        </div>
+
+        <div class="weui-cell" th:if="${assignStatus == '03'|| assignStatus == '04' || assignStatus == '041' || assignStatus == '05'}">
+            <div class="weui-cell__bd">
+                <input type="hidden" id="visitorPhone" th:value="${visitorPhone}" />
+                联系方式：<span th:text="${visitorPhone}" />
+            </div>
+        </div>
+
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                抵押物坐落：<span th:text="${buss.guaPlace}" />
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                最大可贷款金额：<span th:text="${buss.maxLoanAmounts}" /><span>万元</span>
+            </div>
+        </div>
+        <div class="weui-cell" th:if="${assignStatus != '00'}">
+            <div class="weui-cell__bd">
+                <input type="hidden" id="surveyTime" th:value="${surveyTime}" />
+                预约下户时间：<span th:text="${surveyTime}" />
+            </div>
+        </div>
+
+
+
+        <div class="weui-cell">
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                <input th:if="${assignStatus == '00'}" type="button" id="bespeakButton" class="weui-btn weui-btn_mini weui-btn_primary weui-btn-background-color-blue" value="预约下户" />
+
+                <input th:if="${assignStatus != '00'}" type="button" id="cancelSubscribe" class="weui-btn weui-btn_mini weui-btn_primary weui-btn-background-color-blue" value="取消预约" />
+
+                <input th:if="${assignStatus == '03'}" type="button" id="payBespeak" class="weui-btn weui-btn_mini weui-btn_primary weui-btn-background-color-blue" value="支付" />
+
+                <input th:if="${assignStatus == '04' or assignStatus == '041'}" type="button" id="callVisitorPhone" class="weui-btn weui-btn_mini weui-btn_primary weui-btn-background-color-blue" value="联系下户员" />
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var path ="/"+window.location.pathname.split("/")[1];
+
+    var date = [[${date}]];
+
+    var day = date.day;
+    $('#bespeakButton').on('click', function () {
+        weui.picker(day, [
+            {
+                label: '09:00',
+                value: '09:00:00'
+            }, {
+                label: '11:30',
+                value: '11:30:00'
+            }, {
+                label: '14:00',
+                value: '14:00:00'
+            }, {
+                label: '16:30',
+                value: '16:30:00'
+            }, {
+                label: '19:00',
+                value: '19:00:00'
+            }
+        ], {
+            defaultValue: ['1', 'A'],
+            onConfirm: function (result) {
+                var selectTime = result[0].label+"  "+result[1].label;
+                var selectTimeValue = result[0].value+" "+result[1].value;
+
+                weui.confirm('', {
+                    title: '是否确认预约'+selectTime+"的调查?",
+                    buttons: [{
+                        label: '取消',
+                        type: 'default',
+                        onClick: function(){ }
+                    }, {
+                        label: '确定',
+                        type: 'primary',
+                        onClick: function(){
+                            var bussNo = $("#bussNo").val();
+                            $.ajax({
+                                type: 'POST',
+                                dataType    : 'json',
+                                url: path+'/survey/subscribe',
+                                data:{"bussNo":bussNo,"time":selectTimeValue},
+                                success: function(ret){
+
+                                    if((ret && ret.resultCode =='0001')){
+                                        weui.topTips(ret.resultMsg);
+                                    }
+
+                                    if(ret && ret.resultCode =='0000'){
+                                        weui.toast("预约成功");
+                                        window.location.href = path+"/order/detail?bussNo="+bussNo+"&time="+((new Date()).getTime());
+                                    }
+                                },
+                                error: function(xhr, type){
+                                    weui.alert('系统繁忙，稍后再试!')
+                                }
+                            });
+                        }
+                    }]
+                });
+            }
+        });
+
+    });
+
+    $("#cancelSubscribe").click(function(){
+
+        weui.confirm('', {
+            title: '是否确认取消'+$("#surveyTime").val()+"的预约?",
+            buttons: [{
+                label: '取消',
+                type: 'default',
+                onClick: function(){ }
+            }, {
+                label: '确定',
+                type: 'primary',
+                onClick: function(){
+                    var bussNo = $("#bussNo").val();
+                    $.ajax({
+                        type: 'POST',
+                        dataType : 'json',
+                        url: path+'/survey/cancelSubscribe',
+                        data:{"bussNo":bussNo},
+                        success: function(ret){
+
+                            if((ret && ret.resultMsg&& ret.resultCode =='0001')){
+                                weui.topTips(ret.resultMsg);
+                            }
+
+                            if(ret && ret.resultCode =='0000'){
+                                weui.toast("取消成功");
+                                window.location.href = path+"/order/detail?bussNo="+bussNo+"&time="+((new Date()).getTime());
+                            }
+                        },
+                        error: function(xhr, type){
+                            weui.alert('系统繁忙，稍后再试!')
+                        }
+                    });
+                }
+            }]
+        });
+
+    });
+    
+    
+    
+    $("#callVisitorPhone").click(function () {
+        window.location.href = 'tel://' + $("#visitorPhone").val();
+    });
+
+    $("#payBespeak").click(function(){
+        window.location.href = path+"/survey/payBespeak?bussNo="+$("#bussNo").val();
+    });
+
+    var assignSubTime = [[${assignSubTime}]];
+    var current = new Date();
+    var currentTime = current.getTime();
+    var time = (currentTime - assignSubTime )/60000;
+    var timeCount = parseInt(time);
+
+    timeCount=30-timeCount;
+    if(timeCount<=0){
+        $("#messageInfo").html("该订单已超时！");
+    }
+
+    countDown(timeCount);
+    $("#timeCount").html("("+timeCount+"分钟)");
+    function countDown(timeCount){
+        var sTime = timeCount,     //倒计时的时间
+            timer = null;
+
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            if(sTime == 0){
+                clearTimeout(timer);
+                return false;
+            }else{
+                sTime--;
+                setTimeout(arguments.callee, 60000);
+            }
+            $("#timeCount").html("("+sTime+"分钟)");
+        },60000);
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>

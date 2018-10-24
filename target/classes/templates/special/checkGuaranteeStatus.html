@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,height=device-height,  initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>请选择您房产的当前状况</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery-weui.min.css}" />
+    <!--<link rel="stylesheet" th:href="@{/css/jquery-weui.min.css}" />-->
+    <!--<link rel="stylesheet" th:href="@{/css/reset.css}" />-->
+    <!--<link rel="stylesheet" th:href="@{/css/wx-mortgage-msg.css}" />-->
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.2.0.js}"></script>
+    <!--<script type="text/javascript" th:src="@{/js/wx-mortgage-common.js}"></script>-->
+    <style type="text/css">
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        html,body{
+            background-color: #eeeeee;
+            -webkit-tap-highlight-color:rgba(0,0,0,0);
+            width: 100%;
+            height: 100%;}
+        .weui-cells {
+            margin-top: 0;
+            background-color: transparent;
+        }
+        .weui-cell {
+            height: 80px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+        .weui-cell__bd {
+            margin-left: 20px;
+        }
+        .weui-cells:after, .weui-cells:before {
+            display: none;
+        }
+        .weui-cell:after, .weui-cell:before {
+            display: none;
+        }
+        img{
+        	width:60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells">
+        <div class="weui-cell weui-cell_access" onclick="jump(1)">
+            <div class="weui-cell__hd">
+                <img th:src="@{/image/nosealed.png}"/>
+            </div>
+            <div class="weui-cell__bd">
+                <p>未被查封</p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+        <div class="weui-cell weui-cell_access" onclick="jump(2)">
+            <div class="weui-cell__hd">
+                <img th:src="@{/image/sealed.png}"/>
+            </div>
+            <div class="weui-cell__bd">
+                <p>已被查封</p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+    </div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var path ="/"+window.location.pathname.split("/")[1];
+    var borrowerId=[[${borrowerId}]];
+    var orderId=[[${orderId}]];
+    var guaranteeId=[[${guaranteeId}]];
+
+    function jump(status) {
+        if(status === 1){
+            window.location.href=path+"/special/debt/debtInfoView?orderId="+orderId+"&borrowerId="+borrowerId+"&guaranteeId="+guaranteeId;
+        }else{
+
+            var loadData ={}
+            loadData.borrowerId=borrowerId;
+            loadData.orderId=orderId;
+            loadData.guaranteeId=guaranteeId;
+            loadData.status='01';
+            $.ajax({
+                type: 'POST',
+                dataType    : 'json',
+                contentType : "application/json; charset=utf-8",
+                url: path+'/special/debt/updateGuarantee',
+                data:JSON.stringify(loadData),
+                success: function(data){
+
+                    if((data && data.resultMsg && data.resultCode =='0001')){
+                        $.alert(data.resultMsg);
+                    }
+                    if((data && data.resultMsg && data.resultCode =='0002')){
+                        $.alert({
+                            text: data.resultMsg,
+                            onOK: function () {
+                                wx.closeWindow()
+                            }
+                        });
+                    }
+                    if(data && data.resultCode =='0000')
+                        window.location.href=path+"/special/debt/debtInfoView?orderId="+orderId+"&borrowerId="+borrowerId+"&guaranteeId="+guaranteeId;
+                },
+                error: function(xhr, type){
+                    alert("操作失败");
+                }
+            });
+        }
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>

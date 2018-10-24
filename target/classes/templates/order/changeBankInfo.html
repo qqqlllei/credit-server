@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;" />
+
+
+    <title>猎人金服</title>
+    <link rel="stylesheet"  th:href="@{/css/weui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/example.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contract.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jweixin-1.0.0.js}"></script>
+
+</head>
+<body>
+<form method="post" id="form" name="form" th:action="@{/survey/changeBankInfo}">
+        <input type="hidden" name="openId" th:value="${channelStaffBankinfo.openId}" />
+    <div id="pageFirst">
+        <div class="weui-tab">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">持卡人姓名</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input"  type="text" name="name" id="name" th:value="${channelStaffBankinfo.name}" placeholder="请输入姓名" />
+                    </div>
+                </div>
+
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">储蓄卡卡号</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="number" name="bankCard" id="bankCard" th:value="${channelStaffBankinfo.bankCard}" placeholder="请输入储蓄卡卡号" />
+                    </div>
+                </div>
+
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">预留手机号</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" pattern="[0-9]*"  name="mobile" id="mobile" th:value="${channelStaffBankinfo.mobile}" placeholder="请输入11位手机号" />
+                    </div>
+                </div>
+
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">身份证号</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="idCardNo" id="idCardNo" th:value="${channelStaffBankinfo.certNo}" placeholder="请输入身份证号" />
+                    </div>
+                </div>
+
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <span class="weui-label">重要：</span>
+                    </div>
+                    <div class="weui-cell__bd" >
+                        <span class="weui-label" style="width:auto;">请绑定渠道经纪人本人储蓄卡和可以使用的预留手机号，以便资金的收支。</span>
+                    </div>
+                </div>
+
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div class="weui_btn_area" >
+                            <button href="javascript:void(0);" type="button" id="submitButton" class="weui-btn weui-order-btn"  >修改</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</form>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var path ="/"+window.location.pathname.split("/")[1];
+
+    $("#submitButton").click(function(){
+        var bankCard = $("#bankCard").val();//银行卡号
+        var name = $("#name").val().trim();//姓名
+        var idCardNo = $("#idCardNo").val().trim(); //证件号
+        var mobile = $("#mobile").val().trim();//手机号
+
+        if(name ==''){
+            weui.alert('请填写姓名!');
+            return ;
+        }
+
+        if(bankCard ==''){
+            weui.alert('请填写银行卡号!');
+            return ;
+        }
+        if(!luhnCheck(bankCard)){
+            weui.alert('银行卡号格式错误!');
+            return ;
+        }
+
+        if(mobile == ''){
+            weui.alert('请填写手机号!');
+            return ;
+        }
+//        if(!isCardNo(mobile)){
+//            weui.alert('手机号格式错误!');
+//            return ;
+//        }
+
+        if(idCardNo ==''){
+            weui.alert('请填写身份证号!');
+        }
+        if(!isCardNo(idCardNo)){
+            weui.alert('身份证号格式错误!');
+            return ;
+        }
+
+
+//        $("#form").submit();
+        $.ajax({
+            type: 'POST',
+            dataType    : 'json',
+            url: path+'/survey/changeBankInfo',
+            data:$("#form").serialize(),
+            success: function(data){
+                if (data.resultCode === '0000') {
+                    weui.alert("操作成功!");
+                } else {
+                    weui.alert(data.resultMsg);
+                }
+            },
+            error: function(xhr, type){
+                weui.alert("系统繁忙，稍后再试!");
+            }
+        });
+
+    });
+
+    //银行卡号码检测
+    function luhnCheck(bankno) {
+        var lastNum = bankno.substr(bankno.length - 1, 1); //取出最后一位（与luhn进行比较）
+        var first15Num = bankno.substr(0, bankno.length - 1); //前15或18位
+        var newArr = new Array();
+        for (var i = first15Num.length - 1; i > -1; i--) { //前15或18位倒序存进数组
+            newArr.push(first15Num.substr(i, 1));
+        }
+        var arrJiShu = new Array(); //奇数位*2的积 <9
+        var arrJiShu2 = new Array(); //奇数位*2的积 >9
+        var arrOuShu = new Array(); //偶数位数组
+        for (var j = 0; j < newArr.length; j++) {
+            if ((j + 1) % 2 == 1) { //奇数位
+                if (parseInt(newArr[j]) * 2 < 9) arrJiShu.push(parseInt(newArr[j]) * 2);
+                else arrJiShu2.push(parseInt(newArr[j]) * 2);
+            } else //偶数位
+                arrOuShu.push(newArr[j]);
+        }
+
+        var jishu_child1 = new Array(); //奇数位*2 >9 的分割之后的数组个位数
+        var jishu_child2 = new Array(); //奇数位*2 >9 的分割之后的数组十位数
+        for (var h = 0; h < arrJiShu2.length; h++) {
+            jishu_child1.push(parseInt(arrJiShu2[h]) % 10);
+            jishu_child2.push(parseInt(arrJiShu2[h]) / 10);
+        }
+
+        var sumJiShu = 0; //奇数位*2 < 9 的数组之和
+        var sumOuShu = 0; //偶数位数组之和
+        var sumJiShuChild1 = 0; //奇数位*2 >9 的分割之后的数组个位数之和
+        var sumJiShuChild2 = 0; //奇数位*2 >9 的分割之后的数组十位数之和
+        var sumTotal = 0;
+        for (var m = 0; m < arrJiShu.length; m++) {
+            sumJiShu = sumJiShu + parseInt(arrJiShu[m]);
+        }
+
+        for (var n = 0; n < arrOuShu.length; n++) {
+            sumOuShu = sumOuShu + parseInt(arrOuShu[n]);
+        }
+
+        for (var p = 0; p < jishu_child1.length; p++) {
+            sumJiShuChild1 = sumJiShuChild1 + parseInt(jishu_child1[p]);
+            sumJiShuChild2 = sumJiShuChild2 + parseInt(jishu_child2[p]);
+        }
+        //计算总和
+        sumTotal = parseInt(sumJiShu) + parseInt(sumOuShu) + parseInt(sumJiShuChild1) + parseInt(sumJiShuChild2);
+
+        //计算luhn值
+        var k = parseInt(sumTotal) % 10 == 0 ? 10 : parseInt(sumTotal) % 10;
+        var luhn = 10 - k;
+
+        if (lastNum == luhn) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function isCardNo(card)
+    {
+        // 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
+        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if(reg.test(card) === false){
+            return  false;
+        }
+        return true;
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>
