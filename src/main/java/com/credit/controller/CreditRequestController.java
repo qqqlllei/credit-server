@@ -59,6 +59,7 @@ public class CreditRequestController {
                 JSONArray jsonArray = JSONObject.parseObject(queryInfoBody.getString("body")).getJSONArray("risk_items");
 
                 List<JSONObject> courts = courtcInfoHandle(jsonArray);
+                List<JSONObject> blacks = blacklist(jsonArray);
 
                 return "/user/userInfo";
             }
@@ -114,6 +115,28 @@ public class CreditRequestController {
         }
 
         return courtcs;
+    }
+
+    private List<JSONObject> blacklist(JSONArray list){
+        Iterator<Object> it =  list.iterator();
+        List<JSONObject> blacklist = new ArrayList<>();
+        while (it.hasNext()){
+            JSONObject item = (JSONObject) it.next();
+            if("123".equals(item.getString("item_name"))){
+                blacklist.add(item);
+            }
+
+            if("234".equals(item.getString("item_name"))){
+                blacklist.add(item);
+            }
+
+            if("345".equals(item.getString("item_name"))){
+                blacklist.add(item);
+            }
+
+        }
+
+        return blacklist;
     }
 
 }
