@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +40,9 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
     @Autowired
     private LoanRecordService loanRecordService;
+
+    @Autowired
+    private NamelistRecordService namelistRecordService;
 
     public int saveCreditRequest(CreditRequest creditRequest){
         creditRequest.setId(UUID.randomUUID().toString());
@@ -155,6 +159,15 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
         }
 
 
+        //
+
+        List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest);
+
+        for (NamelistRecord namelistRecord: namelistRecords){
+            namelistRecord.setId(UUID.randomUUID().toString());
+            namelistRecordService.save(namelistRecord);
+        }
+
     }
 
 
@@ -257,6 +270,44 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
         }
 
         return loanRecords;
+    }
+
+
+    @Override
+    public List<NamelistRecord> namelistRecordHandle(JSONArray jsonArray, CreditRequest creditRequest){
+        Iterator<Object> it =  jsonArray.iterator();
+        List<NamelistRecord> namelistRecords = new ArrayList<>();
+
+
+        while (it.hasNext()) {
+            JSONObject item = (JSONObject) it.next();
+            if("身份证命中故意违章乘车名单".equals(item.getString("item_name"))){
+
+
+                JSONObject item_detail = item.getJSONObject("item_detail");
+
+
+                JSONArray namelist_hit_details = item_detail.getJSONArray("namelist_hit_details");
+
+                Iterator<Object> namelist_hit_details_id = namelist_hit_details.iterator();
+
+                while (namelist_hit_details_id.hasNext()){
+                    JSONObject namelist_hit_details_item = (JSONObject) namelist_hit_details_id.next();
+                    NamelistRecord namelistRecord = new NamelistRecord();
+                    namelistRecord.setType(item.getString("item_name"));
+                    namelistRecord.setHitTypeDisplayName(String.valueOf(item_detail.getOrDefault("hit_type_displayname",DEFAULT_VALUE)));
+                    namelistRecord.setDescription(String.valueOf(item_detail.getOrDefault("description",DEFAULT_VALUE)));
+                    namelistRecord.setFraudType(String.valueOf(item_detail.getOrDefault("fraud_type",DEFAULT_VALUE)));
+
+                    namelistRecords.add(namelistRecord);
+                }
+
+            }
+
+
+        }
+
+            return namelistRecords;
     }
 
     @Override
