@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.credit.base.BaseDao;
 import com.credit.base.BaseServiceImpl;
 import com.credit.dao.CreditRequestMapper;
-import com.credit.entity.CreditRequest;
-import com.credit.entity.JudicialRecord;
+import com.credit.entity.*;
 import com.credit.service.CreditRequestService;
+import com.credit.service.IdentityRecordService;
 import com.credit.service.JudicialRecordService;
+import com.credit.service.OverdueRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,6 +33,12 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
     @Autowired
     private JudicialRecordService judicialRecordService;
+
+    @Autowired
+    private IdentityRecordService identityRecordService;
+
+    @Autowired
+    private OverdueRecordService overdueRecordService;
 
     public int saveCreditRequest(CreditRequest creditRequest){
         creditRequest.setId(UUID.randomUUID().toString());
@@ -104,6 +112,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     }
 
     @Override
+    @Transactional
     public void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest) {
 
 
@@ -115,6 +124,114 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             judicialRecordService.save(judicialRecord);
         }
 
+
+        //身份记录
+        List<IdentityRecord> identityRecords =  identityRecordHandle(jsonArray,creditRequest);
+
+
+        for (IdentityRecord identityRecord: identityRecords){
+            identityRecord.setId(UUID.randomUUID().toString());
+            identityRecordService.save(identityRecord);
+        }
+
+        //逾期名单
+
+        List<OverdueRecord> overdueRecords =   OverdueRecordHandle(jsonArray,creditRequest);
+
+
+        for (OverdueRecord overdueRecord: overdueRecords){
+            overdueRecord.setId(UUID.randomUUID().toString());
+            overdueRecordService.save(overdueRecord);
+        }
+
+    }
+
+
+
+    //
+
+    @Override
+    public List<OverdueRecord> OverdueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest){
+        Iterator<Object> it =  jsonArray.iterator();
+        List<OverdueRecord> overdueRecords = new ArrayList<>();
+        while (it.hasNext()){
+            JSONObject item = (JSONObject) it.next();
+
+            if("身份证命中信贷逾期名单".equals(item.getString("item_name"))
+                   ){
+                JSONObject item_detail = item.getJSONObject("item_detail");
+                OverdueRecord overdueRecord = new OverdueRecord();
+
+                overdueRecord.setDiscreditTimes(String.valueOf(item_detail.getOrDefault("discredit_times",DEFAULT_VALUE)) );
+                JSONArray overdue_details = item_detail.getJSONArray("overdue_details");
+                overdueRecord.setDescription(overdue_details.toJSONString());
+                overdueRecords.add(overdueRecord);
+
+
+            }
+        }
+        return overdueRecords;
+
+
+
+    }
+
+
+    //1个月内申请人在多个平台申请借款
+
+    //3个月内申请人在多个平台申请借款
+
+    //7天内申请人在多个平台申请借款
+
+    @Override
+    public List<IdentityRecord> identityRecordHandle(JSONArray jsonArray, CreditRequest creditRequest) {
+
+        Iterator<Object> it =  jsonArray.iterator();
+        List<IdentityRecord> identityRecords = new ArrayList<>();
+
+        while (it.hasNext()){
+            JSONObject item = (JSONObject) it.next();
+
+            if("3个月内申请信息关联多个身份证".equals(item.getString("item_name"))
+                    ||"3个月内身份证关联多个申请信息".equals(item.getString("item_name"))){
+                JSONArray frequency_detail_list = item.getJSONObject("item_detail").getJSONArray("frequency_detail_list");
+
+                Iterator<Object> frequency_detail_list_it = frequency_detail_list.iterator();
+
+                while (frequency_detail_list_it.hasNext()){
+                    JSONObject frequency_detail_list_item = (JSONObject)  frequency_detail_list_it.next();
+
+                    IdentityRecord identityRecord = new IdentityRecord();
+                    identityRecord.setData(frequency_detail_list_item.getJSONArray("data").toJSONString());
+                    identityRecord.setDetail((String) frequency_detail_list_item.getOrDefault("detail",DEFAULT_VALUE));
+                    identityRecords.add(identityRecord);
+                }
+
+            }
+        }
+
+        return identityRecords;
+    }
+
+
+
+
+    public List<LoanRecord> loanRecord(JSONArray jsonArray, CreditRequest creditRequest){
+        Iterator<Object> it =  jsonArray.iterator();
+        List<LoanRecord> loanRecords = new ArrayList<>();
+
+
+        while (it.hasNext()) {
+            JSONObject item = (JSONObject) it.next();
+
+            if("身份证命中信贷逾期名单".equals(item.getString("item_name"))
+                    ){
+                JSONObject item_detail = item.getJSONObject("item_detail");
+            }
+
+        }
+
+        return loanRecords;
     }
 
     @Override
