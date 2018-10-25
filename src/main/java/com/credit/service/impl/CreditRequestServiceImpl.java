@@ -23,6 +23,9 @@ import java.util.UUID;
 @Service("creditRequestService")
 public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> implements CreditRequestService {
 
+
+    private static final String DEFAULT_VALUE="-";
+
     @Autowired
     private CreditRequestMapper creditRequestMapper;
 
@@ -44,7 +47,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     }
 
     @Override
-    public List<JudicialRecord> courtcInfoHandle(JSONArray list) {
+    public List<JudicialRecord> courtcInfoHandle(JSONArray list,CreditRequest creditRequest) {
 
         Iterator<Object> it =  list.iterator();
         List<JudicialRecord> courtcs = new ArrayList<>();
@@ -57,6 +60,8 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                 while (namelist_hit_details_it.hasNext()){
                     JSONObject namelist_hit_details_item = (JSONObject)namelist_hit_details_it.next();
 
+                    String hit_type_displayname = namelist_hit_details_item.getString("hit_type_displayname");
+
                     JSONArray court_details =  namelist_hit_details_item.getJSONArray("court_details");
 
                     Iterator<Object> court_details_it = court_details.iterator();
@@ -64,20 +69,31 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                     while (court_details_it.hasNext()){
                         JSONObject court_details_item = (JSONObject) court_details_it.next();
 
-                        JudicialRecord judicialRecord = new JudicialRecord();
-                        judicialRecord.setAge(court_details_item.getString("age"));
-                        judicialRecord.setEvidenceCourt(court_details_item.getString("court_name"));
-                        judicialRecord.setExecuteCourt(court_details_item.getString("court_name"));
-                        judicialRecord.setProvince(court_details_item.getString("province"));
-                        judicialRecord.setCarryOut(court_details_item.getString("situation"));
-                        judicialRecord.setCaseDate(court_details_item.getString("filing_time"));
-                        judicialRecord.setGender(court_details_item.getString("gender"));
-                        judicialRecord.setFraudType(court_details_item.getString("fraud_type"));
-                        judicialRecord.setExecutedName(court_details_item.getString("name"));
-                        judicialRecord.setTermDuty(court_details_item.getString("duty"));
-                        judicialRecord.setSpecificCircumstances(court_details_item.getString("discredit_detail"));
 
-                        judicialRecord.setCaseCode(court_details_item.getString("case_number"));
+
+                        JudicialRecord judicialRecord = new JudicialRecord();
+                        judicialRecord.setAge((String) court_details_item.getOrDefault("age",DEFAULT_VALUE));
+                        judicialRecord.setEvidenceCourt((String) court_details_item.getOrDefault("court_name",DEFAULT_VALUE));
+                        judicialRecord.setExecuteCourt((String) court_details_item.getOrDefault("court_name",DEFAULT_VALUE));
+                        judicialRecord.setProvince((String) court_details_item.getOrDefault("province",DEFAULT_VALUE));
+                        judicialRecord.setCarryOut((String) court_details_item.getOrDefault("situation",DEFAULT_VALUE));
+                        judicialRecord.setCaseDate((String) court_details_item.getOrDefault("filing_time",DEFAULT_VALUE));
+                        judicialRecord.setGender((String) court_details_item.getOrDefault("gender",DEFAULT_VALUE));
+                        judicialRecord.setFraudType((String) court_details_item.getOrDefault("fraud_type",DEFAULT_VALUE));
+                        judicialRecord.setExecutedName((String) court_details_item.getOrDefault("name",DEFAULT_VALUE));
+                        judicialRecord.setTermDuty((String) court_details_item.getOrDefault("duty",DEFAULT_VALUE));
+                        judicialRecord.setSpecificCircumstances((String) court_details_item.getOrDefault("discredit_detail",DEFAULT_VALUE));
+
+
+                        if(hit_type_displayname.contains("身份证")){
+                            judicialRecord.setValue(creditRequest.getIdcard());
+                        }else{
+                            judicialRecord.setValue(creditRequest.getPhone());
+                        }
+
+
+
+                        judicialRecord.setCaseCode((String) court_details_item.getOrDefault("case_number",DEFAULT_VALUE));
                         courtcs.add(judicialRecord);
                     }
                 }
@@ -99,11 +115,11 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     }
 
     @Override
-    public void saveCreditInfo(JSONArray jsonArray) {
+    public void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest) {
 
 
         //1
-        List<JudicialRecord> courtInfoList = courtcInfoHandle(jsonArray);
+        List<JudicialRecord> courtInfoList = courtcInfoHandle(jsonArray,creditRequest);
 
         for (JudicialRecord judicialRecord: courtInfoList){
             judicialRecord.setId(UUID.randomUUID().toString());

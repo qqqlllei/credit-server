@@ -58,7 +58,7 @@ public class CreditRequestController {
 
                 JSONArray jsonArray = JSONObject.parseObject(queryInfoBody.getString("body")).getJSONArray("risk_items");
 
-                List<JudicialRecord> courts = this.creditRequestService.courtcInfoHandle(jsonArray);
+                List<JudicialRecord> courts = this.creditRequestService.courtcInfoHandle(jsonArray,creditRequest);
                 List<JSONObject> blacks = blacklist(jsonArray);
 
                 return "/user/userInfo";

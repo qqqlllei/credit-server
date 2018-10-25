@@ -19,7 +19,7 @@ public interface CreditRequestService extends BaseService<CreditRequest> {
 
     List<CreditRequest> getCreditRequestByStatus(String unDo);
 
-    List<JudicialRecord> courtcInfoHandle(JSONArray list);
+    List<JudicialRecord> courtcInfoHandle(JSONArray list,CreditRequest creditRequest);
 
-    void saveCreditInfo(JSONArray jsonArray);
+    void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest);
 }
