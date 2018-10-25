@@ -5,7 +5,7 @@ public class JudicialRecord extends BaseEntity{
 
 	private String caseCode;
 	private String executeCourt;
-	private java.sql.Timestamp caseDate;
+	private String caseDate;
 	private String gender;
 	private String carryOut;
 	private String executedName;
@@ -35,12 +35,6 @@ public class JudicialRecord extends BaseEntity{
 	}
 	public String getExecuteCourt() {
 		return this.executeCourt;
-	}
-	public void setCaseDate(java.sql.Timestamp caseDate) {
-		this.caseDate = caseDate;
-	}
-	public java.sql.Timestamp getCaseDate() {
-		return this.caseDate;
 	}
 	public void setGender(String gender) {
 		this.gender = gender;
@@ -131,6 +125,14 @@ public class JudicialRecord extends BaseEntity{
 	}
 	public String getFraudTypeDisplayName() {
 		return this.fraudTypeDisplayName;
+	}
+
+	public String getCaseDate() {
+		return caseDate;
+	}
+
+	public void setCaseDate(String caseDate) {
+		this.caseDate = caseDate;
 	}
 }
 

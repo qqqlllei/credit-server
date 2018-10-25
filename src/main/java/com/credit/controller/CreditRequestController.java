@@ -3,6 +3,7 @@ package com.credit.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.credit.entity.CreditRequest;
+import com.credit.entity.JudicialRecord;
 import com.credit.service.CreditRequestService;
 import com.credit.utils.DateTime;
 import com.credit.utils.HttpClientUtil;
@@ -57,7 +58,7 @@ public class CreditRequestController {
 
                 JSONArray jsonArray = JSONObject.parseObject(queryInfoBody.getString("body")).getJSONArray("risk_items");
 
-                List<JSONObject> courts = courtcInfoHandle(jsonArray);
+                List<JudicialRecord> courts = this.creditRequestService.courtcInfoHandle(jsonArray);
                 List<JSONObject> blacks = blacklist(jsonArray);
 
                 return "/user/userInfo";
@@ -94,27 +95,6 @@ public class CreditRequestController {
 //        return "/user/userInfo";
     }
 
-    private List<JSONObject> courtcInfoHandle(JSONArray list){
-        Iterator<Object> it =  list.iterator();
-        List<JSONObject> courtcs = new ArrayList<>();
-        while (it.hasNext()){
-           JSONObject item = (JSONObject) it.next();
-            if("身份证命中法院失信名单".equals(item.getString("item_name"))){
-                courtcs.add(item);
-            }
-
-            if("身份证命中法院执行名单".equals(item.getString("item_name"))){
-                courtcs.add(item);
-            }
-
-            if("身份证命中法院结案名单".equals(item.getString("item_name"))){
-                courtcs.add(item);
-            }
-
-        }
-
-        return courtcs;
-    }
 
     private List<JSONObject> blacklist(JSONArray list){
         Iterator<Object> it =  list.iterator();
