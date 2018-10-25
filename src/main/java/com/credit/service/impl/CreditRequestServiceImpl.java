@@ -295,9 +295,9 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                     JSONObject namelist_hit_details_item = (JSONObject) namelist_hit_details_id.next();
                     NamelistRecord namelistRecord = new NamelistRecord();
                     namelistRecord.setType(item.getString("item_name"));
-                    namelistRecord.setHitTypeDisplayName(String.valueOf(item_detail.getOrDefault("hit_type_displayname",DEFAULT_VALUE)));
-                    namelistRecord.setDescription(String.valueOf(item_detail.getOrDefault("description",DEFAULT_VALUE)));
-                    namelistRecord.setFraudType(String.valueOf(item_detail.getOrDefault("fraud_type",DEFAULT_VALUE)));
+                    namelistRecord.setHitTypeDisplayName(String.valueOf(namelist_hit_details_item.getOrDefault("hit_type_displayname",DEFAULT_VALUE)));
+                    namelistRecord.setDescription(String.valueOf(namelist_hit_details_item.getOrDefault("description",DEFAULT_VALUE)));
+                    namelistRecord.setFraudType(String.valueOf(namelist_hit_details_item.getOrDefault("fraud_type",DEFAULT_VALUE)));
 
                     namelistRecords.add(namelistRecord);
                 }
