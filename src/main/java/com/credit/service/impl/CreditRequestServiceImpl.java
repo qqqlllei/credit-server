@@ -3,7 +3,7 @@ package com.credit.service.impl;
 import com.credit.base.BaseDao;
 import com.credit.base.BaseServiceImpl;
 import com.credit.dao.CreditRequestMapper;
-import com.credit.domain.entity.CreditRequest;
+import com.credit.entity.CreditRequest;
 import com.credit.service.CreditRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

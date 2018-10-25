@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.credit.dao.OverdueRecordMapper">
+
+	<resultMap id="RM_OverdueRecord" type="com.credit.entity.OverdueRecord">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="description" column="description"/>
+        <result property="discreditTimes" column="discredit_times"/>
+        <result property="overdueDetails" column="overdue_details"/>
+        <result property="overdueAmountRange" column="overdue_amount_range"/>
+        <result property="overdueCount" column="overdue_count"/>
+        <result property="overdueDayRange" column="overdue_day_range"/>
+        <result property="overdueTime" column="overdue_time"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,type,description,discredit_times,overdue_details,overdue_amount_range,overdue_count,overdue_day_range,overdue_time
+	    ]]>
+	</sql>
+
+	<!--保存 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+	    <![CDATA[
+	        INSERT INTO t_overdue_record ( 
+	        	id ,
+	        	type ,
+	        	description ,
+	        	discredit_times ,
+	        	overdue_details ,
+	        	overdue_amount_range ,
+	        	overdue_count ,
+	        	overdue_day_range ,
+	        	overdue_time 
+	        ) VALUES (
+	        	#{id} ,
+	        	#{type} ,
+	        	#{description} ,
+	        	#{discreditTimes} ,
+	        	#{overdueDetails} ,
+	        	#{overdueAmountRange} ,
+	        	#{overdueCount} ,
+	        	#{overdueDayRange} ,
+	        	#{overdueTime} 
+	        )
+	    ]]>
+	</insert>
+	
+	<!-- 批量保存 -->
+	<insert id="batchInsert">
+	    <![CDATA[
+	        INSERT INTO t_overdue_record (
+	        		id ,
+	        		type ,
+	        		description ,
+	        		discredit_times ,
+	        		overdue_details ,
+	        		overdue_amount_range ,
+	        		overdue_count ,
+	        		overdue_day_range ,
+	        		overdue_time 
+	        ) VALUES 
+	         ]]>
+	        <foreach item="item" collection="list"   separator=",">
+	        	(
+					#{item.id} ,
+					#{item.type} ,
+					#{item.description} ,
+					#{item.discreditTimes} ,
+					#{item.overdueDetails} ,
+					#{item.overdueAmountRange} ,
+					#{item.overdueCount} ,
+					#{item.overdueDayRange} ,
+					#{item.overdueTime} 
+	        	)
+			</foreach>
+	   
+	</insert>
+
+	<!-- update 条件组合 -->
+	<sql id="update_sql">
+		<set>
+			<if test="type != null and type != ''">
+				type = #{type} ,
+			</if>
+			<if test="description != null and description != ''">
+				description = #{description} ,
+			</if>
+			<if test="discreditTimes != null and discreditTimes != ''">
+				discredit_times = #{discreditTimes} ,
+			</if>
+			<if test="overdueDetails != null and overdueDetails != ''">
+				overdue_details = #{overdueDetails} ,
+			</if>
+			<if test="overdueAmountRange != null and overdueAmountRange != ''">
+				overdue_amount_range = #{overdueAmountRange} ,
+			</if>
+			<if test="overdueCount != null and overdueCount != ''">
+				overdue_count = #{overdueCount} ,
+			</if>
+			<if test="overdueDayRange != null and overdueDayRange != ''">
+				overdue_day_range = #{overdueDayRange} ,
+			</if>
+			<if test="overdueTime != null and overdueTime != ''">
+				overdue_time = #{overdueTime} 
+			</if>
+		</set>
+	</sql>
+	
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey">
+		UPDATE t_overdue_record
+		<include refid="update_sql" />
+		WHERE
+			id = #{id} 
+	</update>
+
+		<!-- 修改 -->
+	<update id="batchUpdateByIds">
+		UPDATE t_overdue_record
+		<include refid="update_sql" />
+		WHERE
+		id IN
+			<foreach item="ids" collection="list" open="(" separator="," close=")">
+				#{ids}
+			</foreach>
+	</update>
+
+	<!-- 根据ID删除 -->
+	<delete id="deleteByPrimaryKey">
+    	<![CDATA[
+        	DELETE FROM t_overdue_record 
+        	WHERE
+        		id = #{id} 
+    	]]>
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="batchDeleteByIds">
+        DELETE FROM t_overdue_record 
+        WHERE id IN 
+        <foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+	<!-- selsect -->
+	<select id="selectByPrimaryKey" resultMap="RM_OverdueRecord">
+		SELECT
+		<include refid="columns" />
+		FROM t_overdue_record
+		WHERE
+		id = #{id} 
+	</select>
+
+
+
+
+
+	<!-- 模糊查询这样： 字段名 LIKE CONCAT('%',CONCAT(#{model.userName},'%')) -->
+	<sql id="findPage_where">
+		<where>
+				<if test="id != null and id !=''">
+					AND id = #{id}
+				</if>
+				<if test="type != null and type !=''">
+					AND type = #{type}
+				</if>
+				<if test="description != null and description !=''">
+					AND description = #{description}
+				</if>
+				<if test="discreditTimes != null and discreditTimes !=''">
+					AND discredit_times = #{discreditTimes}
+				</if>
+				<if test="overdueDetails != null and overdueDetails !=''">
+					AND overdue_details = #{overdueDetails}
+				</if>
+				<if test="overdueAmountRange != null and overdueAmountRange !=''">
+					AND overdue_amount_range = #{overdueAmountRange}
+				</if>
+				<if test="overdueCount != null and overdueCount !=''">
+					AND overdue_count = #{overdueCount}
+				</if>
+				<if test="overdueDayRange != null and overdueDayRange !=''">
+					AND overdue_day_range = #{overdueDayRange}
+				</if>
+				<if test="overdueTime != null and overdueTime !=''">
+					AND overdue_time = #{overdueTime}
+				</if>
+		</where>
+	</sql>
+
+	<!-- selsect by obj -->
+	<select id="listByObj" resultMap="RM_OverdueRecord" parameterType="com.credit.entity.OverdueRecord">
+	SELECT
+	<include refid="columns" />
+	FROM t_overdue_record
+	<include refid="findPage_where" />
+	</select>
+
+
+	<!-- 获取总数 -->
+	<select id="listPageCount" resultType="long" parameterType="map">
+		SELECT COUNT(1)
+		FROM t_overdue_record
+		<include refid="findPage_where" />
+	</select>  
+
+	<select id="listPage" resultMap="RM_OverdueRecord" parameterType="map">
+		 SELECT
+		<include refid="columns" />
+		FROM t_overdue_record
+		<include refid="findPage_where" />
+
+		<if test="sortColumns != null and sortColumns !=''">
+			ORDER BY ${sortColumns}
+		</if>
+		
+		<if test="offset != null and pageSize != null">
+			LIMIT  #{offset}, #{pageSize}
+		</if>
+	</select>
+
+</mapper>

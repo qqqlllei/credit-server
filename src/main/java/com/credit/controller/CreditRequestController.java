@@ -2,7 +2,7 @@ package com.credit.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.credit.domain.entity.CreditRequest;
+import com.credit.entity.CreditRequest;
 import com.credit.service.CreditRequestService;
 import com.credit.utils.DateTime;
 import com.credit.utils.HttpClientUtil;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.credit.service;
 
 import com.credit.base.BaseService;
-import com.credit.domain.entity.CreditRequest;
+import com.credit.entity.CreditRequest;
 
 /**
  * Created by 李雷 on 2018/10/24.

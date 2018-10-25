@@ -1,7 +1,7 @@
 package com.credit.dao;
 
 import com.credit.base.BaseDao;
-import com.credit.domain.entity.CreditRequest;
+import com.credit.entity.CreditRequest;
 import org.springframework.stereotype.Component;
 
 /**

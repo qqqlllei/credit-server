@@ -1,4 +1,4 @@
-package com.credit.domain.entity;
+package com.credit.entity;
 import com.credit.base.BaseEntity;
 
 import java.sql.Timestamp;

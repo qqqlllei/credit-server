@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.credit.dao.IdentityRecordMapper">
+
+	<resultMap id="RM_IdentityRecord" type="com.credit.entity.IdentityRecord">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="frequencyDetailList" column="frequency_detail_list"/>
+        <result property="data" column="data"/>
+        <result property="detail" column="detail"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,type,frequency_detail_list,data,detail
+	    ]]>
+	</sql>
+
+	<!--保存 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+	    <![CDATA[
+	        INSERT INTO t_identity_record ( 
+	        	id ,
+	        	type ,
+	        	frequency_detail_list ,
+	        	data ,
+	        	detail 
+	        ) VALUES (
+	        	#{id} ,
+	        	#{type} ,
+	        	#{frequencyDetailList} ,
+	        	#{data} ,
+	        	#{detail} 
+	        )
+	    ]]>
+	</insert>
+	
+	<!-- 批量保存 -->
+	<insert id="batchInsert">
+	    <![CDATA[
+	        INSERT INTO t_identity_record (
+	        		id ,
+	        		type ,
+	        		frequency_detail_list ,
+	        		data ,
+	        		detail 
+	        ) VALUES 
+	         ]]>
+	        <foreach item="item" collection="list"   separator=",">
+	        	(
+					#{item.id} ,
+					#{item.type} ,
+					#{item.frequencyDetailList} ,
+					#{item.data} ,
+					#{item.detail} 
+	        	)
+			</foreach>
+	   
+	</insert>
+
+	<!-- update 条件组合 -->
+	<sql id="update_sql">
+		<set>
+			<if test="type != null and type != ''">
+				type = #{type} ,
+			</if>
+			<if test="frequencyDetailList != null and frequencyDetailList != ''">
+				frequency_detail_list = #{frequencyDetailList} ,
+			</if>
+			<if test="data != null and data != ''">
+				data = #{data} ,
+			</if>
+			<if test="detail != null and detail != ''">
+				detail = #{detail} 
+			</if>
+		</set>
+	</sql>
+	
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey">
+		UPDATE t_identity_record
+		<include refid="update_sql" />
+		WHERE
+			id = #{id} 
+	</update>
+
+		<!-- 修改 -->
+	<update id="batchUpdateByIds">
+		UPDATE t_identity_record
+		<include refid="update_sql" />
+		WHERE
+		id IN
+			<foreach item="ids" collection="list" open="(" separator="," close=")">
+				#{ids}
+			</foreach>
+	</update>
+
+	<!-- 根据ID删除 -->
+	<delete id="deleteByPrimaryKey">
+    	<![CDATA[
+        	DELETE FROM t_identity_record 
+        	WHERE
+        		id = #{id} 
+    	]]>
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="batchDeleteByIds">
+        DELETE FROM t_identity_record 
+        WHERE id IN 
+        <foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+	<!-- selsect -->
+	<select id="selectByPrimaryKey" resultMap="RM_IdentityRecord">
+		SELECT
+		<include refid="columns" />
+		FROM t_identity_record
+		WHERE
+		id = #{id} 
+	</select>
+
+
+
+
+
+	<!-- 模糊查询这样： 字段名 LIKE CONCAT('%',CONCAT(#{model.userName},'%')) -->
+	<sql id="findPage_where">
+		<where>
+				<if test="id != null and id !=''">
+					AND id = #{id}
+				</if>
+				<if test="type != null and type !=''">
+					AND type = #{type}
+				</if>
+				<if test="frequencyDetailList != null and frequencyDetailList !=''">
+					AND frequency_detail_list = #{frequencyDetailList}
+				</if>
+				<if test="data != null and data !=''">
+					AND data = #{data}
+				</if>
+				<if test="detail != null and detail !=''">
+					AND detail = #{detail}
+				</if>
+		</where>
+	</sql>
+
+	<!-- selsect by obj -->
+	<select id="listByObj" resultMap="RM_IdentityRecord" parameterType="com.credit.entity.IdentityRecord">
+	SELECT
+	<include refid="columns" />
+	FROM t_identity_record
+	<include refid="findPage_where" />
+	</select>
+
+
+	<!-- 获取总数 -->
+	<select id="listPageCount" resultType="long" parameterType="map">
+		SELECT COUNT(1)
+		FROM t_identity_record
+		<include refid="findPage_where" />
+	</select>  
+
+	<select id="listPage" resultMap="RM_IdentityRecord" parameterType="map">
+		 SELECT
+		<include refid="columns" />
+		FROM t_identity_record
+		<include refid="findPage_where" />
+
+		<if test="sortColumns != null and sortColumns !=''">
+			ORDER BY ${sortColumns}
+		</if>
+		
+		<if test="offset != null and pageSize != null">
+			LIMIT  #{offset}, #{pageSize}
+		</if>
+	</select>
+
+</mapper>

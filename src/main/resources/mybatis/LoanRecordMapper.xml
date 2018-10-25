@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.credit.dao.LoanRecordMapper">
+
+	<resultMap id="RM_LoanRecord" type="com.credit.entity.LoanRecord">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="description" column="description"/>
+        <result property="platformCount" column="platform_count"/>
+        <result property="platformDetailDimension" column="platform_detail_dimension"/>
+        <result property="platformDetail" column="platform_detail"/>
+        <result property="count" column="count"/>
+        <result property="detail" column="detail"/>
+        <result property="dimension" column="dimension"/>
+        <result property="industryDisplayName" column="industry_display_name"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,type,description,platform_count,platform_detail_dimension,platform_detail,count,detail,dimension,industry_display_name
+	    ]]>
+	</sql>
+
+	<!--保存 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+	    <![CDATA[
+	        INSERT INTO t_loan_record ( 
+	        	id ,
+	        	type ,
+	        	description ,
+	        	platform_count ,
+	        	platform_detail_dimension ,
+	        	platform_detail ,
+	        	count ,
+	        	detail ,
+	        	dimension ,
+	        	industry_display_name 
+	        ) VALUES (
+	        	#{id} ,
+	        	#{type} ,
+	        	#{description} ,
+	        	#{platformCount} ,
+	        	#{platformDetailDimension} ,
+	        	#{platformDetail} ,
+	        	#{count} ,
+	        	#{detail} ,
+	        	#{dimension} ,
+	        	#{industryDisplayName} 
+	        )
+	    ]]>
+	</insert>
+	
+	<!-- 批量保存 -->
+	<insert id="batchInsert">
+	    <![CDATA[
+	        INSERT INTO t_loan_record (
+	        		id ,
+	        		type ,
+	        		description ,
+	        		platform_count ,
+	        		platform_detail_dimension ,
+	        		platform_detail ,
+	        		count ,
+	        		detail ,
+	        		dimension ,
+	        		industry_display_name 
+	        ) VALUES 
+	         ]]>
+	        <foreach item="item" collection="list"   separator=",">
+	        	(
+					#{item.id} ,
+					#{item.type} ,
+					#{item.description} ,
+					#{item.platformCount} ,
+					#{item.platformDetailDimension} ,
+					#{item.platformDetail} ,
+					#{item.count} ,
+					#{item.detail} ,
+					#{item.dimension} ,
+					#{item.industryDisplayName} 
+	        	)
+			</foreach>
+	   
+	</insert>
+
+	<!-- update 条件组合 -->
+	<sql id="update_sql">
+		<set>
+			<if test="type != null and type != ''">
+				type = #{type} ,
+			</if>
+			<if test="description != null and description != ''">
+				description = #{description} ,
+			</if>
+			<if test="platformCount != null and platformCount != ''">
+				platform_count = #{platformCount} ,
+			</if>
+			<if test="platformDetailDimension != null and platformDetailDimension != ''">
+				platform_detail_dimension = #{platformDetailDimension} ,
+			</if>
+			<if test="platformDetail != null and platformDetail != ''">
+				platform_detail = #{platformDetail} ,
+			</if>
+			<if test="count != null and count != ''">
+				count = #{count} ,
+			</if>
+			<if test="detail != null and detail != ''">
+				detail = #{detail} ,
+			</if>
+			<if test="dimension != null and dimension != ''">
+				dimension = #{dimension} ,
+			</if>
+			<if test="industryDisplayName != null and industryDisplayName != ''">
+				industry_display_name = #{industryDisplayName} 
+			</if>
+		</set>
+	</sql>
+	
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey">
+		UPDATE t_loan_record
+		<include refid="update_sql" />
+		WHERE
+			id = #{id} 
+	</update>
+
+		<!-- 修改 -->
+	<update id="batchUpdateByIds">
+		UPDATE t_loan_record
+		<include refid="update_sql" />
+		WHERE
+		id IN
+			<foreach item="ids" collection="list" open="(" separator="," close=")">
+				#{ids}
+			</foreach>
+	</update>
+
+	<!-- 根据ID删除 -->
+	<delete id="deleteByPrimaryKey">
+    	<![CDATA[
+        	DELETE FROM t_loan_record 
+        	WHERE
+        		id = #{id} 
+    	]]>
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="batchDeleteByIds">
+        DELETE FROM t_loan_record 
+        WHERE id IN 
+        <foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+	<!-- selsect -->
+	<select id="selectByPrimaryKey" resultMap="RM_LoanRecord">
+		SELECT
+		<include refid="columns" />
+		FROM t_loan_record
+		WHERE
+		id = #{id} 
+	</select>
+
+
+
+
+
+	<!-- 模糊查询这样： 字段名 LIKE CONCAT('%',CONCAT(#{model.userName},'%')) -->
+	<sql id="findPage_where">
+		<where>
+				<if test="id != null and id !=''">
+					AND id = #{id}
+				</if>
+				<if test="type != null and type !=''">
+					AND type = #{type}
+				</if>
+				<if test="description != null and description !=''">
+					AND description = #{description}
+				</if>
+				<if test="platformCount != null and platformCount !=''">
+					AND platform_count = #{platformCount}
+				</if>
+				<if test="platformDetailDimension != null and platformDetailDimension !=''">
+					AND platform_detail_dimension = #{platformDetailDimension}
+				</if>
+				<if test="platformDetail != null and platformDetail !=''">
+					AND platform_detail = #{platformDetail}
+				</if>
+				<if test="count != null and count !=''">
+					AND count = #{count}
+				</if>
+				<if test="detail != null and detail !=''">
+					AND detail = #{detail}
+				</if>
+				<if test="dimension != null and dimension !=''">
+					AND dimension = #{dimension}
+				</if>
+				<if test="industryDisplayName != null and industryDisplayName !=''">
+					AND industry_display_name = #{industryDisplayName}
+				</if>
+		</where>
+	</sql>
+
+	<!-- selsect by obj -->
+	<select id="listByObj" resultMap="RM_LoanRecord" parameterType="com.credit.entity.LoanRecord">
+	SELECT
+	<include refid="columns" />
+	FROM t_loan_record
+	<include refid="findPage_where" />
+	</select>
+
+
+	<!-- 获取总数 -->
+	<select id="listPageCount" resultType="long" parameterType="map">
+		SELECT COUNT(1)
+		FROM t_loan_record
+		<include refid="findPage_where" />
+	</select>  
+
+	<select id="listPage" resultMap="RM_LoanRecord" parameterType="map">
+		 SELECT
+		<include refid="columns" />
+		FROM t_loan_record
+		<include refid="findPage_where" />
+
+		<if test="sortColumns != null and sortColumns !=''">
+			ORDER BY ${sortColumns}
+		</if>
+		
+		<if test="offset != null and pageSize != null">
+			LIMIT  #{offset}, #{pageSize}
+		</if>
+	</select>
+
+</mapper>

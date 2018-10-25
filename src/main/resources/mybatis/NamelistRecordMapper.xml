@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.credit.dao.NamelistRecordMapper">
+
+	<resultMap id="RM_NamelistRecord" type="com.credit.entity.NamelistRecord">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="description" column="description"/>
+        <result property="hitTypeDisplayName" column="hit_type_display_name"/>
+        <result property="fraudTypeDisplayName" column="fraud_type_display_name"/>
+        <result property="greyListDetails" column="grey_list_details"/>
+        <result property="value" column="value"/>
+        <result property="riskLevel" column="risk_level"/>
+        <result property="fraudType" column="fraud_type"/>
+        <result property="evidenceTime" column="evidence_time"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,type,description,hit_type_display_name,fraud_type_display_name,grey_list_details,value,risk_level,fraud_type,evidence_time
+	    ]]>
+	</sql>
+
+	<!--保存 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+	    <![CDATA[
+	        INSERT INTO t_namelist_record ( 
+	        	id ,
+	        	type ,
+	        	description ,
+	        	hit_type_display_name ,
+	        	fraud_type_display_name ,
+	        	grey_list_details ,
+	        	value ,
+	        	risk_level ,
+	        	fraud_type ,
+	        	evidence_time 
+	        ) VALUES (
+	        	#{id} ,
+	        	#{type} ,
+	        	#{description} ,
+	        	#{hitTypeDisplayName} ,
+	        	#{fraudTypeDisplayName} ,
+	        	#{greyListDetails} ,
+	        	#{value} ,
+	        	#{riskLevel} ,
+	        	#{fraudType} ,
+	        	#{evidenceTime} 
+	        )
+	    ]]>
+	</insert>
+	
+	<!-- 批量保存 -->
+	<insert id="batchInsert">
+	    <![CDATA[
+	        INSERT INTO t_namelist_record (
+	        		id ,
+	        		type ,
+	        		description ,
+	        		hit_type_display_name ,
+	        		fraud_type_display_name ,
+	        		grey_list_details ,
+	        		value ,
+	        		risk_level ,
+	        		fraud_type ,
+	        		evidence_time 
+	        ) VALUES 
+	         ]]>
+	        <foreach item="item" collection="list"   separator=",">
+	        	(
+					#{item.id} ,
+					#{item.type} ,
+					#{item.description} ,
+					#{item.hitTypeDisplayName} ,
+					#{item.fraudTypeDisplayName} ,
+					#{item.greyListDetails} ,
+					#{item.value} ,
+					#{item.riskLevel} ,
+					#{item.fraudType} ,
+					#{item.evidenceTime} 
+	        	)
+			</foreach>
+	   
+	</insert>
+
+	<!-- update 条件组合 -->
+	<sql id="update_sql">
+		<set>
+			<if test="type != null and type != ''">
+				type = #{type} ,
+			</if>
+			<if test="description != null and description != ''">
+				description = #{description} ,
+			</if>
+			<if test="hitTypeDisplayName != null and hitTypeDisplayName != ''">
+				hit_type_display_name = #{hitTypeDisplayName} ,
+			</if>
+			<if test="fraudTypeDisplayName != null and fraudTypeDisplayName != ''">
+				fraud_type_display_name = #{fraudTypeDisplayName} ,
+			</if>
+			<if test="greyListDetails != null and greyListDetails != ''">
+				grey_list_details = #{greyListDetails} ,
+			</if>
+			<if test="value != null and value != ''">
+				value = #{value} ,
+			</if>
+			<if test="riskLevel != null and riskLevel != ''">
+				risk_level = #{riskLevel} ,
+			</if>
+			<if test="fraudType != null and fraudType != ''">
+				fraud_type = #{fraudType} ,
+			</if>
+			<if test="evidenceTime != null and evidenceTime != ''">
+				evidence_time = #{evidenceTime} 
+			</if>
+		</set>
+	</sql>
+	
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey">
+		UPDATE t_namelist_record
+		<include refid="update_sql" />
+		WHERE
+			id = #{id} 
+	</update>
+
+		<!-- 修改 -->
+	<update id="batchUpdateByIds">
+		UPDATE t_namelist_record
+		<include refid="update_sql" />
+		WHERE
+		id IN
+			<foreach item="ids" collection="list" open="(" separator="," close=")">
+				#{ids}
+			</foreach>
+	</update>
+
+	<!-- 根据ID删除 -->
+	<delete id="deleteByPrimaryKey">
+    	<![CDATA[
+        	DELETE FROM t_namelist_record 
+        	WHERE
+        		id = #{id} 
+    	]]>
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="batchDeleteByIds">
+        DELETE FROM t_namelist_record 
+        WHERE id IN 
+        <foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+	<!-- selsect -->
+	<select id="selectByPrimaryKey" resultMap="RM_NamelistRecord">
+		SELECT
+		<include refid="columns" />
+		FROM t_namelist_record
+		WHERE
+		id = #{id} 
+	</select>
+
+
+
+
+
+	<!-- 模糊查询这样： 字段名 LIKE CONCAT('%',CONCAT(#{model.userName},'%')) -->
+	<sql id="findPage_where">
+		<where>
+				<if test="id != null and id !=''">
+					AND id = #{id}
+				</if>
+				<if test="type != null and type !=''">
+					AND type = #{type}
+				</if>
+				<if test="description != null and description !=''">
+					AND description = #{description}
+				</if>
+				<if test="hitTypeDisplayName != null and hitTypeDisplayName !=''">
+					AND hit_type_display_name = #{hitTypeDisplayName}
+				</if>
+				<if test="fraudTypeDisplayName != null and fraudTypeDisplayName !=''">
+					AND fraud_type_display_name = #{fraudTypeDisplayName}
+				</if>
+				<if test="greyListDetails != null and greyListDetails !=''">
+					AND grey_list_details = #{greyListDetails}
+				</if>
+				<if test="value != null and value !=''">
+					AND value = #{value}
+				</if>
+				<if test="riskLevel != null and riskLevel !=''">
+					AND risk_level = #{riskLevel}
+				</if>
+				<if test="fraudType != null and fraudType !=''">
+					AND fraud_type = #{fraudType}
+				</if>
+				<if test="evidenceTime != null and evidenceTime !=''">
+					AND evidence_time = #{evidenceTime}
+				</if>
+		</where>
+	</sql>
+
+	<!-- selsect by obj -->
+	<select id="listByObj" resultMap="RM_NamelistRecord" parameterType="com.credit.entity.NamelistRecord">
+	SELECT
+	<include refid="columns" />
+	FROM t_namelist_record
+	<include refid="findPage_where" />
+	</select>
+
+
+	<!-- 获取总数 -->
+	<select id="listPageCount" resultType="long" parameterType="map">
+		SELECT COUNT(1)
+		FROM t_namelist_record
+		<include refid="findPage_where" />
+	</select>  
+
+	<select id="listPage" resultMap="RM_NamelistRecord" parameterType="map">
+		 SELECT
+		<include refid="columns" />
+		FROM t_namelist_record
+		<include refid="findPage_where" />
+
+		<if test="sortColumns != null and sortColumns !=''">
+			ORDER BY ${sortColumns}
+		</if>
+		
+		<if test="offset != null and pageSize != null">
+			LIMIT  #{offset}, #{pageSize}
+		</if>
+	</select>
+
+</mapper>
