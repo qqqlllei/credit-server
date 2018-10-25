@@ -250,7 +250,8 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                 loanRecord.setCount(String.valueOf(item_detail.getOrDefault("platform_count",DEFAULT_VALUE)));
                 loanRecord.setType(String.valueOf(item.getOrDefault("item_name",DEFAULT_VALUE)));
 
-                loanRecord.setDetail(item_detail.getJSONArray("detail").toJSONString());
+                loanRecord.setDetail(item_detail.getJSONArray("platform_detail").toJSONString());
+                loanRecords.add(loanRecord);
             }
 
         }

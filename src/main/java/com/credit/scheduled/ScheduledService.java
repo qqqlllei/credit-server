@@ -21,7 +21,7 @@ public class ScheduledService {
     private static final String unDo="0";
 
 
-    @Scheduled(cron = "0/5 * * * * *")
+    @Scheduled(cron = "0/60 * * * * *")
     public void scheduled(){
 
 
