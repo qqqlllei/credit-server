@@ -97,18 +97,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                         courtcs.add(judicialRecord);
                     }
                 }
-
-
             }
-
-//            if("身份证命中法院执行名单".equals(item.getString("item_name"))){
-//                courtcs.add(item);
-//            }
-//
-//            if("身份证命中法院结案名单".equals(item.getString("item_name"))){
-//                courtcs.add(item);
-//            }
-
         }
 
         return courtcs;
