@@ -6,10 +6,7 @@ import com.credit.base.BaseDao;
 import com.credit.base.BaseServiceImpl;
 import com.credit.dao.CreditRequestMapper;
 import com.credit.entity.*;
-import com.credit.service.CreditRequestService;
-import com.credit.service.IdentityRecordService;
-import com.credit.service.JudicialRecordService;
-import com.credit.service.OverdueRecordService;
+import com.credit.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +36,9 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
     @Autowired
     private OverdueRecordService overdueRecordService;
+
+    @Autowired
+    private LoanRecordService loanRecordService;
 
     public int saveCreditRequest(CreditRequest creditRequest){
         creditRequest.setId(UUID.randomUUID().toString());
@@ -116,7 +116,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     public void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest) {
 
 
-        //1
+        //法院信息
         List<JudicialRecord> courtInfoList = courtcInfoHandle(jsonArray,creditRequest);
 
         for (JudicialRecord judicialRecord: courtInfoList){
@@ -143,6 +143,17 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             overdueRecord.setId(UUID.randomUUID().toString());
             overdueRecordService.save(overdueRecord);
         }
+
+
+        //多平台
+
+        List<LoanRecord> loanRecords =   loanRecordHandle(jsonArray,creditRequest);
+
+        for (LoanRecord loanRecord: loanRecords){
+            loanRecord.setId(UUID.randomUUID().toString());
+            loanRecordService.save(loanRecord);
+        }
+
 
     }
 
@@ -177,11 +188,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     }
 
 
-    //1个月内申请人在多个平台申请借款
 
-    //3个月内申请人在多个平台申请借款
-
-    //7天内申请人在多个平台申请借款
 
     @Override
     public List<IdentityRecord> identityRecordHandle(JSONArray jsonArray, CreditRequest creditRequest) {
@@ -204,6 +211,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                     IdentityRecord identityRecord = new IdentityRecord();
                     identityRecord.setData(frequency_detail_list_item.getJSONArray("data").toJSONString());
                     identityRecord.setDetail((String) frequency_detail_list_item.getOrDefault("detail",DEFAULT_VALUE));
+                    identityRecord.setType(item.getString("item_name"));
                     identityRecords.add(identityRecord);
                 }
 
@@ -216,7 +224,15 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
 
 
-    public List<LoanRecord> loanRecord(JSONArray jsonArray, CreditRequest creditRequest){
+
+    //1个月内申请人在多个平台申请借款
+
+    //3个月内申请人在多个平台申请借款
+
+    //7天内申请人在多个平台申请借款
+
+    @Override
+    public List<LoanRecord> loanRecordHandle(JSONArray jsonArray, CreditRequest creditRequest){
         Iterator<Object> it =  jsonArray.iterator();
         List<LoanRecord> loanRecords = new ArrayList<>();
 
@@ -224,9 +240,17 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
         while (it.hasNext()) {
             JSONObject item = (JSONObject) it.next();
 
-            if("身份证命中信贷逾期名单".equals(item.getString("item_name"))
-                    ){
+            if("1个月内申请人在多个平台申请借款".equals(item.getString("item_name"))
+                  ||  "3个月内申请人在多个平台申请借款".equals(item.getString("item_name"))
+                  ||  "7天内申请人在多个平台申请借款".equals(item.getString("item_name")) ){
                 JSONObject item_detail = item.getJSONObject("item_detail");
+
+                LoanRecord loanRecord = new LoanRecord();
+
+                loanRecord.setCount(String.valueOf(item_detail.getOrDefault("platform_count",DEFAULT_VALUE)));
+                loanRecord.setType(String.valueOf(item.getOrDefault("item_name",DEFAULT_VALUE)));
+
+                loanRecord.setDetail(item_detail.getJSONArray("detail").toJSONString());
             }
 
         }
