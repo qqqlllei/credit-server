@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/10/20 0020.
@@ -56,7 +58,7 @@ public class CreditRequestController {
 
                 JSONArray jsonArray = JSONObject.parseObject(queryInfoBody.getString("body")).getJSONArray("risk_items");
 
-                aaa(jsonArray);
+                List<JSONObject> courts = courtcInfoHandle(jsonArray);
 
                 return "/user/userInfo";
             }
@@ -92,15 +94,26 @@ public class CreditRequestController {
 //        return "/user/userInfo";
     }
 
-    private void aaa(JSONArray list){
+    private List<JSONObject> courtcInfoHandle(JSONArray list){
         Iterator<Object> it =  list.iterator();
+        List<JSONObject> courtcs = new ArrayList<>();
         while (it.hasNext()){
            JSONObject item = (JSONObject) it.next();
             if("身份证命中法院失信名单".equals(item.getString("item_name"))){
-                System.out.println(item.getString("score"));
+                courtcs.add(item);
+            }
+
+            if("身份证命中法院执行名单".equals(item.getString("item_name"))){
+                courtcs.add(item);
+            }
+
+            if("身份证命中法院结案名单".equals(item.getString("item_name"))){
+                courtcs.add(item);
             }
 
         }
+
+        return courtcs;
     }
 
 }
