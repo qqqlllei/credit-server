@@ -18,15 +18,15 @@ public interface CreditRequestService extends BaseService<CreditRequest> {
 
     List<CreditRequest> getCreditRequestByStatus(String unDo);
 
-    List<JudicialRecord> courtcInfoHandle(JSONArray list,CreditRequest creditRequest);
+    List<JudicialRecord> courtcInfoHandle(JSONArray list,CreditRequest creditRequest,String reportId);
 
-    void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest);
+    void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest,String reportId);
 
     List<OverdueRecord> OverdueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest);
 
-    List<IdentityRecord> identityRecordHandle(JSONArray jsonArray, CreditRequest creditRequest);
+    List<IdentityRecord> identityRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId);
 
-    List<LoanRecord> loanRecordHandle(JSONArray jsonArray, CreditRequest creditRequest);
+    List<LoanRecord> loanRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId);
 
-    List<NamelistRecord> namelistRecordHandle(JSONArray jsonArray, CreditRequest creditRequest);
+    List<NamelistRecord> namelistRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId);
 }

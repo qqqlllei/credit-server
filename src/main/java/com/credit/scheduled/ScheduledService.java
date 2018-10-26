@@ -30,8 +30,9 @@ public class ScheduledService {
         for (CreditRequest creditRequest : creditRequestList) {
 
             JSONObject queryInfoBody = JSONObject.parseObject(creditRequest.getInfo());
-            JSONArray jsonArray = JSONObject.parseObject(queryInfoBody.getString("body")).getJSONArray("risk_items");
-            creditRequestService.saveCreditInfo(jsonArray,creditRequest);
+            JSONObject riskBody = JSONObject.parseObject(queryInfoBody.getString("body"));
+            JSONArray jsonArray = riskBody.getJSONArray("risk_items");
+            creditRequestService.saveCreditInfo(jsonArray,creditRequest,riskBody.getString("report_id"));
 
         }
 

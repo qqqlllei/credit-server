@@ -63,7 +63,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     }
 
     @Override
-    public List<JudicialRecord> courtcInfoHandle(JSONArray list,CreditRequest creditRequest) {
+    public List<JudicialRecord> courtcInfoHandle(JSONArray list,CreditRequest creditRequest,String reportId) {
 
         Iterator<Object> it =  list.iterator();
         List<JudicialRecord> courtcs = new ArrayList<>();
@@ -98,7 +98,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                         judicialRecord.setExecutedName((String) court_details_item.getOrDefault("name",DEFAULT_VALUE));
                         judicialRecord.setTermDuty((String) court_details_item.getOrDefault("duty",DEFAULT_VALUE));
                         judicialRecord.setSpecificCircumstances((String) court_details_item.getOrDefault("discredit_detail",DEFAULT_VALUE));
-
+                        judicialRecord.setRemark(reportId);
 
                         if(hit_type_displayname.contains("身份证")){
                             judicialRecord.setValue(creditRequest.getIdcard());
@@ -120,11 +120,11 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
     @Override
     @Transactional
-    public void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest) {
+    public void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest,String reportId) {
 
 
         //法院信息
-        List<JudicialRecord> courtInfoList = courtcInfoHandle(jsonArray,creditRequest);
+        List<JudicialRecord> courtInfoList = courtcInfoHandle(jsonArray,creditRequest,reportId);
 
         for (JudicialRecord judicialRecord: courtInfoList){
             judicialRecord.setId(UUID.randomUUID().toString());
@@ -133,7 +133,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
 
         //身份记录
-        List<IdentityRecord> identityRecords =  identityRecordHandle(jsonArray,creditRequest);
+        List<IdentityRecord> identityRecords =  identityRecordHandle(jsonArray,creditRequest,reportId);
 
 
         for (IdentityRecord identityRecord: identityRecords){
@@ -154,7 +154,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
         //多平台
 
-        List<LoanRecord> loanRecords =   loanRecordHandle(jsonArray,creditRequest);
+        List<LoanRecord> loanRecords =   loanRecordHandle(jsonArray,creditRequest,reportId);
 
         for (LoanRecord loanRecord: loanRecords){
             loanRecord.setId(UUID.randomUUID().toString());
@@ -164,12 +164,12 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
         //
 
-        List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest);
-
-        for (NamelistRecord namelistRecord: namelistRecords){
-            namelistRecord.setId(UUID.randomUUID().toString());
-            namelistRecordService.save(namelistRecord);
-        }
+//        List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest,reportId);
+//
+//        for (NamelistRecord namelistRecord: namelistRecords){
+//            namelistRecord.setId(UUID.randomUUID().toString());
+//            namelistRecordService.save(namelistRecord);
+//        }
 
     }
 
@@ -207,7 +207,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
 
     @Override
-    public List<IdentityRecord> identityRecordHandle(JSONArray jsonArray, CreditRequest creditRequest) {
+    public List<IdentityRecord> identityRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId) {
 
         Iterator<Object> it =  jsonArray.iterator();
         List<IdentityRecord> identityRecords = new ArrayList<>();
@@ -227,6 +227,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                     identityRecord.setData(frequency_detail_list_item.getJSONArray("data").toJSONString());
                     identityRecord.setDetail((String) frequency_detail_list_item.getOrDefault("detail",DEFAULT_VALUE));
                     identityRecord.setType(item.getString("item_name"));
+                    identityRecord.setRemark(reportId);
                     identityRecords.add(identityRecord);
                 }
 
@@ -238,7 +239,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
 
     @Override
-    public List<LoanRecord> loanRecordHandle(JSONArray jsonArray, CreditRequest creditRequest){
+    public List<LoanRecord> loanRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId){
         Iterator<Object> it =  jsonArray.iterator();
         List<LoanRecord> loanRecords = new ArrayList<>();
 
@@ -254,6 +255,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                 loanRecord.setType(String.valueOf(item.getOrDefault("item_name",DEFAULT_VALUE)));
 
                 loanRecord.setDetail(item_detail.getJSONArray("platform_detail").toJSONString());
+                loanRecord.setRemark(reportId);
                 loanRecords.add(loanRecord);
             }
 
@@ -264,7 +266,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
 
     @Override
-    public List<NamelistRecord> namelistRecordHandle(JSONArray jsonArray, CreditRequest creditRequest){
+    public List<NamelistRecord> namelistRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId){
         Iterator<Object> it =  jsonArray.iterator();
         List<NamelistRecord> namelistRecords = new ArrayList<>();
 
@@ -285,7 +287,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                     namelistRecord.setHitTypeDisplayName(String.valueOf(namelist_hit_details_item.getOrDefault("hit_type_displayname",DEFAULT_VALUE)));
                     namelistRecord.setDescription(String.valueOf(namelist_hit_details_item.getOrDefault("description",DEFAULT_VALUE)));
                     namelistRecord.setFraudType(String.valueOf(namelist_hit_details_item.getOrDefault("fraud_type",DEFAULT_VALUE)));
-
+                    namelistRecord.setRemark(reportId);
                     namelistRecords.add(namelistRecord);
                 }
 
