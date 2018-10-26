@@ -11,6 +11,7 @@
     <result column="create_time" property="createTime"  />
     <result column="update_time" property="updateTime"  />
     <result property="remark" column="remark" />
+    <result property="status" column="status" />
   </resultMap>
 
   <sql id="Base_Column_List" >
@@ -18,7 +19,7 @@
   </sql>
 
   <insert id="insert" parameterType="com.credit.entity.CreditRequest" >
-    insert into t_credit_request (id, name,phone,idcard,info,come_from,create_time,update_time,remark
+    insert into t_credit_request (id, name,phone,idcard,info,come_from,create_time,update_time,status,remark
       )
     values (#{id}, #{name}
     , #{phone}
@@ -27,6 +28,7 @@
     , #{comeFrom}
     , #{createTime}
     , #{updateTime}
+    , #{status}
     , #{remark}
       )
   </insert>
@@ -36,7 +38,7 @@
   </select>
 
   <select id="getCreditRequestByStatus" parameterType="java.lang.String" resultMap="CreditRequestResultMap">
-    SELECT * FROM t_credit_request
+    SELECT * FROM t_credit_request WHERE status = #{status}
   </select>
 
 </mapper>

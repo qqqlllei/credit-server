@@ -16,6 +16,8 @@ public class CreditRequest extends BaseEntity{
     private Timestamp createTime;
     private Timestamp updateTime;
 
+    private String status;
+
     public String getPhone() {
         return phone;
     }
@@ -59,5 +61,13 @@ public class CreditRequest extends BaseEntity{
 
     public void setComeFrom(String comeFrom) {
         this.comeFrom = comeFrom;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
