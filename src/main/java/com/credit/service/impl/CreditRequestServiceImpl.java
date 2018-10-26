@@ -271,11 +271,8 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
         while (it.hasNext()) {
             JSONObject item = (JSONObject) it.next();
-            if("身份证命中故意违章乘车名单".equals(item.getString("item_name"))){
-
-
+            if(riskItemProperties.getNamelistRecordList().contains(item.getString("item_name"))){
                 JSONObject item_detail = item.getJSONObject("item_detail");
-
 
                 JSONArray namelist_hit_details = item_detail.getJSONArray("namelist_hit_details");
 

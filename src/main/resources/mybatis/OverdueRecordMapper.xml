@@ -12,12 +12,13 @@
         <result property="overdueCount" column="overdue_count"/>
         <result property="overdueDayRange" column="overdue_day_range"/>
         <result property="overdueTime" column="overdue_time"/>
+        <result property="remark" column="remark"/>
 	</resultMap>
 	
 	<!-- 用于select查询公用抽取的列 -->
 	<sql id="columns">
 	    <![CDATA[
-		id,type,description,discredit_times,overdue_details,overdue_amount_range,overdue_count,overdue_day_range,overdue_time
+		id,type,description,discredit_times,overdue_details,overdue_amount_range,overdue_count,overdue_day_range,overdue_time,remark
 	    ]]>
 	</sql>
 
@@ -33,7 +34,8 @@
 	        	overdue_amount_range ,
 	        	overdue_count ,
 	        	overdue_day_range ,
-	        	overdue_time 
+	        	overdue_time ,
+	        	remark 
 	        ) VALUES (
 	        	#{id} ,
 	        	#{type} ,
@@ -43,7 +45,8 @@
 	        	#{overdueAmountRange} ,
 	        	#{overdueCount} ,
 	        	#{overdueDayRange} ,
-	        	#{overdueTime} 
+	        	#{overdueTime} ,
+	        	#{remark} 
 	        )
 	    ]]>
 	</insert>
@@ -60,7 +63,8 @@
 	        		overdue_amount_range ,
 	        		overdue_count ,
 	        		overdue_day_range ,
-	        		overdue_time 
+	        		overdue_time ,
+	        		remark 
 	        ) VALUES 
 	         ]]>
 	        <foreach item="item" collection="list"   separator=",">
@@ -73,7 +77,8 @@
 					#{item.overdueAmountRange} ,
 					#{item.overdueCount} ,
 					#{item.overdueDayRange} ,
-					#{item.overdueTime} 
+					#{item.overdueTime} ,
+					#{item.remark} 
 	        	)
 			</foreach>
 	   
@@ -104,7 +109,10 @@
 				overdue_day_range = #{overdueDayRange} ,
 			</if>
 			<if test="overdueTime != null and overdueTime != ''">
-				overdue_time = #{overdueTime} 
+				overdue_time = #{overdueTime} ,
+			</if>
+			<if test="remark != null and remark != ''">
+				remark = #{remark} 
 			</if>
 		</set>
 	</sql>
@@ -188,6 +196,9 @@
 				</if>
 				<if test="overdueTime != null and overdueTime !=''">
 					AND overdue_time = #{overdueTime}
+				</if>
+				<if test="remark != null and remark !=''">
+					AND remark = #{remark}
 				</if>
 		</where>
 	</sql>

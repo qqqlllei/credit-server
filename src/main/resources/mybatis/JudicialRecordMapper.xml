@@ -22,12 +22,13 @@
         <result property="age" column="age"/>
         <result property="evidenceTime" column="evidence_time"/>
         <result property="fraudTypeDisplayName" column="fraud_type_display_name"/>
+		<result property="remark" column="remark" />
 	</resultMap>
 	
 	<!-- 用于select查询公用抽取的列 -->
 	<sql id="columns">
 	    <![CDATA[
-		id,case_code,execute_court,case_date,gender,carry_out,executed_name,fraud_type,specific_circumstances,execute_subject,execute_status,evidence_court,term_duty,province,execute_code,value,age,evidence_time,fraud_type_display_name
+		id,case_code,execute_court,case_date,gender,carry_out,executed_name,fraud_type,specific_circumstances,execute_subject,execute_status,evidence_court,term_duty,province,execute_code,value,age,evidence_time,fraud_type_display_name,remark
 	    ]]>
 	</sql>
 
@@ -53,7 +54,8 @@
 	        	value ,
 	        	age ,
 	        	evidence_time ,
-	        	fraud_type_display_name 
+	        	fraud_type_display_name ,
+	        	remark
 	        ) VALUES (
 	        	#{id} ,
 	        	#{caseCode} ,
@@ -73,7 +75,8 @@
 	        	#{value} ,
 	        	#{age} ,
 	        	#{evidenceTime} ,
-	        	#{fraudTypeDisplayName} 
+	        	#{fraudTypeDisplayName} ,
+	        	#{remark}
 	        )
 	    ]]>
 	</insert>
@@ -100,7 +103,8 @@
 	        		value ,
 	        		age ,
 	        		evidence_time ,
-	        		fraud_type_display_name 
+	        		fraud_type_display_name ,
+	        		remark
 	        ) VALUES 
 	         ]]>
 	        <foreach item="item" collection="list"   separator=",">
@@ -123,7 +127,8 @@
 					#{item.value} ,
 					#{item.age} ,
 					#{item.evidenceTime} ,
-					#{item.fraudTypeDisplayName} 
+					#{item.fraudTypeDisplayName} ,
+					#{item.remark}
 	        	)
 			</foreach>
 	   
@@ -185,6 +190,10 @@
 			</if>
 			<if test="fraudTypeDisplayName != null and fraudTypeDisplayName != ''">
 				fraud_type_display_name = #{fraudTypeDisplayName} 
+			</if>
+
+			<if test="remark != null and remark != ''">
+				remark = #{remark}
 			</if>
 		</set>
 	</sql>
@@ -299,6 +308,12 @@
 				<if test="fraudTypeDisplayName != null and fraudTypeDisplayName !=''">
 					AND fraud_type_display_name = #{fraudTypeDisplayName}
 				</if>
+
+				<if test="remark != null and remark !=''">
+					AND remark = #{remark}
+				</if>
+
+
 		</where>
 	</sql>
 

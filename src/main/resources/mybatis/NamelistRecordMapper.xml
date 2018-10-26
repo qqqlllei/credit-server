@@ -13,12 +13,13 @@
         <result property="riskLevel" column="risk_level"/>
         <result property="fraudType" column="fraud_type"/>
         <result property="evidenceTime" column="evidence_time"/>
+        <result property="remark" column="remark"/>
 	</resultMap>
 	
 	<!-- 用于select查询公用抽取的列 -->
 	<sql id="columns">
 	    <![CDATA[
-		id,type,description,hit_type_display_name,fraud_type_display_name,grey_list_details,value,risk_level,fraud_type,evidence_time
+		id,type,description,hit_type_display_name,fraud_type_display_name,grey_list_details,value,risk_level,fraud_type,evidence_time,remark
 	    ]]>
 	</sql>
 
@@ -35,7 +36,8 @@
 	        	value ,
 	        	risk_level ,
 	        	fraud_type ,
-	        	evidence_time 
+	        	evidence_time ,
+	        	remark 
 	        ) VALUES (
 	        	#{id} ,
 	        	#{type} ,
@@ -46,7 +48,8 @@
 	        	#{value} ,
 	        	#{riskLevel} ,
 	        	#{fraudType} ,
-	        	#{evidenceTime} 
+	        	#{evidenceTime} ,
+	        	#{remark} 
 	        )
 	    ]]>
 	</insert>
@@ -64,7 +67,8 @@
 	        		value ,
 	        		risk_level ,
 	        		fraud_type ,
-	        		evidence_time 
+	        		evidence_time ,
+	        		remark 
 	        ) VALUES 
 	         ]]>
 	        <foreach item="item" collection="list"   separator=",">
@@ -78,7 +82,8 @@
 					#{item.value} ,
 					#{item.riskLevel} ,
 					#{item.fraudType} ,
-					#{item.evidenceTime} 
+					#{item.evidenceTime} ,
+					#{item.remark} 
 	        	)
 			</foreach>
 	   
@@ -112,7 +117,10 @@
 				fraud_type = #{fraudType} ,
 			</if>
 			<if test="evidenceTime != null and evidenceTime != ''">
-				evidence_time = #{evidenceTime} 
+				evidence_time = #{evidenceTime} ,
+			</if>
+			<if test="remark != null and remark != ''">
+				remark = #{remark} 
 			</if>
 		</set>
 	</sql>
@@ -199,6 +207,9 @@
 				</if>
 				<if test="evidenceTime != null and evidenceTime !=''">
 					AND evidence_time = #{evidenceTime}
+				</if>
+				<if test="remark != null and remark !=''">
+					AND remark = #{remark}
 				</if>
 		</where>
 	</sql>
