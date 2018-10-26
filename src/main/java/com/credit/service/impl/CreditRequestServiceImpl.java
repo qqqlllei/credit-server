@@ -6,6 +6,7 @@ import com.credit.base.BaseDao;
 import com.credit.base.BaseServiceImpl;
 import com.credit.dao.CreditRequestMapper;
 import com.credit.entity.*;
+import com.credit.properties.RiskItemProperties;
 import com.credit.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,9 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     @Autowired
     private NamelistRecordService namelistRecordService;
 
+    @Autowired
+    private RiskItemProperties riskItemProperties;
+
     public int saveCreditRequest(CreditRequest creditRequest){
         creditRequest.setId(UUID.randomUUID().toString());
         return creditRequestMapper.insert(creditRequest);
@@ -65,9 +69,8 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
         List<JudicialRecord> courtcs = new ArrayList<>();
         while (it.hasNext()){
             JSONObject item = (JSONObject) it.next();
-            if("身份证命中法院失信名单".equals(item.getString("item_name"))||"身份证命中法院执行名单".equals(item.getString("item_name"))||"身份证命中法院结案名单".equals(item.getString("item_name"))){
+            if(riskItemProperties.getJudicialRecordList().contains(item.getString("item_name"))){
                 JSONArray namelist_hit_details = item.getJSONObject("item_detail").getJSONArray("namelist_hit_details");
-
                 Iterator<Object> namelist_hit_details_it = namelist_hit_details.iterator();
                 while (namelist_hit_details_it.hasNext()){
                     JSONObject namelist_hit_details_item = (JSONObject)namelist_hit_details_it.next();
@@ -212,8 +215,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
         while (it.hasNext()){
             JSONObject item = (JSONObject) it.next();
 
-            if("3个月内申请信息关联多个身份证".equals(item.getString("item_name"))
-                    ||"3个月内身份证关联多个申请信息".equals(item.getString("item_name"))){
+            if(riskItemProperties.getIdentityRecordList().contains(item.getString("item_name"))){
                 JSONArray frequency_detail_list = item.getJSONObject("item_detail").getJSONArray("frequency_detail_list");
 
                 Iterator<Object> frequency_detail_list_it = frequency_detail_list.iterator();
@@ -235,15 +237,6 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     }
 
 
-
-
-
-    //1个月内申请人在多个平台申请借款
-
-    //3个月内申请人在多个平台申请借款
-
-    //7天内申请人在多个平台申请借款
-
     @Override
     public List<LoanRecord> loanRecordHandle(JSONArray jsonArray, CreditRequest creditRequest){
         Iterator<Object> it =  jsonArray.iterator();
@@ -253,11 +246,8 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
         while (it.hasNext()) {
             JSONObject item = (JSONObject) it.next();
 
-            if("1个月内申请人在多个平台申请借款".equals(item.getString("item_name"))
-                  ||  "3个月内申请人在多个平台申请借款".equals(item.getString("item_name"))
-                  ||  "7天内申请人在多个平台申请借款".equals(item.getString("item_name")) ){
+            if(riskItemProperties.getLoanRecordList().contains(item.getString("item_name"))){
                 JSONObject item_detail = item.getJSONObject("item_detail");
-
                 LoanRecord loanRecord = new LoanRecord();
 
                 loanRecord.setCount(String.valueOf(item_detail.getOrDefault("platform_count",DEFAULT_VALUE)));
