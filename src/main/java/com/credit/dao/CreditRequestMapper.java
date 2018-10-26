@@ -15,4 +15,6 @@ public interface CreditRequestMapper extends BaseDao<CreditRequest> {
     CreditRequest getCreditRequestByPhone(String phone);
 
     List<CreditRequest> getCreditRequestByStatus(String unDo);
+
+    void updateStatusToDone(String creditRequestId);
 }

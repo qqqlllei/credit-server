@@ -171,6 +171,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 //            namelistRecordService.save(namelistRecord);
 //        }
 
+        creditRequestMapper.updateStatusToDone(creditRequest.getId());
     }
 
 

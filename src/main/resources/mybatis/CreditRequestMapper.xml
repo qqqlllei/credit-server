@@ -41,4 +41,9 @@
     SELECT * FROM t_credit_request WHERE status = #{status}
   </select>
 
+
+  <update id="updateStatusToDone" parameterType="java.lang.String" >
+    UPDATE t_credit_request set status = 1 WHERE id = #{id}
+  </update>
+
 </mapper>
