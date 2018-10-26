@@ -101,6 +101,7 @@ public class CreditRequestController {
 
         List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,reportId);
 
+
         return "/user/userInfo";
     }
 
