@@ -44,13 +44,12 @@ public class CreditRequestController {
         String phone = request.getParameter("phone");
         String name = request.getParameter("name");
         String idcard = request.getParameter("idcard");
-        CreditRequest creditRequest = creditRequestService.getCreditRequestByPhone(phone);
+        CreditRequest creditRequest = creditRequestService.getCreditRequestByPhone("15555555555");
         if(creditRequest !=null){
             DateTime createTime = new DateTime(creditRequest.getCreateTime().getTime());
             int days = createTime.dayNumFrom(new DateTime(System.currentTimeMillis()));
             if(days <= 30){
                 JSONObject queryInfoBody = JSONObject.parseObject(creditRequest.getInfo());
-                model.addAttribute("queryBody",JSONObject.parseObject(queryInfoBody.getString("body")));
 
                 JSONObject riskBody = JSONObject.parseObject(queryInfoBody.getString("body"));
                 JSONArray jsonArray = riskBody.getJSONArray("risk_items");
@@ -59,6 +58,12 @@ public class CreditRequestController {
                 List<IdentityRecord> identityRecords =  creditRequestService.identityRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
                 List<OverdueRecord> overdueRecords =   creditRequestService.OverdueRecordHandle(jsonArray,creditRequest);
                 List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+                model.addAttribute("courtInfoList",courtInfoList);
+                model.addAttribute("identityRecords",identityRecords);
+                model.addAttribute("overdueRecords",overdueRecords);
+                model.addAttribute("loanRecords",loanRecords);
+
 
                 return "/user/userInfo";
             }
@@ -101,7 +106,10 @@ public class CreditRequestController {
 
         List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,reportId);
 
-
+        model.addAttribute("courtInfoList",courtInfoList);
+        model.addAttribute("identityRecords",identityRecords);
+        model.addAttribute("overdueRecords",overdueRecords);
+        model.addAttribute("loanRecords",loanRecords);
         return "/user/userInfo";
     }
 

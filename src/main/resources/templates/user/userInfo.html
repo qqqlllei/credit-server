@@ -44,9 +44,16 @@
         </div>
     </div>
 </div>
-<script>
+<script  th:inline="javascript">
     /*<![CDATA[*/
 //    window.location.href="";
+
+
+
+    console.info( [[${courtInfoList}]]);
+    console.info( [[${identityRecords}]]);
+    console.info( [[${overdueRecords}]]);
+    console.info( [[${loanRecords}]]);
 
     var path ="/"+window.location.pathname.split("/")[1];
 
