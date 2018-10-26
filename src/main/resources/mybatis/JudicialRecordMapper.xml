@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+		<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.credit.dao.JudicialRecordMapper">
+
+	<resultMap id="RM_JudicialRecord" type="com.credit.entity.JudicialRecord">
+        <result property="id" column="id"/>
+        <result property="caseCode" column="case_code"/>
+        <result property="executeCourt" column="execute_court"/>
+        <result property="caseDate" column="case_date"/>
+        <result property="gender" column="gender"/>
+        <result property="carryOut" column="carry_out"/>
+        <result property="executedName" column="executed_name"/>
+        <result property="fraudType" column="fraud_type"/>
+        <result property="specificCircumstances" column="specific_circumstances"/>
+        <result property="executeSubject" column="execute_subject"/>
+        <result property="executeStatus" column="execute_status"/>
+        <result property="evidenceCourt" column="evidence_court"/>
+        <result property="termDuty" column="term_duty"/>
+        <result property="province" column="province"/>
+        <result property="executeCode" column="execute_code"/>
+        <result property="value" column="value"/>
+        <result property="age" column="age"/>
+        <result property="evidenceTime" column="evidence_time"/>
+        <result property="fraudTypeDisplayName" column="fraud_type_display_name"/>
+		<result property="remark" column="remark" />
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,case_code,execute_court,case_date,gender,carry_out,executed_name,fraud_type,specific_circumstances,execute_subject,execute_status,evidence_court,term_duty,province,execute_code,value,age,evidence_time,fraud_type_display_name,remark
+	    ]]>
+	</sql>
+
+	<!--保存 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+	    <![CDATA[
+	        INSERT INTO t_judicial_record ( 
+	        	id ,
+	        	case_code ,
+	        	execute_court ,
+	        	case_date ,
+	        	gender ,
+	        	carry_out ,
+	        	executed_name ,
+	        	fraud_type ,
+	        	specific_circumstances ,
+	        	execute_subject ,
+	        	execute_status ,
+	        	evidence_court ,
+	        	term_duty ,
+	        	province ,
+	        	execute_code ,
+	        	value ,
+	        	age ,
+	        	evidence_time ,
+	        	fraud_type_display_name ,
+	        	remark
+	        ) VALUES (
+	        	#{id} ,
+	        	#{caseCode} ,
+	        	#{executeCourt} ,
+	        	#{caseDate} ,
+	        	#{gender} ,
+	        	#{carryOut} ,
+	        	#{executedName} ,
+	        	#{fraudType} ,
+	        	#{specificCircumstances} ,
+	        	#{executeSubject} ,
+	        	#{executeStatus} ,
+	        	#{evidenceCourt} ,
+	        	#{termDuty} ,
+	        	#{province} ,
+	        	#{executeCode} ,
+	        	#{value} ,
+	        	#{age} ,
+	        	#{evidenceTime} ,
+	        	#{fraudTypeDisplayName} ,
+	        	#{remark}
+	        )
+	    ]]>
+	</insert>
+	
+	<!-- 批量保存 -->
+	<insert id="batchInsert">
+	    <![CDATA[
+	        INSERT INTO t_judicial_record (
+	        		id ,
+	        		case_code ,
+	        		execute_court ,
+	        		case_date ,
+	        		gender ,
+	        		carry_out ,
+	        		executed_name ,
+	        		fraud_type ,
+	        		specific_circumstances ,
+	        		execute_subject ,
+	        		execute_status ,
+	        		evidence_court ,
+	        		term_duty ,
+	        		province ,
+	        		execute_code ,
+	        		value ,
+	        		age ,
+	        		evidence_time ,
+	        		fraud_type_display_name ,
+	        		remark
+	        ) VALUES 
+	         ]]>
+	        <foreach item="item" collection="list"   separator=",">
+	        	(
+					#{item.id} ,
+					#{item.caseCode} ,
+					#{item.executeCourt} ,
+					#{item.caseDate} ,
+					#{item.gender} ,
+					#{item.carryOut} ,
+					#{item.executedName} ,
+					#{item.fraudType} ,
+					#{item.specificCircumstances} ,
+					#{item.executeSubject} ,
+					#{item.executeStatus} ,
+					#{item.evidenceCourt} ,
+					#{item.termDuty} ,
+					#{item.province} ,
+					#{item.executeCode} ,
+					#{item.value} ,
+					#{item.age} ,
+					#{item.evidenceTime} ,
+					#{item.fraudTypeDisplayName} ,
+					#{item.remark}
+	        	)
+			</foreach>
+	   
+	</insert>
+
+	<!-- update 条件组合 -->
+	<sql id="update_sql">
+		<set>
+			<if test="caseCode != null and caseCode != ''">
+				case_code = #{caseCode} ,
+			</if>
+			<if test="executeCourt != null and executeCourt != ''">
+				execute_court = #{executeCourt} ,
+			</if>
+			<if test="caseDate != null">
+				case_date = #{caseDate} ,
+			</if>
+			<if test="gender != null and gender != ''">
+				gender = #{gender} ,
+			</if>
+			<if test="carryOut != null and carryOut != ''">
+				carry_out = #{carryOut} ,
+			</if>
+			<if test="executedName != null and executedName != ''">
+				executed_name = #{executedName} ,
+			</if>
+			<if test="fraudType != null and fraudType != ''">
+				fraud_type = #{fraudType} ,
+			</if>
+			<if test="specificCircumstances != null and specificCircumstances != ''">
+				specific_circumstances = #{specificCircumstances} ,
+			</if>
+			<if test="executeSubject != null and executeSubject != ''">
+				execute_subject = #{executeSubject} ,
+			</if>
+			<if test="executeStatus != null and executeStatus != ''">
+				execute_status = #{executeStatus} ,
+			</if>
+			<if test="evidenceCourt != null and evidenceCourt != ''">
+				evidence_court = #{evidenceCourt} ,
+			</if>
+			<if test="termDuty != null and termDuty != ''">
+				term_duty = #{termDuty} ,
+			</if>
+			<if test="province != null and province != ''">
+				province = #{province} ,
+			</if>
+			<if test="executeCode != null and executeCode != ''">
+				execute_code = #{executeCode} ,
+			</if>
+			<if test="value != null and value != ''">
+				value = #{value} ,
+			</if>
+			<if test="age != null and age != ''">
+				age = #{age} ,
+			</if>
+			<if test="evidenceTime != null">
+				evidence_time = #{evidenceTime} ,
+			</if>
+			<if test="fraudTypeDisplayName != null and fraudTypeDisplayName != ''">
+				fraud_type_display_name = #{fraudTypeDisplayName} 
+			</if>
+
+			<if test="remark != null and remark != ''">
+				remark = #{remark}
+			</if>
+		</set>
+	</sql>
+	
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey">
+		UPDATE t_judicial_record
+		<include refid="update_sql" />
+		WHERE
+			id = #{id} 
+	</update>
+
+		<!-- 修改 -->
+	<update id="batchUpdateByIds">
+		UPDATE t_judicial_record
+		<include refid="update_sql" />
+		WHERE
+		id IN
+			<foreach item="ids" collection="list" open="(" separator="," close=")">
+				#{ids}
+			</foreach>
+	</update>
+
+	<!-- 根据ID删除 -->
+	<delete id="deleteByPrimaryKey">
+    	<![CDATA[
+        	DELETE FROM t_judicial_record 
+        	WHERE
+        		id = #{id} 
+    	]]>
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="batchDeleteByIds">
+        DELETE FROM t_judicial_record 
+        WHERE id IN 
+        <foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+	<!-- selsect -->
+	<select id="selectByPrimaryKey" resultMap="RM_JudicialRecord">
+		SELECT
+		<include refid="columns" />
+		FROM t_judicial_record
+		WHERE
+		id = #{id} 
+	</select>
+
+
+
+
+
+	<!-- 模糊查询这样： 字段名 LIKE CONCAT('%',CONCAT(#{model.userName},'%')) -->
+	<sql id="findPage_where">
+		<where>
+				<if test="id != null and id !=''">
+					AND id = #{id}
+				</if>
+				<if test="caseCode != null and caseCode !=''">
+					AND case_code = #{caseCode}
+				</if>
+				<if test="executeCourt != null and executeCourt !=''">
+					AND execute_court = #{executeCourt}
+				</if>
+				<if test="caseDate != null">
+					AND case_date = #{caseDate}
+				</if>
+				<if test="gender != null and gender !=''">
+					AND gender = #{gender}
+				</if>
+				<if test="carryOut != null and carryOut !=''">
+					AND carry_out = #{carryOut}
+				</if>
+				<if test="executedName != null and executedName !=''">
+					AND executed_name = #{executedName}
+				</if>
+				<if test="fraudType != null and fraudType !=''">
+					AND fraud_type = #{fraudType}
+				</if>
+				<if test="specificCircumstances != null and specificCircumstances !=''">
+					AND specific_circumstances = #{specificCircumstances}
+				</if>
+				<if test="executeSubject != null and executeSubject !=''">
+					AND execute_subject = #{executeSubject}
+				</if>
+				<if test="executeStatus != null and executeStatus !=''">
+					AND execute_status = #{executeStatus}
+				</if>
+				<if test="evidenceCourt != null and evidenceCourt !=''">
+					AND evidence_court = #{evidenceCourt}
+				</if>
+				<if test="termDuty != null and termDuty !=''">
+					AND term_duty = #{termDuty}
+				</if>
+				<if test="province != null and province !=''">
+					AND province = #{province}
+				</if>
+				<if test="executeCode != null and executeCode !=''">
+					AND execute_code = #{executeCode}
+				</if>
+				<if test="value != null and value !=''">
+					AND value = #{value}
+				</if>
+				<if test="age != null and age !=''">
+					AND age = #{age}
+				</if>
+				<if test="evidenceTime != null">
+					AND evidence_time = #{evidenceTime}
+				</if>
+				<if test="fraudTypeDisplayName != null and fraudTypeDisplayName !=''">
+					AND fraud_type_display_name = #{fraudTypeDisplayName}
+				</if>
+
+				<if test="remark != null and remark !=''">
+					AND remark = #{remark}
+				</if>
+
+
+		</where>
+	</sql>
+
+	<!-- selsect by obj -->
+	<select id="listByObj" resultMap="RM_JudicialRecord" parameterType="com.credit.entity.JudicialRecord">
+	SELECT
+	<include refid="columns" />
+	FROM t_judicial_record
+	<include refid="findPage_where" />
+	</select>
+
+
+	<!-- 获取总数 -->
+	<select id="listPageCount" resultType="long" parameterType="map">
+		SELECT COUNT(1)
+		FROM t_judicial_record
+		<include refid="findPage_where" />
+	</select>  
+
+	<select id="listPage" resultMap="RM_JudicialRecord" parameterType="map">
+		 SELECT
+		<include refid="columns" />
+		FROM t_judicial_record
+		<include refid="findPage_where" />
+
+		<if test="sortColumns != null and sortColumns !=''">
+			ORDER BY ${sortColumns}
+		</if>
+		
+		<if test="offset != null and pageSize != null">
+			LIMIT  #{offset}, #{pageSize}
+		</if>
+	</select>
+
+</mapper>
