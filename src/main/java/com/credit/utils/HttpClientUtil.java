@@ -26,7 +26,7 @@ public class HttpClientUtil {
 
 	public static ThreadLocal<HttpClientContext> LOCAL = new ThreadLocal<HttpClientContext>();
 
-	private static final String APPLICATION_JSON = "application/json";
+	private static final String APPLICATION_JSON = "application/json; charset=utf-8";
 
 	private static final String CONTENT_TYPE_TEXT_JSON = "text/json";
 
@@ -73,7 +73,7 @@ public class HttpClientUtil {
 			se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, APPLICATION_JSON));
 			post.setEntity(se);
 			response = httpClient.execute(post, context);
-			Logger.debug("info-->" + param+"======url -->"+url);
+			Logger.debug("info-->" + post+"======url -->"+post);
 			res = EntityUtils.toString(response.getEntity(), DEFAULT_CHARSET_UTF_8);
 		} catch (Exception e) {
 			e.printStackTrace();

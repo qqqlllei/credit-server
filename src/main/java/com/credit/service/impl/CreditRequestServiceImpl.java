@@ -48,6 +48,9 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     @Autowired
     private RiskItemProperties riskItemProperties;
 
+    @Autowired
+    private VagueRecordService vagueRecordService;
+
     public int saveCreditRequest(CreditRequest creditRequest){
         creditRequest.setId(UUID.randomUUID().toString());
         return creditRequestMapper.insert(creditRequest);
@@ -164,18 +167,23 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
         //
 
-//        List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest,reportId);
-//
-//        for (NamelistRecord namelistRecord: namelistRecords){
-//            namelistRecord.setId(UUID.randomUUID().toString());
-//            namelistRecordService.save(namelistRecord);
-//        }
+        List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest,reportId);
+
+        for (NamelistRecord namelistRecord: namelistRecords){
+            namelistRecord.setId(UUID.randomUUID().toString());
+            namelistRecordService.save(namelistRecord);
+        }
 
 
 
         //模糊数据
 
         List<VagueRecord> vagueRecords =   vagueRecordHandle(jsonArray,creditRequest,reportId);
+        for (VagueRecord vagueRecord: vagueRecords){
+            vagueRecord.setId(UUID.randomUUID().toString());
+            vagueRecordService.save(vagueRecord);
+        }
+
 
         creditRequestMapper.updateStatusToDone(creditRequest.getId());
     }
@@ -190,8 +198,22 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             JSONObject item = (JSONObject) it.next();
 
             if(riskItemProperties.getVagueRecordList().contains(item.getString("item_name"))){
+                JSONObject item_detail = item.getJSONObject("item_detail");
+                JSONArray namelist_hit_details = item_detail.getJSONArray("namelist_hit_details");
+                Iterator<Object> namelist_hit_details_it = namelist_hit_details.iterator();
+                while (namelist_hit_details_it.hasNext()){
+                    JSONObject namelist_hit_details_item = (JSONObject) namelist_hit_details_it.next();
+                    //
+                    String description = namelist_hit_details_item.getString("description");
+                    JSONArray fuzzy_detail_hits = namelist_hit_details_item.getJSONArray("fuzzy_detail_hits");
 
-
+                    VagueRecord vagueRecord = new VagueRecord();
+                    vagueRecord.setRemark(reportId);
+                    vagueRecord.setDescription(description);
+                    vagueRecord.setType(item.getString("item_name"));
+                    vagueRecord.setFuzzyListDetails(fuzzy_detail_hits.toJSONString());
+                    vagurecords.add(vagueRecord);
+                }
 
             }
         }
@@ -209,7 +231,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
         while (it.hasNext()){
             JSONObject item = (JSONObject) it.next();
 
-            if("身份证命中信贷逾期名单".equals(item.getString("item_name"))
+            if(("身份证命中信贷逾期名单".equals(item.getString("item_name"))||("手机号命中信贷逾期名单".equals(item.getString("item_name"))))
                    ){
                 JSONObject item_detail = item.getJSONObject("item_detail");
                 OverdueRecord overdueRecord = new OverdueRecord();

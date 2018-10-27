@@ -48,11 +48,11 @@ public class CreditRequestController {
         String name = request.getParameter("name");
         name="王琼";
         String urlName ="";
-        try {
-            urlName = URLEncoder.encode(name, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            urlName = URLEncoder.encode(name, "utf-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
         String idcard = request.getParameter("idcard");
         idcard="310105196906033229";
         CreditRequest creditRequest = creditRequestService.getCreditRequestByPhone(phone);
@@ -103,8 +103,10 @@ public class CreditRequestController {
         requestBody.put("timestamp",timestamp);
         requestBody.put("sign",sign);
         requestBody.put("phone",phone);
-        requestBody.put("name",urlName);
+        requestBody.put("name",name);
         requestBody.put("idcard",idcard);
+
+        System.out.println("======================="+requestBody.toJSONString()+"======================");
         String submitInfo = HttpClientUtil.unEncodingPost(requestBody.toJSONString(),appUrl+"submit");
 
         String queryInfo = HttpClientUtil.unEncodingPost(requestBody.toJSONString(),appUrl+"query");
