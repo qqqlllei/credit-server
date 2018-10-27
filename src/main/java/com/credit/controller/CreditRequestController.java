@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,9 +44,18 @@ public class CreditRequestController {
     @RequestMapping("/submit")
     public String submit(HttpServletRequest request, Model model){
         String phone = request.getParameter("phone");
+        phone="13052039777";
         String name = request.getParameter("name");
+        name="王琼";
+        String urlName ="";
+        try {
+            urlName = URLEncoder.encode(name, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         String idcard = request.getParameter("idcard");
-        CreditRequest creditRequest = creditRequestService.getCreditRequestByPhone("15555555555");
+        idcard="310105196906033229";
+        CreditRequest creditRequest = creditRequestService.getCreditRequestByPhone(phone);
         if(creditRequest !=null){
             DateTime createTime = new DateTime(creditRequest.getCreateTime().getTime());
             int days = createTime.dayNumFrom(new DateTime(System.currentTimeMillis()));
@@ -64,6 +75,23 @@ public class CreditRequestController {
                 model.addAttribute("overdueRecords",overdueRecords);
                 model.addAttribute("loanRecords",loanRecords);
 
+                int totalScore=100;
+
+               int courInfoScore = 5*courtInfoList.size();
+                if(courInfoScore >= 20){
+                    totalScore= 80;
+                }else {
+                    totalScore= totalScore-courInfoScore;
+                }
+
+
+                int overdueScore = 15*overdueRecords.size();
+                totalScore= totalScore - overdueScore;
+
+
+                model.addAttribute("totalScore",totalScore);
+
+
 
                 return "/user/userInfo";
             }
@@ -75,7 +103,7 @@ public class CreditRequestController {
         requestBody.put("timestamp",timestamp);
         requestBody.put("sign",sign);
         requestBody.put("phone",phone);
-        requestBody.put("name",name);
+        requestBody.put("name",urlName);
         requestBody.put("idcard",idcard);
         String submitInfo = HttpClientUtil.unEncodingPost(requestBody.toJSONString(),appUrl+"submit");
 
@@ -96,20 +124,20 @@ public class CreditRequestController {
         creditRequestService.saveCreditRequest(creditRequestInfo);
 
 
-        JSONArray jsonArray = riskBody.getJSONArray("risk_items");
-
-        List<JudicialRecord> courtInfoList = creditRequestService.courtcInfoHandle(jsonArray,creditRequest,reportId);
-
-        List<IdentityRecord> identityRecords =  creditRequestService.identityRecordHandle(jsonArray,creditRequest,reportId);
-
-        List<OverdueRecord> overdueRecords =   creditRequestService.OverdueRecordHandle(jsonArray,creditRequest);
-
-        List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,reportId);
-
-        model.addAttribute("courtInfoList",courtInfoList);
-        model.addAttribute("identityRecords",identityRecords);
-        model.addAttribute("overdueRecords",overdueRecords);
-        model.addAttribute("loanRecords",loanRecords);
+//        JSONArray jsonArray = riskBody.getJSONArray("risk_items");
+//
+//        List<JudicialRecord> courtInfoList = creditRequestService.courtcInfoHandle(jsonArray,creditRequest,reportId);
+//
+//        List<IdentityRecord> identityRecords =  creditRequestService.identityRecordHandle(jsonArray,creditRequest,reportId);
+//
+//        List<OverdueRecord> overdueRecords =   creditRequestService.OverdueRecordHandle(jsonArray,creditRequest);
+//
+//        List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,reportId);
+//
+//        model.addAttribute("courtInfoList",courtInfoList);
+//        model.addAttribute("identityRecords",identityRecords);
+//        model.addAttribute("overdueRecords",overdueRecords);
+//        model.addAttribute("loanRecords",loanRecords);
         return "/user/userInfo";
     }
 

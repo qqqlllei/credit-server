@@ -22,6 +22,8 @@ public class RiskItemProperties {
 
    private List<String> namelistRecordList = new ArrayList<>();
 
+   private List<String> vagueRecordList = new ArrayList<>();
+
 
 
     public List<String> getJudicialRecordList() {
@@ -54,5 +56,13 @@ public class RiskItemProperties {
 
     public void setNamelistRecordList(List<String> namelistRecordList) {
         this.namelistRecordList = namelistRecordList;
+    }
+
+    public List<String> getVagueRecordList() {
+        return vagueRecordList;
+    }
+
+    public void setVagueRecordList(List<String> vagueRecordList) {
+        this.vagueRecordList = vagueRecordList;
     }
 }

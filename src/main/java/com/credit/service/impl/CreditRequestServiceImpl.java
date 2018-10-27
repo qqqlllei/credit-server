@@ -171,9 +171,33 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 //            namelistRecordService.save(namelistRecord);
 //        }
 
+
+
+        //模糊数据
+
+        List<VagueRecord> vagueRecords =   vagueRecordHandle(jsonArray,creditRequest,reportId);
+
         creditRequestMapper.updateStatusToDone(creditRequest.getId());
     }
 
+    private List<VagueRecord> vagueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest, String reportId) {
+
+        Iterator<Object> it =  jsonArray.iterator();
+        List<VagueRecord> vagurecords = new ArrayList<>();
+
+
+        while (it.hasNext()){
+            JSONObject item = (JSONObject) it.next();
+
+            if(riskItemProperties.getVagueRecordList().contains(item.getString("item_name"))){
+
+
+
+            }
+        }
+
+        return  vagurecords;
+    }
 
 
     //
