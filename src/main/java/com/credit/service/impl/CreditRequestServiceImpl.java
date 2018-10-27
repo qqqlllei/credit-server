@@ -51,6 +51,9 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     @Autowired
     private VagueRecordService vagueRecordService;
 
+    @Autowired
+    private CrossEventService crossEventService;
+
     public int saveCreditRequest(CreditRequest creditRequest){
         creditRequest.setId(UUID.randomUUID().toString());
         return creditRequestMapper.insert(creditRequest);
@@ -124,9 +127,6 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     @Override
     @Transactional
     public void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest,String reportId) {
-
-
-        //法院信息
         List<JudicialRecord> courtInfoList = courtcInfoHandle(jsonArray,creditRequest,reportId);
 
         for (JudicialRecord judicialRecord: courtInfoList){
@@ -134,8 +134,6 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             judicialRecordService.save(judicialRecord);
         }
 
-
-        //身份记录
         List<IdentityRecord> identityRecords =  identityRecordHandle(jsonArray,creditRequest,reportId);
 
 
@@ -143,9 +141,6 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             identityRecord.setId(UUID.randomUUID().toString());
             identityRecordService.save(identityRecord);
         }
-
-        //逾期名单
-
         List<OverdueRecord> overdueRecords =   OverdueRecordHandle(jsonArray,creditRequest);
 
 
@@ -154,19 +149,12 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             overdueRecordService.save(overdueRecord);
         }
 
-
-        //多平台
-
         List<LoanRecord> loanRecords =   loanRecordHandle(jsonArray,creditRequest,reportId);
 
         for (LoanRecord loanRecord: loanRecords){
             loanRecord.setId(UUID.randomUUID().toString());
             loanRecordService.save(loanRecord);
         }
-
-
-        //
-
         List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest,reportId);
 
         for (NamelistRecord namelistRecord: namelistRecords){
@@ -174,18 +162,52 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             namelistRecordService.save(namelistRecord);
         }
 
-
-
-        //模糊数据
-
         List<VagueRecord> vagueRecords =   vagueRecordHandle(jsonArray,creditRequest,reportId);
         for (VagueRecord vagueRecord: vagueRecords){
             vagueRecord.setId(UUID.randomUUID().toString());
             vagueRecordService.save(vagueRecord);
         }
 
+        List<CrossEvent> crossEventList = crossEventHandle(jsonArray,creditRequest,reportId);
+        for (CrossEvent crossEvent: crossEventList){
+            crossEvent.setId(UUID.randomUUID().toString());
+            crossEventService.save(crossEvent);
+        }
 
         creditRequestMapper.updateStatusToDone(creditRequest.getId());
+    }
+
+    private List<CrossEvent> crossEventHandle(JSONArray jsonArray, CreditRequest creditRequest, String reportId) {
+
+        Iterator<Object> it =  jsonArray.iterator();
+        List<CrossEvent> crossEventList = new ArrayList<>();
+
+
+
+        while (it.hasNext()){
+            JSONObject item = (JSONObject) it.next();
+
+            if(riskItemProperties.getCrossEventList().contains(item.getString("item_name"))){
+                JSONArray frequency_detail_list = item.getJSONObject("item_detail").getJSONArray("frequency_detail_list");
+
+                Iterator<Object> frequency_detail_list_it = frequency_detail_list.iterator();
+
+                while (frequency_detail_list_it.hasNext()) {
+                    JSONObject frequency_detail_list_item = (JSONObject) frequency_detail_list_it.next();
+
+                    CrossEvent crossEvent = new CrossEvent();
+                    crossEvent.setType(item.getString("item_name"));
+                    crossEvent.setRemark(reportId);
+
+                    crossEvent.setData(frequency_detail_list_item.getJSONArray("data").toJSONString());
+                    crossEvent.setDetail((String) frequency_detail_list_item.getOrDefault("detail", DEFAULT_VALUE));
+
+                    crossEventList.add(crossEvent);
+                }
+            }
+        }
+
+        return  crossEventList;
     }
 
     private List<VagueRecord> vagueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest, String reportId) {

@@ -24,6 +24,8 @@ public class RiskItemProperties {
 
    private List<String> vagueRecordList = new ArrayList<>();
 
+   private List<String> crossEventList = new ArrayList<>();
+
 
 
     public List<String> getJudicialRecordList() {
@@ -64,5 +66,13 @@ public class RiskItemProperties {
 
     public void setVagueRecordList(List<String> vagueRecordList) {
         this.vagueRecordList = vagueRecordList;
+    }
+
+    public List<String> getCrossEventList() {
+        return crossEventList;
+    }
+
+    public void setCrossEventList(List<String> crossEventList) {
+        this.crossEventList = crossEventList;
     }
 }
