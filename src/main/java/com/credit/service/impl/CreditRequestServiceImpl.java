@@ -141,8 +141,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             identityRecord.setId(UUID.randomUUID().toString());
             identityRecordService.save(identityRecord);
         }
-        List<OverdueRecord> overdueRecords =   OverdueRecordHandle(jsonArray,creditRequest);
-
+        List<OverdueRecord> overdueRecords =   overdueRecordHandle(jsonArray,creditRequest);
 
         for (OverdueRecord overdueRecord: overdueRecords){
             overdueRecord.setId(UUID.randomUUID().toString());
@@ -155,12 +154,12 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             loanRecord.setId(UUID.randomUUID().toString());
             loanRecordService.save(loanRecord);
         }
-        List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest,reportId);
-
-        for (NamelistRecord namelistRecord: namelistRecords){
-            namelistRecord.setId(UUID.randomUUID().toString());
-            namelistRecordService.save(namelistRecord);
-        }
+//        List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest,reportId);
+//
+//        for (NamelistRecord namelistRecord: namelistRecords){
+//            namelistRecord.setId(UUID.randomUUID().toString());
+//            namelistRecordService.save(namelistRecord);
+//        }
 
         List<VagueRecord> vagueRecords =   vagueRecordHandle(jsonArray,creditRequest,reportId);
         for (VagueRecord vagueRecord: vagueRecords){
@@ -247,7 +246,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     //
 
     @Override
-    public List<OverdueRecord> OverdueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest){
+    public List<OverdueRecord> overdueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest){
         Iterator<Object> it =  jsonArray.iterator();
         List<OverdueRecord> overdueRecords = new ArrayList<>();
         while (it.hasNext()){
@@ -260,6 +259,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
                 overdueRecord.setDiscreditTimes(String.valueOf(item_detail.getOrDefault("discredit_times",DEFAULT_VALUE)) );
                 JSONArray overdue_details = item_detail.getJSONArray("overdue_details");
+
                 overdueRecord.setDescription(overdue_details.toJSONString());
                 overdueRecords.add(overdueRecord);
 
@@ -318,14 +318,27 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
             if(riskItemProperties.getLoanRecordList().contains(item.getString("item_name"))){
                 JSONObject item_detail = item.getJSONObject("item_detail");
-                LoanRecord loanRecord = new LoanRecord();
 
-                loanRecord.setCount(String.valueOf(item_detail.getOrDefault("platform_count",DEFAULT_VALUE)));
-                loanRecord.setType(String.valueOf(item.getOrDefault("item_name",DEFAULT_VALUE)));
 
-                loanRecord.setDetail(item_detail.getJSONArray("platform_detail").toJSONString());
-                loanRecord.setRemark(reportId);
-                loanRecords.add(loanRecord);
+
+                JSONArray platform_detail_dimensions = item_detail.getJSONArray("platform_detail_dimension");
+
+                Iterator<Object> platform_detail_dimension_it =  platform_detail_dimensions.iterator();
+
+                while (platform_detail_dimension_it.hasNext()){
+                    LoanRecord loanRecord = new LoanRecord();
+                    JSONObject platform_detail_dimension_item = (JSONObject) platform_detail_dimension_it.next();
+
+                    loanRecord.setCount(String.valueOf(platform_detail_dimension_item.getOrDefault("count",DEFAULT_VALUE)));
+                    loanRecord.setType(String.valueOf(platform_detail_dimension_item.getOrDefault("dimension",DEFAULT_VALUE)));
+
+                    loanRecord.setDetail(platform_detail_dimension_item.getJSONArray("detail").toJSONString());
+                    loanRecord.setRemark(reportId);
+                    loanRecords.add(loanRecord);
+
+                }
+
+
             }
 
         }

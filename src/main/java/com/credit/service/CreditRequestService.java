@@ -22,7 +22,7 @@ public interface CreditRequestService extends BaseService<CreditRequest> {
 
     void saveCreditInfo(JSONArray jsonArray,CreditRequest creditRequest,String reportId);
 
-    List<OverdueRecord> OverdueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest);
+    List<OverdueRecord> overdueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest);
 
     List<IdentityRecord> identityRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId);
 

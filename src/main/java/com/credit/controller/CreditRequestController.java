@@ -67,7 +67,7 @@ public class CreditRequestController {
 
                 List<JudicialRecord> courtInfoList = creditRequestService.courtcInfoHandle(jsonArray,creditRequest,creditRequest.getRemark());
                 List<IdentityRecord> identityRecords =  creditRequestService.identityRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
-                List<OverdueRecord> overdueRecords =   creditRequestService.OverdueRecordHandle(jsonArray,creditRequest);
+                List<OverdueRecord> overdueRecords =   creditRequestService.overdueRecordHandle(jsonArray,creditRequest);
                 List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
 
                 model.addAttribute("courtInfoList",courtInfoList);
@@ -87,6 +87,40 @@ public class CreditRequestController {
 
                 int overdueScore = 15*overdueRecords.size();
                 totalScore= totalScore - overdueScore;
+
+
+
+                for (int j=0;j<overdueRecords.size();j++){
+                    OverdueRecord overdueRecord = overdueRecords.get(j);
+                    JSONArray overdue_details = JSONObject.parseArray(overdueRecord.getDescription());
+
+                    for (int i=0;i<overdue_details.size();i++){
+                        JSONObject overdue_detail = (JSONObject) overdue_details.get(i);
+                        String range = overdue_detail.getString("overdue_amount_range");
+                        if("(0, 1000]".equals(range)){
+                            totalScore=totalScore-5;
+                        }
+                        if("(1000, 5000]".equals(range)){
+                            totalScore=totalScore-10;
+                        }
+                        if("(5000, 10000]".equals(range)){
+                            totalScore=totalScore-20;
+                        }
+                        if("(10000, 50000]".equals(range)){
+                            totalScore=totalScore-20;
+                        }
+                        if("(50000, 100000]".equals(range)){
+                            totalScore=totalScore-20;
+                        }
+                        if("(100000, 500000]".equals(range)){
+                            totalScore=totalScore-20;
+                        }
+                        if("500000+".equals(range)){
+                            totalScore=totalScore-20;
+                        }
+                    }
+                }
+
 
 
                 model.addAttribute("totalScore",totalScore);
