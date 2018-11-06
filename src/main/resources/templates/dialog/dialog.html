@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>新蜂贷</title>
+    <script type="text/javascript" th:src="@{/js/html-rem.js}"></script>
+
+    <link rel="stylesheet"  th:href="@{/css/normalize.css}"/>
+    <link rel="stylesheet"  th:href="@{/css/dialog.css}"/>
+
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+
+</head>
+<body>
+<div class="container">
+    <div class="warrper">
+        <div class="dialog-shade">
+            <div class="dialog-box">
+                <div class="check-icon"></div>
+                <div class="dialog-info">
+                    <p>您正在申请<span class="font-bold">《新蜂信用查询报告》</span></p>
+                    <p>请勾选以下用户授权协议，即可进行查询</p>
+                    <p class="dialog-check-box">
+                        <span class="dialog-check-outer"><span class="dialog-check-inner"></span></span>
+                        <span>我已同意大数据查询</span>
+                        <span class="blue">《授权协议》</span>
+                    </p>
+                </div>
+                <div class="dialog-btn" id="submit"><img th:src="@{/image/query-btn.png}" alt=""/></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script  th:inline="javascript">
+    /*<![CDATA[*/
+        $(function () {
+            $('.dialog-check-outer').on('click',function () {
+                if($(this).hasClass('active')) {
+                    $(this).removeClass('active');
+                }else {
+                    $(this).addClass('active');
+                }
+            });
+
+            //查询
+            $('#submit').on('click',function () {
+
+                if($('.dialog-check-outer').hasClass('active')) {
+                    if($(this).hasClass('active')) {
+                        console.log(1);
+                        return false;
+                    }else {
+                        console.log('submit')
+                        $(this).addClass('active');
+                        //提交
+                    }
+                }else {
+                    console.log(2);
+                    //不允许提交
+                }
+            })
+        })
+    /*]]>*/
+</script>
+</body>
+</html>

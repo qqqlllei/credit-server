@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>信用查询</title>
+    <script type="text/javascript" th:src="@{/js/html-rem.js}"></script>
+
+    <link rel="stylesheet"  th:href="@{/css/normalize.css}"/>
+    <link rel="stylesheet"  th:href="@{/css/query.css}"/>
+
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/circle-progress.js}"></script>
+
+
+</head>
+<body>
+<div class="container">
+    <div class="warrper">
+        <div class="index-bg w100">
+            <img class="w100" th:src="@{/image/index-bg.png}" alt=""/>
+            <div class="circle-rate-box">
+                <div class="circle-rate-warrper">
+                    <div class="circle-rate circle-rate1">
+                        <strong></strong>
+                    </div>
+                    <div class="circle-rate-info">精准率</div>
+                </div>
+                <div class="circle-rate-warrper">
+                    <div class="circle-rate circle-rate2">
+                        <strong></strong>
+                    </div>
+                    <div class="circle-rate-info">申贷成功率提高</div>
+
+                </div>
+                <div class="circle-rate-warrper">
+                    <div class="circle-rate circle-rate3">
+                        <strong></strong>
+                    </div>
+                    <div class="circle-rate-info">信息安全</div>
+
+                </div>
+
+
+            </div>
+            <div class="main">
+                <form id="query-form" action="">
+                   <div class="p45">
+                       <div class="name-box input-box">
+                           <input type="text" id="name" name="name" placeholder="本人姓名"/>
+                       </div>
+                       <div class="idCard-box input-box">
+                           <input type="text" id="idCard" name="idCard" placeholder="本人身份证号"/>
+                       </div>
+                       <div class="tel-box input-box">
+                           <input type="tel" id="tel"  name="tel" placeholder="本人手机号"/>
+                       </div>
+                       <div class="required-warn" id="required-warn"></div>
+                   </div>
+                    <button id="submitBtn" type="button" class="btn-box w100"><img class="w100" th:src="@{/image/btn-bg.png}" alt=""/></button>
+                    <div class="authorization"></div>
+                    <div class="authorization-box">
+                        <span class="authorization-outer"><span class="authorization-inner"></span></span>
+                        <span>我已同意大数据查询</span>
+                        <span class="blue">《授权协议》</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="attention">
+            <div class="attention-title"><span>注意事项</span></div>
+            <div class="attention-item">请输入本人名下真实姓名、身份证号、手机号，提高查询准确率</div>
+            <div class="attention-item">其他事项可提高查询准确率1</div>
+            <div class="attention-item">其他事项可提高查询准确率2</div>
+        </div>
+
+    </div>
+</div>
+<script  th:inline="javascript">
+    /*<![CDATA[*/
+    $(function () {
+        var htmlSize = '';
+        var oWidth = document.body.clientWidth || document.documentElement.clientWidth;
+        htmlSize = oWidth/750*100;
+        $('.circle-rate1').circleProgress({
+            value: 0.98, //进度条进度
+            size:htmlSize*1.26, //直径
+            thickness:5, //圆环宽度
+            startAngle: Math.PI / 6 * 1, //起点
+            fill:{
+//                color:'#ff5c11' //填充色
+                gradient: [['#fffb00',.05],["#23efcf",.2],['#fffb00',.7] ,["#fe8300",.9]]  //填充色渐变
+
+            },
+            emptyFill:'#fff'  //空圆弧的颜色
+
+        }).on('circle-animation-progress', function(event, progress) {
+            //进度条显示内容
+            $(this).find('strong').html(parseInt(98 * progress)+'%');
+        });
+        $('.circle-rate2').circleProgress({
+            value: 0.62, //进度条进度
+            size:htmlSize*1.26, //直径
+            thickness:5, //圆环宽度
+            startAngle: Math.PI / 6 * 1, //起点
+            fill:{
+//                color:'#ff5c11' //填充色
+                gradient: [['#fffb00',.05],["#23efcf",.2],['#fffb00',.7] ,["#fe8300",.9]]  //填充色渐变
+
+            },
+            emptyFill:'#fff'  //空圆弧的颜色
+
+        }).on('circle-animation-progress', function(event, progress) {
+            //进度条显示内容
+            $(this).find('strong').html(parseInt(62 * progress)+'%');
+        });
+        $('.circle-rate3').circleProgress({
+            value: 100, //进度条进度
+            size:htmlSize*1.26, //直径
+            thickness:5, //圆环宽度
+            startAngle: Math.PI / 6 * 1, //起点
+            fill:{
+//                color:'#ff5c11' //填充色
+                gradient: [['#fffb00',.05],["#23efcf",.2],['#fffb00',.7] ,["#fe8300",.9]]  //填充色渐变
+
+            },
+            emptyFill:'#fff'  //空圆弧的颜色
+
+        }).on('circle-animation-progress', function(event, progress) {
+            //进度条显示内容
+            $(this).find('strong').html(parseInt(100 * progress)+'%');
+        });
+
+
+        $('.authorization-outer').on('click',function () {
+            if($(this).hasClass('active')) {
+                $(this).removeClass('active');
+            }else {
+                $(this).addClass('active');
+            }
+        });
+
+        //查询
+        $('#submitBtn').on('click',function () {
+            $(this).prop('disabled','disabled');
+            if(!$('#name').val().trim()) {
+                $('.required-warn').html('*请输入姓名');
+                $(this).prop('disabled',false);
+                return false;
+            }else if(!$('#idCard').val().trim() || !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test($('#idCard').val().trim())) {
+                $('.required-warn').html('*请输入正确的身份证号');
+                $(this).prop('disabled',false);
+                return false;
+            }else if(!$('#tel').val().trim() || !/^1[3456789]\d{9}$/.test($('#tel').val().trim())) {
+                $('.required-warn').html('*请输入正确的手机号');
+                $(this).prop('disabled',false);
+                return false;
+            }else {
+                $('.required-warn').html('');
+                if($('.authorization-outer').hasClass('active')) {
+                    //提交
+                }else {
+                    //未授权不能提价破
+                    $(this).prop('disabled',false);
+                }
+            }
+
+        })
+
+
+    })
+    /*]]>*/
+</script>
+</body>
+</html>

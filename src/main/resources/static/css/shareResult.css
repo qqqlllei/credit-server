@@ -1,0 +1,71 @@
+html,body,.container,.warrper,.wh100 {
+    width: 100%;
+    height: 100%;
+}
+.w100 {
+    width: 100%;
+}
+.index-bg {
+    font-size: 0;
+    position: relative;
+}
+.share-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+.share-title {
+    padding-left: .6rem;
+    padding-top: .4rem;
+    font-size: .24rem;
+    color: #fff;
+}
+.circle-rate-box {
+    width: 1.55rem;
+    height: 1.55rem;
+    position: relative;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: .9rem;
+    margin-bottom: .6rem;
+}
+.circle-rate-box strong{
+    color: #ff5c11;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: .64rem;
+    transform: translate(-50%,-50%);
+
+}
+.credit-icon {
+    text-align: center;
+}
+.credit-icon img {
+    width: 3.05rem;
+    margin-bottom: .65rem;
+}
+.info {
+    font-size: .24rem;
+    color: #fff;
+    font-weight: bold;
+}
+.pb30 {
+    padding-bottom: .3rem;
+}
+button {
+    padding: 0 .5rem;
+    font-size: 0;
+}
+button img {
+    width: 100%;
+}
+#queryBtn {
+    margin-bottom: .15rem;
+    margin-top: .17rem;
+}
+.warn-info {
+    font-size: .22rem;
+    color: #333;
+}

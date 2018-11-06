@@ -141,7 +141,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             identityRecord.setId(UUID.randomUUID().toString());
             identityRecordService.save(identityRecord);
         }
-        List<OverdueRecord> overdueRecords =   overdueRecordHandle(jsonArray,creditRequest);
+        List<OverdueRecord> overdueRecords =   overdueRecordHandle(jsonArray,creditRequest,reportId);
 
         for (OverdueRecord overdueRecord: overdueRecords){
             overdueRecord.setId(UUID.randomUUID().toString());
@@ -154,12 +154,14 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             loanRecord.setId(UUID.randomUUID().toString());
             loanRecordService.save(loanRecord);
         }
-//        List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest,reportId);
-//
-//        for (NamelistRecord namelistRecord: namelistRecords){
-//            namelistRecord.setId(UUID.randomUUID().toString());
-//            namelistRecordService.save(namelistRecord);
-//        }
+
+
+        List<NamelistRecord> namelistRecords = namelistRecordHandle(jsonArray,creditRequest,reportId);
+
+        for (NamelistRecord namelistRecord: namelistRecords){
+            namelistRecord.setId(UUID.randomUUID().toString());
+            namelistRecordService.save(namelistRecord);
+        }
 
         List<VagueRecord> vagueRecords =   vagueRecordHandle(jsonArray,creditRequest,reportId);
         for (VagueRecord vagueRecord: vagueRecords){
@@ -246,7 +248,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     //
 
     @Override
-    public List<OverdueRecord> overdueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest){
+    public List<OverdueRecord> overdueRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId){
         Iterator<Object> it =  jsonArray.iterator();
         List<OverdueRecord> overdueRecords = new ArrayList<>();
         while (it.hasNext()){
@@ -259,7 +261,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
                 overdueRecord.setDiscreditTimes(String.valueOf(item_detail.getOrDefault("discredit_times",DEFAULT_VALUE)) );
                 JSONArray overdue_details = item_detail.getJSONArray("overdue_details");
-
+                overdueRecord.setRemark(reportId);
                 overdueRecord.setDescription(overdue_details.toJSONString());
                 overdueRecords.add(overdueRecord);
 
@@ -307,6 +309,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     }
 
 
+
     @Override
     public List<LoanRecord> loanRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId){
         Iterator<Object> it =  jsonArray.iterator();
@@ -347,6 +350,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
     }
 
 
+    // 黑名单记录
     @Override
     public List<NamelistRecord> namelistRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId){
         Iterator<Object> it =  jsonArray.iterator();
@@ -357,21 +361,24 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
             JSONObject item = (JSONObject) it.next();
             if(riskItemProperties.getNamelistRecordList().contains(item.getString("item_name"))){
                 JSONObject item_detail = item.getJSONObject("item_detail");
+                if(item_detail!=null &&item_detail.containsKey("namelist_hit_details")){
+                    JSONArray namelist_hit_details = item_detail.getJSONArray("namelist_hit_details");
 
-                JSONArray namelist_hit_details = item_detail.getJSONArray("namelist_hit_details");
+                    Iterator<Object> namelist_hit_details_id = namelist_hit_details.iterator();
 
-                Iterator<Object> namelist_hit_details_id = namelist_hit_details.iterator();
-
-                while (namelist_hit_details_id.hasNext()){
-                    JSONObject namelist_hit_details_item = (JSONObject) namelist_hit_details_id.next();
-                    NamelistRecord namelistRecord = new NamelistRecord();
-                    namelistRecord.setType(item.getString("item_name"));
-                    namelistRecord.setHitTypeDisplayName(String.valueOf(namelist_hit_details_item.getOrDefault("hit_type_displayname",DEFAULT_VALUE)));
-                    namelistRecord.setDescription(String.valueOf(namelist_hit_details_item.getOrDefault("description",DEFAULT_VALUE)));
-                    namelistRecord.setFraudType(String.valueOf(namelist_hit_details_item.getOrDefault("fraud_type",DEFAULT_VALUE)));
-                    namelistRecord.setRemark(reportId);
-                    namelistRecords.add(namelistRecord);
+                    while (namelist_hit_details_id.hasNext()){
+                        JSONObject namelist_hit_details_item = (JSONObject) namelist_hit_details_id.next();
+                        NamelistRecord namelistRecord = new NamelistRecord();
+                        namelistRecord.setType(item.getString("item_name"));
+                        namelistRecord.setHitTypeDisplayName(String.valueOf(namelist_hit_details_item.getOrDefault("hit_type_displayname",DEFAULT_VALUE)));
+                        namelistRecord.setDescription(String.valueOf(namelist_hit_details_item.getOrDefault("description",DEFAULT_VALUE)));
+                        namelistRecord.setFraudType(String.valueOf(namelist_hit_details_item.getOrDefault("fraud_type",DEFAULT_VALUE)));
+                        namelistRecord.setRemark(reportId);
+                        namelistRecords.add(namelistRecord);
+                    }
                 }
+
+
 
             }
 

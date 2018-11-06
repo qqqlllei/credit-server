@@ -18,10 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/10/20 0020.
@@ -44,17 +41,8 @@ public class CreditRequestController {
     @RequestMapping("/submit")
     public String submit(HttpServletRequest request, Model model){
         String phone = request.getParameter("phone");
-        phone="13052039777";
         String name = request.getParameter("name");
-        name="王琼";
-        String urlName ="";
-//        try {
-//            urlName = URLEncoder.encode(name, "utf-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
         String idcard = request.getParameter("idcard");
-        idcard="310105196906033229";
         CreditRequest creditRequest = creditRequestService.getCreditRequestByPhone(phone);
         if(creditRequest !=null){
             DateTime createTime = new DateTime(creditRequest.getCreateTime().getTime());
@@ -65,15 +53,28 @@ public class CreditRequestController {
                 JSONObject riskBody = JSONObject.parseObject(queryInfoBody.getString("body"));
                 JSONArray jsonArray = riskBody.getJSONArray("risk_items");
 
+                //法院信息
                 List<JudicialRecord> courtInfoList = creditRequestService.courtcInfoHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+                //身份记录
                 List<IdentityRecord> identityRecords =  creditRequestService.identityRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
-                List<OverdueRecord> overdueRecords =   creditRequestService.overdueRecordHandle(jsonArray,creditRequest);
+
+                //逾期记录
+                List<OverdueRecord> overdueRecords =   creditRequestService.overdueRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+                //借贷记录
                 List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+
+                //黑名单
+                List<NamelistRecord> namelistRecords = creditRequestService.namelistRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
 
                 model.addAttribute("courtInfoList",courtInfoList);
                 model.addAttribute("identityRecords",identityRecords);
                 model.addAttribute("overdueRecords",overdueRecords);
                 model.addAttribute("loanRecords",loanRecords);
+
+                model.addAttribute("namelistRecords",namelistRecords);
 
                 int totalScore=100;
 
@@ -175,6 +176,25 @@ public class CreditRequestController {
 //        model.addAttribute("overdueRecords",overdueRecords);
 //        model.addAttribute("loanRecords",loanRecords);
         return "/user/userInfo";
+    }
+
+    @RequestMapping("/query")
+    public String query(){
+
+        return "/query/query";
+    }
+
+    @RequestMapping("/detail")
+    public String detail( Model model){
+
+        model.addAttribute("totalScore",new Random().nextInt(100));
+        return "/creditDetail/creditDetail";
+    }
+
+    @RequestMapping("/share")
+    public String share(){
+
+        return "/shareResult/shareResult";
     }
 
 }

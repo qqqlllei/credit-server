@@ -1,0 +1,208 @@
+html,body,.container,.warrper,.wh100 {
+    width: 100%;
+    height: 100%;
+}
+.w100 {
+    width: 100%;
+}
+.index-bg {
+    font-size: 0;
+    position: relative;
+}
+.circle-rate-box {
+    position: absolute;
+    padding: 1.29rem .7rem 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    font-size: .24rem;
+    color: #fff;
+}
+.circle-rate-warrper {
+    flex-grow: 1;
+    text-align: center;
+}
+.circle-rate {
+    /*background: red;*/
+    width: 1.26rem;
+    height: 1.26rem;
+    /*border-radius: 100%;*/
+    margin: 0 auto;
+    position: relative;
+}
+.circle-rate-box strong{
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: .28rem;
+    transform: translate(-50%,-50%);
+}
+.circle-rate-info {
+    padding-top: .18rem;
+    padding-bottom: .37rem;
+}
+.main {
+    position: absolute;
+    /*top: ;*/
+    left: .3rem;
+    right: .3rem;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 0 10px #f6efdb;
+    height: 6.06rem;
+    top: 3.36rem;
+}
+#query-form > div.p45 {
+    padding: .45rem .45rem 0;
+}
+.input-box {
+    position: relative;
+    border-bottom: 1px solid #eeeeee;
+    color: #333;
+    font-size: .24rem;
+    padding-left: .78rem;
+}
+.input-box input {
+    padding: 10px 10px 0;
+    width: 100%;
+}
+.name-box {
+    padding-bottom: .25rem;
+}
+.input-box:before {
+    content: '';
+    width: .34rem;
+    height: .36rem;
+    position: absolute;
+    display: inline-block;
+    background: url("/image/name-icon.png") no-repeat center;
+    background-size: 100%;
+    left: .15rem;
+    bottom: .25rem;
+}
+.idCard-box,.tel-box {
+    height: .88rem;
+    padding-top: .18rem;
+}
+.idCard-box:before {
+    width: .35rem;
+    height: .28rem;
+    background: url("/image/id-icon.png") no-repeat center;
+    background-size: 100%;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+.tel-box:before {
+    width: .28rem;
+    height: .40rem;
+    background: url("/image/tel-icon.png") no-repeat center;
+    background-size: 100%;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #999;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    #999;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    #999;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color:    #999;
+}
+#required-warn {
+    color: #ff2727;
+    font-size: .22rem;
+    text-align: right;
+    padding: .3rem 0 .4rem;
+    height: .26rem;
+}
+.authorization-box {
+    color: #666;
+    font-size: .24rem;
+    padding-top: .3rem;
+    padding-left: .65rem;
+}
+.blue {
+    color: #66aeea;
+}
+.authorization-box span {
+    vertical-align: middle;
+}
+.authorization-outer {
+    display: inline-block;
+    width: .36rem;
+    height: .36rem;
+    border-radius: 100%;
+    vertical-align: middle;
+    margin-right: .2rem;
+    border: 1px solid #c1c0bd;
+    background: #f9f7f2;
+}
+.authorization-outer.active .authorization-inner {
+    display: inline-block;
+    width: .2rem;
+    height: .2rem;
+    border-radius: 100%;
+    vertical-align: middle;
+    text-align: center;
+    background: #fccd19;
+    margin-left: 50%;
+    margin-top: 50%;
+    transform: translate(-50%,-50%)
+}
+button {
+    padding: 0 .2rem;
+}
+.attention {
+    font-size: .2rem;
+    color: #666;
+    padding-top: 5.06rem;
+    padding-left: .6rem;
+    padding-right: .5rem;
+}
+.attention-title {
+    text-align: center;
+}
+.attention-title span {
+    color: #333;
+    font-weight: bold;
+    font-size: .24rem;
+    padding: 0 .2rem .4rem;
+    position: relative;
+    text-align: center;
+    display: inline-block;
+}
+.attention-title span:before,.attention-title span:after {
+    content: '';
+    display: inline-block;
+    width: .14rem;
+    height: .27rem;
+    background: url("/image/attention-icon.png") no-repeat;
+    background-size: 100%;
+    left: -0.14rem;
+    position: absolute;
+}
+.attention-title span:after {
+    right: -0.14rem;
+    left: auto;
+}
+.attention-item {
+    padding-left: .16rem;
+    padding-bottom: .2rem;
+    position: relative;
+}
+.attention-item:before {
+    content: '*';
+    font-size: .2rem;
+    position: absolute;
+    left: -3px;
+}

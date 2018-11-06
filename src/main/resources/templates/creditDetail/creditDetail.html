@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>信用查询报告</title>
+    <script type="text/javascript" th:src="@{/js/html-rem.js}"></script>
+
+    <link rel="stylesheet"  th:href="@{/css/normalize.css}"/>
+    <link rel="stylesheet"  th:href="@{/css/creditDetail.css}"/>
+
+    <script type="text/javascript" th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script type="text/javascript" th:src="@{/js/circle-progress.js}"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="warrper">
+        <div class="index-bg w100">
+            <img class="w100" th:src="@{/image/credit-bg.png}" alt=""/>
+            <div class="credit-info">
+                <div class="fr t-r">
+                    <img th:src="@{/image/you.png}" width="50%" alt=""/>
+                </div>
+                <div class="circle-rate-box"><strong></strong></div>
+                <div class="info t-c">
+                    <p ><i class="crown-icon"></i>哇!您的人品爆发</p>
+                    <p class="pb30">贷款申请易通过，且额度较高哦~</p>
+                </div>
+                <div class="btn-box t-c">
+                    <button id="share" type="button"><img th:src="@{/image/share-score.png}" alt=""/></button>
+                    <button type="button"><img th:src="@{/image/re-query.png}" alt=""/></button>
+                </div>
+                <!--注意事项-->
+                <div class="attention-box">
+                    <img class="w100" th:src="@{/image/attention-bg.png}" alt=""/>
+                    <div class="attention-t">
+                        <div class="attention-title"><span>注意事项</span></div>
+                        <div class="sub-title">分数越高，申贷通过率越高</div>
+                    </div>
+                    <div class="attention-info">
+                        <div class="attention-item mb1">
+                            <div>
+                                <span class="num">2</span>家
+                                <span class="pl4">金融风险信息平台存在您的不良记录</span>
+                            </div>
+                        </div>
+                        <div class="attention-item">
+                            <div>
+                                <span class="num">12</span>%
+                                <span class="pl4">的放款平台申贷通过率将受到影响</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--检测结果-->
+                <div class="detection-box">
+                    <img class="w100" th:src="@{/image/detection-bg.png}" alt=""/>
+                    <div class="detection-t">
+                        <div class="detection-title"><span>检测结果</span></div>
+                    </div>
+                    <div class="detection-info">
+                        <div class="detection-list">
+                            <div class="detection-item t-c active" data-index="detection-item1">
+                                <!--有值添加notEmpty类 无值无notEmpty-->
+                                <div class="detection-num notEmpty">1</div>
+                                <div class="detection-desc">黑名单记录</div>
+                            </div>
+                            <div class="detection-item t-c detection-item2"  data-index="detection-item2">
+                                <div class="detection-num">0</div>
+                                <div class="detection-desc">逾期记录</div>
+                            </div>
+                            <div class="detection-item t-c detection-item3"  data-index="detection-item3">
+                                <!--有值添加notEmpty类 无值无notEmpty-->
+                                <div class="detection-num notEmpty">1</div>
+                                <div class="detection-desc">司法记录</div>
+                            </div>
+                        </div>
+                        <div class="detection-list">
+                            <div class="detection-item t-c detection-item4" data-index="detection-item4">
+                                <div class="detection-num">0</div>
+                                <div class="detection-desc">借贷记录</div>
+                            </div>
+                            <div class="detection-item t-c detection-item5" data-index="detection-item5">
+                                <div class="detection-num">0</div>
+                                <div class="detection-desc">身份记录</div>
+                            </div>
+                            <div class="detection-item t-c detection-item6" data-index="detection-item6">
+                                <div class="detection-num">0</div>
+                                <div class="detection-desc">关联风险</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--检测结果记录-->
+                <div class="detection-record-b">
+                    <div class="detection-record-box detection-item1 active" id="" >
+                        <!--默认黑名单记录-->
+                        <div class="detection-t detection-record-t">
+                            <div class="detection-title" style="padding-left: .69rem"><span>黑名单记录</span></div>
+                        </div>
+                        <div class="detection-record-contain">
+                            <div class="pass-rate-box">
+                                <div class="pass-rate-top">
+                                    <div class="pass-rate-l">
+                                        <img th:src="@{/image/down-icon.png}"  alt=""/>
+                                        <div class="pass-rate-desc">
+                                            申贷通过率 <span>大幅降低</span>
+                                        </div>
+                                    </div>
+                                    <div class="pass-rate-r">
+                                        <img th:src="@{/image/down-icon.png}"  alt=""/>
+                                        <div class="pass-rate-desc">
+                                            下款额度 <span>大幅降低</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pass-rate-bottom">
+                                    存在严重逾期等失信行为将可能被平台列入黑名单。大多数平台在获知您的此类记录时，会直接拒绝您的借款申请。
+                                </div>
+                            </div>
+                            <div class="warn-info-box">
+                                <img class="w100 warn-line" th:src="@{/image/warn-line.png}" alt=""/>
+                                <div class="more-warn-info">
+                                    由于不良记录的共享范围有限，您可以尝试其他放款机构，但是需要注意申请的节奏，切勿频繁申请，以免引起信用恶化。
+                                </div>
+                                <div class="more-btn t-c active">查看更多<img class="w28 more-down" th:src="@{/image/more.png}"  alt=""/></div>
+                            </div>
+                            <div class="detection-record-detail">
+                                <!--时间范围选择只对应<借贷记录>（多平台大类）-->
+                                <!--<div class="time-list t-c">-->
+                                    <!--<div class="time-item active time-item1">7天内</div>-->
+                                    <!--<div class="time-item time-item2">1个月</div>-->
+                                    <!--<div class="time-item time-item3">3个月+</div>-->
+                                <!--</div>-->
+                                <div class="detection-species-box">
+                                    <div class="hit-account">
+                                        <!--黑名单只有总数-->
+                                        <div class="total-hit">
+                                            <div class="species-desc">
+                                                不良命中：<span class="colorY">12个</span>
+                                            </div>
+                                            <div class="hit-species" data-num="6">
+                                                <div class="pipe colorY1"></div>
+                                                <div class="species-desc">
+                                                    小贷机构类：<span class="">6个</span>
+                                                </div>
+                                            </div>
+                                            <div class="hit-species" data-num="3">
+                                                <div class="pipe colorY1"></div>
+                                                <div class="species-desc">
+                                                    银行类：<span class="">3个</span>
+                                                </div>
+                                            </div>
+                                            <div class="hit-species"  data-num="3">
+
+                                                <div class="pipe colorY2"></div>
+                                                <div class="species-desc">
+                                                    P2P机构类：<span class="">3个</span>
+                                                </div>
+                                            </div>
+                                            <div class="hit-species"  data-num="2">
+
+                                                <div class="pipe colorY2"></div>
+                                                <div class="species-desc">
+                                                    小贷机构类：<span class="">2个</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hit-detail">
+                                        <div class="hit-detail-item">
+                                            <div class="hit-item-title">
+                                                身份证命中故意违章乘车名单
+                                                <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
+                                            </div>
+                                            <div class="hit-item-info">
+                                                <p>描述：<span>身份证命中故意违章乘车名单</span></p>
+                                                <p>风险类型：<span>故意违章停车</span></p>
+                                                <p>匹配类型：<span>借款人身份证</span></p>
+                                                <p>详情：<span>无</span></p>
+                                            </div>
+                                        </div>
+                                        <div class="hit-detail-item">
+                                            <div class="hit-item-title">
+                                                身份证命中欠税
+                                                <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
+                                            </div>
+                                            <div class="hit-item-info">
+                                                <p>描述：<span>身份证命中故意违章乘车名单</span></p>
+                                                <p>风险类型：<span>故意违章停车</span></p>
+                                                <p>匹配类型：<span>借款人身份证</span></p>
+                                                <p>详情：<span>无</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="detection-record-box detection-item2">逾期记录</div>
+                    <div class="detection-record-box detection-item3">司法记录</div>
+                    <div class="detection-record-box detection-item4">借贷记录</div>
+                    <div class="detection-record-box detection-item5">身份记录</div>
+                    <div class="detection-record-box detection-item6">关联风险</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--分享-->
+    <div class="share-dialog-shade">
+        <div class="share-dialog-box">
+            <div class="share-wechart">
+                <img th:src="@{/image/share-wechart.png}" alt=""/>
+                <div>微信好友</div>
+            </div>
+            <div class="cancel-share" id="cancel-share">取消</div>
+        </div>
+    </div>
+</div>
+<script  th:inline="javascript">
+    /*<![CDATA[*/
+    $(function () {
+
+        //查看更多
+        $('body').on('click','.more-btn',function () {
+            if($(this).hasClass('active')) {
+                $(this).removeClass('active');
+            }else {
+                $(this).addClass('active');
+            }
+        });
+
+        //点击时间
+        $('body').on('click','.time-item',function () {
+            if($(this).hasClass('active')) {
+                return false;
+            }else {
+                $('.time-item').removeClass('active')
+                $('.detection-species-box').removeClass('active');
+                $(this).addClass('active');
+                var detectionIndex = $(this).attr('data-index');
+                $('.detection-species-box').filter('.'+detectionIndex).addClass('active');
+            }
+        });
+
+        //计算命中 手机号、身份证号 total 为命身份证号/总数
+        var total = 4/12*100;
+        $('.total-hit .inner-pipe').css('width',total+'%');
+
+        //其他命中计算 不清楚规则
+        $('.hit-species').each(function () {
+            var rate = $(this).attr('data-num')?$(this).attr('data-num'):0;
+            if(rate>=10) {
+                $(this).find('.pipe').css('width','100%');
+            }else {
+                $(this).find('.pipe').css('width',rate/10*100+'%');
+            }
+        });
+
+        //命中详情
+        $('body').on('click','.hit-item-title',function () {
+            if($(this).hasClass('active')) {
+                $(this).removeClass('active');
+                $(this).siblings('.hit-item-info').slideUp("slow");
+
+            }else {
+                $('.hit-item-title').removeClass('active');
+                $(this).addClass('active');
+                $('.hit-item-info').each(function () {
+                    $(this).css('display','none');
+                });
+                $(this).siblings('.hit-item-info').slideDown("slow");
+
+            }
+        });
+
+        //检测结果tab切换
+        $('body').on('click','.detection-item',function () {
+            if($(this).hasClass('active')) {
+                return false;
+            }else {
+                $('.detection-item').removeClass('active');
+                $('.detection-record-box').removeClass('active');
+                $(this).addClass('active');
+                var detectionIndex = $(this).attr('data-index');
+                $('.detection-record-b').find('.'+detectionIndex).addClass('active');
+            }
+        });
+        //分享 弹框
+        $('body').on('click','#share',function () {
+            $('.share-dialog-shade').fadeIn('slow');
+        });
+        //点击分享
+        $('body').on('click','.share-wechart',function () {
+
+        });
+        //取消分享
+        $('body').on('click','#cancel-share',function () {
+            $('.share-dialog-shade').fadeOut('slow');
+        });
+    })
+    /*]]>*/
+</script>
+<script th:inline="javascript">
+
+
+    var totalScore = Math.floor(Math.random() * (100 - 0)) + 0;
+
+
+    $(function () {
+        var htmlSize = '';
+        var oWidth = document.body.clientWidth || document.documentElement.clientWidth;
+        htmlSize = oWidth/750*100;
+        $('.circle-rate-box').circleProgress({
+            value: totalScore/100, //进度条进度
+            size:htmlSize*1.88, //直径
+            thickness:10, //圆环宽度
+            startAngle: Math.PI / 6 * 1, //起点
+            fill:{
+                gradient: [['#fffb00',.05],["#23efcf",.2],['#fffb00',.7] ,["#fe8300",.9]]  //填充色渐变
+//                color:'#ff5c11' //填充色
+            },
+            emptyFill:'#fff'  //空圆弧的颜色
+
+        }).on('circle-animation-progress', function(event, progress) {
+            //进度条显示内容
+            $(this).find('strong').html(parseInt(totalScore));
+        });
+
+
+
+    })
+</script>
+</body>
+</html>
