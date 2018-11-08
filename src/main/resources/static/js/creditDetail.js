@@ -154,4 +154,9 @@ $(function () {
     $('body').on('click','#cancel-share',function () {
         $('.share-dialog-shade').fadeOut('slow');
     });
+
+
+    $('#queryButton').click(function(){
+        window.location.href=path+'/query'
+    });
 })

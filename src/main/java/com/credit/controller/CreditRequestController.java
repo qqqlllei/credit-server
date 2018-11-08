@@ -79,7 +79,85 @@ public class CreditRequestController {
                     overdueRecord.setDatas(JSONArray.parseArray(overdueRecord.getDescription()));
                 }
 
+                JSONObject sevenDays = new JSONObject();
+                JSONObject oneMonth = new JSONObject();
+                JSONObject threeMonth = new JSONObject();
+                for (LoanRecord loanRecord :loanRecords) {
+                    if(loanRecord.getDescription().startsWith("7天内")){
 
+                        if(loanRecord.getType().contains("手机")){
+                            sevenDays.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
+                        }
+                        if(loanRecord.getType().contains("身份证")){
+                            sevenDays.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
+                        }
+
+                        JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
+                        Iterator<Object> iterable =  list.iterator();
+                        while (iterable.hasNext()){
+                            String data  = (String) iterable.next();
+                            String[] temp = data.split(":");
+                            Integer count = 0 ;
+                            if(sevenDays.containsKey("sevenDay"+temp[0])){
+                                count = Integer.valueOf(sevenDays.getString("sevenDay"+temp[0]));
+                            }
+                            sevenDays.put("sevenDay"+temp[0],count+Integer.valueOf(temp[1]));
+                        }
+                    }else if(loanRecord.getDescription().startsWith("1个月内")){
+
+                        if(loanRecord.getType().contains("手机")){
+                            oneMonth.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
+                        }
+                        if(loanRecord.getType().contains("身份证")){
+                            oneMonth.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
+                        }
+
+                        JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
+                        Iterator<Object> iterable =  list.iterator();
+                        while (iterable.hasNext()){
+                            String data  = (String) iterable.next();
+                            String[] temp = data.split(":");
+                            Integer count = 0 ;
+                            if(oneMonth.containsKey("oneMonth"+temp[0])){
+                                count = Integer.valueOf(oneMonth.getString("oneMonth"+temp[0]));
+                            }
+                            oneMonth.put("oneMonth"+temp[0],count+Integer.valueOf(temp[1]));
+                        }
+                    }else{
+                        if(loanRecord.getType().contains("手机")){
+                            threeMonth.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
+                        }
+                        if(loanRecord.getType().contains("身份证")){
+                            threeMonth.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
+                        }
+
+                        JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
+                        Iterator<Object> iterable =  list.iterator();
+                        while (iterable.hasNext()){
+                            String data  = (String) iterable.next();
+                            String[] temp = data.split(":");
+                            Integer count = 0 ;
+                            if(threeMonth.containsKey("threeMonth"+temp[0])){
+                                count = Integer.valueOf(threeMonth.getString("threeMonth"+temp[0]));
+                            }
+                            threeMonth.put("threeMonth"+temp[0],count+Integer.valueOf(temp[1]));
+                        }
+                    }
+
+                }
+
+                if(!sevenDays.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
+                if(!sevenDays.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
+
+                if(!oneMonth.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
+                if(!oneMonth.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
+
+                if(!threeMonth.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
+                if(!threeMonth.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
+
+                model.addAttribute("sevenDays",sevenDays);
+                model.addAttribute("oneMonth",oneMonth);
+                model.addAttribute("threeMonth",threeMonth);
 
                 model.addAttribute("courtInfoList",courtInfoList);
                 model.addAttribute("identityRecords",identityRecords);

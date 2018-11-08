@@ -328,6 +328,7 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
 
                 while (platform_detail_dimension_it.hasNext()){
                     LoanRecord loanRecord = new LoanRecord();
+                    loanRecord.setDescription(item.getString("item_name"));
                     JSONObject platform_detail_dimension_item = (JSONObject) platform_detail_dimension_it.next();
 
                     loanRecord.setCount(String.valueOf(platform_detail_dimension_item.getOrDefault("count",DEFAULT_VALUE)));

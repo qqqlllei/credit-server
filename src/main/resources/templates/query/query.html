@@ -49,7 +49,7 @@
 
             </div>
             <div class="main">
-                <form id="query-form" action="">
+                <form id="query-form" th:action="@{'/credit/submit'}">
                    <div class="p45">
                        <div class="name-box input-box">
                            <input type="text" id="name" th:value="${name}" name="name" placeholder="本人姓名"/>
@@ -152,11 +152,11 @@
                 $('.required-warn').html('*请输入姓名');
                 $(this).prop('disabled',false);
                 return false;
-            }else if(!$('#idcard').val().trim() || !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test($('#idCard').val().trim())) {
+            }else if(!$('#idcard').val().trim() || !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test($('#idcard').val().trim())) {
                 $('.required-warn').html('*请输入正确的身份证号');
                 $(this).prop('disabled',false);
                 return false;
-            }else if(!$('#phone').val().trim() || !/^1[3456789]\d{9}$/.test($('#tel').val().trim())) {
+            }else if(!$('#phone').val().trim() || !/^1[3456789]\d{9}$/.test($('#phone').val().trim())) {
                 $('.required-warn').html('*请输入正确的手机号');
                 $(this).prop('disabled',false);
                 return false;

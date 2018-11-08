@@ -54,67 +54,24 @@
                     <!--总数-->
                     <div class="total-hit">
                         <div class="species-desc">
-                            不良命中：<span class="colorY">12个</span>
+                            不良命中：<span class="colorY" th:text="${sevenDays.phoneCount+sevenDays.idCardCount}" ></span>
                         </div>
                         <div class="pipe">
                             <div class="inner-pipe"></div>
                         </div>
-                        <div class="species-desc-item species-id-item" data-id-num="4">
-                            身份证命中：<span>4个</span>
+                        <div class="species-desc-item species-id-item" >
+                            身份证命中：<span th:text="${sevenDays.idCardCount}"></span>
                         </div>
-                        <div class="species-desc-item species-tel-item" data-tel-num="8">
-                            手机号命中：<span>8个</span>
-                        </div>
-                    </div>
-                    <div class="hit-species" data-num="6">
-                        <div class="pipe colorY1"></div>
-                        <div class="species-desc">
-                            小贷机构类：<span class="">6个</span>
+                        <div class="species-desc-item species-tel-item" >
+                            手机号命中：<span th:text="${sevenDays.phoneCount}"></span>
                         </div>
                     </div>
-                    <div class="hit-species" data-num="3">
-                        <div class="pipe colorY1"></div>
-                        <div class="species-desc">
-                            银行类：<span class="">3个</span>
-                        </div>
-                    </div>
-                    <div class="hit-species " data-num="3">
-                        <div class="pipe colorY2"></div>
-                        <div class="species-desc">
-                            P2P机构类：<span class="">3个</span>
-                        </div>
-                    </div>
-                    <div class="hit-species" data-num="2">
-
-                        <div class="pipe colorY2"></div>
-                        <div class="species-desc">
-                            小贷机构类：<span class="">2个</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hit-detail">
-                    <div class="hit-detail-item">
-                        <div class="hit-item-title">
-                            身份证命中故意违章乘车名单
-                            <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
-                        </div>
-                        <div class="hit-item-info">
-                            <p>描述：<span>身份证命中故意违章乘车名单</span></p>
-                            <p>风险类型：<span>故意违章停车</span></p>
-                            <p>匹配类型：<span>借款人身份证</span></p>
-                            <p>详情：<span>无</span></p>
-                        </div>
-                    </div>
-                    <div class="hit-detail-item">
-                        <div class="hit-item-title">
-                            身份证命中欠税
-                            <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
-                        </div>
-                        <div class="hit-item-info">
-                            <p>描述：<span>身份证命中故意违章乘车名单</span></p>
-                            <p>风险类型：<span>故意违章停车</span></p>
-                            <p>匹配类型：<span>借款人身份证</span></p>
-                            <p>详情：<span>无</span></p>
+                    <div th:each="blogId,key : ${sevenDays}">
+                        <div class="hit-species" th:if="${key.current.key} !='phoneCount' and ${key.current.key} !='idCardCount'"  th:attr="data-num=${key.current.value}" >
+                            <div class="pipe colorY1"></div>
+                            <div class="species-desc">
+                                <span class="" th:text="${#strings.replace(key.current.key,'sevenDay','')}"></span>：<span class="" th:text="${key.current.value}"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,69 +79,28 @@
             <div class="detection-species-box time-item2">
                 <div class="hit-account">
                     <!--黑名单只有总数-->
+
                     <div class="total-hit">
                         <div class="species-desc">
-                            不良命中：<span class="colorY">18个</span>
+                            不良命中：<span class="colorY" th:text="${oneMonth.phoneCount+oneMonth.idCardCount}"></span>
                         </div>
                         <div class="pipe">
                             <div class="inner-pipe"></div>
                         </div>
-                        <div class="species-desc-item species-id-item" data-id-num="8">
-                            身份证命中：<span>8个</span>
+                        <div class="species-desc-item species-id-item" >
+                            身份证命中：<span th:text="${oneMonth.idCardCount}"></span>
                         </div>
-                        <div class="species-desc-item species-tel-item" data-tel-num="10">
-                            手机号命中：<span>10个</span>
-                        </div>
-                    </div>
-                    <div class="hit-species" data-num="4">
-                        <div class="pipe colorY1"></div>
-                        <div class="species-desc">
-                            小贷机构类：<span class="">4个</span>
+                        <div class="species-desc-item species-tel-item" >
+                            手机号命中：<span th:text="${oneMonth.phoneCount}"></span>
                         </div>
                     </div>
-                    <div class="hit-species" data-num="5">
-                        <div class="pipe colorY1"></div>
-                        <div class="species-desc">
-                            银行类：<span class="">5个</span>
-                        </div>
-                    </div>
-                    <div class="hit-species " data-num="1">
-                        <div class="pipe colorY2"></div>
-                        <div class="species-desc">
-                            P2P机构类：<span class="">1个</span>
-                        </div>
-                    </div>
-                    <div class="hit-species" data-num="2">
 
-                        <div class="pipe colorY2"></div>
-                        <div class="species-desc">
-                            小贷机构类：<span class="">2个</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hit-detail">
-                    <div class="hit-detail-item">
-                        <div class="hit-item-title">
-                            身份证命中故意违章乘车名单
-                            <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
-                        </div>
-                        <div class="hit-item-info">
-                            <p>描述：<span>身份证命中故意违章乘车名单</span></p>
-                            <p>风险类型：<span>故意违章停车</span></p>
-                            <p>匹配类型：<span>借款人身份证</span></p>
-                            <p>详情：<span>无</span></p>
-                        </div>
-                    </div>
-                    <div class="hit-detail-item">
-                        <div class="hit-item-title">
-                            身份证命中欠税
-                            <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
-                        </div>
-                        <div class="hit-item-info">
-                            <p>描述：<span>身份证命中故意违章乘车名单</span></p>
-                            <p>风险类型：<span>故意违章停车</span></p>
-                            <p>匹配类型：<span>借款人身份证</span></p>
-                            <p>详情：<span>无</span></p>
+                    <div th:each="blogId,key : ${oneMonth}">
+                        <div class="hit-species" th:if="${key.current.key} !='phoneCount' and ${key.current.key} !='idCardCount'"  th:attr="data-num=${key.current.value}" >
+                            <div class="pipe colorY1"></div>
+                            <div class="species-desc">
+                                <span class="" th:text="${#strings.replace(key.current.key,'oneMonth','')}"></span>：<span class="" th:text="${key.current.value}"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -194,69 +110,29 @@
                     <!--黑名单只有总数-->
                     <div class="total-hit">
                         <div class="species-desc">
-                            不良命中：<span class="colorY">19个</span>
+                            不良命中：<span class="colorY" th:text="${threeMonth.phoneCount+threeMonth.idCardCount}"></span>
                         </div>
                         <div class="pipe">
                             <div class="inner-pipe"></div>
                         </div>
-                        <div class="species-desc-item species-id-item" data-id-num="2">
-                            身份证命中：<span>2个</span>
+                        <div class="species-desc-item species-id-item">
+                            身份证命中：<span th:text="${threeMonth.idCardCount}"></span>
                         </div>
-                        <div class="species-desc-item species-tel-item" data-tel-num="17">
-                            手机号命中：<span>17个</span>
-                        </div>
-                    </div>
-                    <div class="hit-species" data-num="6">
-                        <div class="pipe colorY1"></div>
-                        <div class="species-desc">
-                            小贷机构类：<span class="">6个</span>
+                        <div class="species-desc-item species-tel-item" >
+                            手机号命中：<span th:text="${threeMonth.phoneCount}"></span>
                         </div>
                     </div>
-                    <div class="hit-species" data-num="3">
-                        <div class="pipe colorY1"></div>
-                        <div class="species-desc">
-                            银行类：<span class="">3个</span>
-                        </div>
-                    </div>
-                    <div class="hit-species " data-num="3">
-                        <div class="pipe colorY2"></div>
-                        <div class="species-desc">
-                            P2P机构类：<span class="">3个</span>
-                        </div>
-                    </div>
-                    <div class="hit-species" data-num="2">
 
-                        <div class="pipe colorY2"></div>
-                        <div class="species-desc">
-                            小贷机构类：<span class="">2个</span>
+
+                    <div th:each="blogId,key : ${threeMonth}">
+                        <div class="hit-species" th:if="${key.current.key} !='phoneCount' and ${key.current.key} !='idCardCount'"  th:attr="data-num=${key.current.value}" >
+                            <div class="pipe colorY1"></div>
+                            <div class="species-desc">
+                                <span class="" th:text="${#strings.replace(key.current.key,'threeMonth','')}"></span>：<span class="" th:text="${key.current.value}"></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="hit-detail">
-                    <div class="hit-detail-item">
-                        <div class="hit-item-title">
-                            身份证命中故意违章乘车名单
-                            <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
-                        </div>
-                        <div class="hit-item-info">
-                            <p>描述：<span>身份证命中故意违章乘车名单</span></p>
-                            <p>风险类型：<span>故意违章停车</span></p>
-                            <p>匹配类型：<span>借款人身份证</span></p>
-                            <p>详情：<span>无</span></p>
-                        </div>
-                    </div>
-                    <div class="hit-detail-item">
-                        <div class="hit-item-title">
-                            身份证命中欠税
-                            <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
-                        </div>
-                        <div class="hit-item-info">
-                            <p>描述：<span>身份证命中故意违章乘车名单</span></p>
-                            <p>风险类型：<span>故意违章停车</span></p>
-                            <p>匹配类型：<span>借款人身份证</span></p>
-                            <p>详情：<span>无</span></p>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>

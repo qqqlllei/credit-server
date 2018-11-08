@@ -186,6 +186,9 @@ html,body,.container,.warrper,.wh100 {
     top:0;
     right: .45rem;
 }
+.detection-list:nth-of-type(2) .detection-num.notEmpty:after {
+    top:15px;
+}
 .detection-list:nth-of-type(1) .detection-desc {
     border-bottom: 1px solid #eee;
     border-right: 1px solid #eee;
@@ -353,7 +356,7 @@ html,body,.container,.warrper,.wh100 {
     /*transition: all 2s;*/
 }
 /*.hit-item-title.active+.hit-item-info {*/
-    /*display: block;*/
+/*display: block;*/
 /*}*/
 .hit-detail-item:nth-last-child(1) .hit-item-title  {
     border-bottom: none;

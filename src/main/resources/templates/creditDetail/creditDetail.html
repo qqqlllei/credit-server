@@ -34,7 +34,7 @@
                 </div>
                 <div class="btn-box t-c">
                     <button id="share" type="button"><img th:src="@{/image/share-score.png}" alt=""/></button>
-                    <button type="button"><img th:src="@{/image/re-query.png}" alt=""/></button>
+                    <button type="button" id="queryButton"><img th:src="@{/image/re-query.png}" alt=""/></button>
                 </div>
                 <!--注意事项-->
                 <div class="attention-box">
@@ -68,7 +68,7 @@
                         <div class="detection-list">
                             <div class="detection-item t-c active" id="blacklist" data-index="detection-item1">
                                 <!--有值添加notEmpty类 无值无notEmpty-->
-                                <div class="detection-num notEmpty" th:text="${namelistRecords.size()}" ></div>
+                                <div th:class="${namelistRecords.size()==0?'detection-num':'detection-num notEmpty'}"  th:text="${namelistRecords.size()}" ></div>
                                 <div class="detection-desc">黑名单记录</div>
                             </div>
                             <div class="detection-item t-c detection-item2"  id="overdue"  data-index="detection-item2">
@@ -77,17 +77,17 @@
                             </div>
                             <div class="detection-item t-c detection-item3" id="judicial"   data-index="detection-item3">
                                 <!--有值添加notEmpty类 无值无notEmpty-->
-                                <div class="detection-num notEmpty" th:text="${courtInfoList.size()}" ></div>
+                                <div th:class="${courtInfoList.size()==0?'detection-num':'detection-num notEmpty'}"  th:text="${courtInfoList.size()}" ></div>
                                 <div class="detection-desc">司法记录</div>
                             </div>
                         </div>
                         <div class="detection-list">
                             <div class="detection-item t-c detection-item4" id="borrowing" data-index="detection-item4">
-                                <div class="detection-num notEmpty">1</div>
+                                <div th:class="${loanRecords.size()==0?'detection-num':'detection-num notEmpty'}" th:text="${loanRecords.size()}">1</div>
                                 <div class="detection-desc">借贷记录</div>
                             </div>
                             <div class="detection-item t-c detection-item5" id="identity" data-index="detection-item5">
-                                <div class="detection-num notEmpty" th:text="${identityRecords.size()}"></div>
+                                <div th:class="${identityRecords.size()==0?'detection-num':'detection-num notEmpty'}"  th:text="${identityRecords.size()}"></div>
                                 <div class="detection-desc">身份记录</div>
                             </div>
                             <div class="detection-item t-c detection-item6" id="risk" data-index="detection-item6">
@@ -221,12 +221,17 @@
 </div>
 <script  th:inline="javascript">
     /*<![CDATA[*/
+
+    var path = "/" + window.location.pathname.split("/")[1];
     var totalScore = [[${totalScore}]];
 
     var courtInfoList = [[${courtInfoList}]];
     var identityRecords = [[${identityRecords}]];
     var overdueRecords = [[${overdueRecords}]];
     var loanRecords = [[${loanRecords}]];
+    var sevenDays=[[${sevenDays}]];
+    var oneMonth=[[${oneMonth}]];
+    var threeMonth=[[${threeMonth}]];
     var namelistRecords = [[${namelistRecords}]];
 
 
