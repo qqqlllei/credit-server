@@ -1,4 +1,5 @@
 package com.credit.entity;
+import com.alibaba.fastjson.JSONArray;
 import com.credit.base.BaseEntity;
 
 public class OverdueRecord extends BaseEntity{
@@ -11,6 +12,8 @@ public class OverdueRecord extends BaseEntity{
 	private String overdueCount;
 	private String overdueDayRange;
 	private String overdueTime;
+
+	private JSONArray datas;
 
 
 
@@ -61,6 +64,14 @@ public class OverdueRecord extends BaseEntity{
 	}
 	public String getOverdueTime() {
 		return this.overdueTime;
+	}
+
+	public JSONArray getDatas() {
+		return datas;
+	}
+
+	public void setDatas(JSONArray datas) {
+		this.datas = datas;
 	}
 }
 

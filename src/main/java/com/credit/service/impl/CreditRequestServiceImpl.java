@@ -258,14 +258,12 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
                    ){
                 JSONObject item_detail = item.getJSONObject("item_detail");
                 OverdueRecord overdueRecord = new OverdueRecord();
-
+                overdueRecord.setType(item.getString("item_name"));
                 overdueRecord.setDiscreditTimes(String.valueOf(item_detail.getOrDefault("discredit_times",DEFAULT_VALUE)) );
                 JSONArray overdue_details = item_detail.getJSONArray("overdue_details");
                 overdueRecord.setRemark(reportId);
                 overdueRecord.setDescription(overdue_details.toJSONString());
                 overdueRecords.add(overdueRecord);
-
-
             }
         }
         return overdueRecords;

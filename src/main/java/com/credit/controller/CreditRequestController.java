@@ -74,6 +74,13 @@ public class CreditRequestController {
                     identityRecord.setDatas(JSONArray.parseArray(identityRecord.getData()));
                 }
 
+
+                for (OverdueRecord overdueRecord :overdueRecords) {
+                    overdueRecord.setDatas(JSONArray.parseArray(overdueRecord.getDescription()));
+                }
+
+
+
                 model.addAttribute("courtInfoList",courtInfoList);
                 model.addAttribute("identityRecords",identityRecords);
                 model.addAttribute("overdueRecords",overdueRecords);
@@ -184,7 +191,14 @@ public class CreditRequestController {
     }
 
     @RequestMapping("/query")
-    public String query(){
+    public String query(HttpServletRequest request,Model model){
+        String phone = request.getParameter("phone");
+        String name = request.getParameter("name");
+        String idcard = request.getParameter("idcard");
+
+        model.addAttribute("phone",phone);
+        model.addAttribute("name",name);
+        model.addAttribute("idcard",idcard);
 
         return "/query/query";
     }

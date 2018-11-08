@@ -52,13 +52,13 @@
                 <form id="query-form" action="">
                    <div class="p45">
                        <div class="name-box input-box">
-                           <input type="text" id="name" name="name" placeholder="本人姓名"/>
+                           <input type="text" id="name" th:value="${name}" name="name" placeholder="本人姓名"/>
                        </div>
                        <div class="idCard-box input-box">
-                           <input type="text" id="idCard" name="idCard" placeholder="本人身份证号"/>
+                           <input type="text" id="idcard" th:value="${idcard}" name="idcard" placeholder="本人身份证号"/>
                        </div>
                        <div class="tel-box input-box">
-                           <input type="tel" id="tel"  name="tel" placeholder="本人手机号"/>
+                           <input type="tel" id="phone" th:value="${phone}"  name="phone" placeholder="本人手机号"/>
                        </div>
                        <div class="required-warn" id="required-warn"></div>
                    </div>
@@ -152,11 +152,11 @@
                 $('.required-warn').html('*请输入姓名');
                 $(this).prop('disabled',false);
                 return false;
-            }else if(!$('#idCard').val().trim() || !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test($('#idCard').val().trim())) {
+            }else if(!$('#idcard').val().trim() || !/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test($('#idCard').val().trim())) {
                 $('.required-warn').html('*请输入正确的身份证号');
                 $(this).prop('disabled',false);
                 return false;
-            }else if(!$('#tel').val().trim() || !/^1[3456789]\d{9}$/.test($('#tel').val().trim())) {
+            }else if(!$('#phone').val().trim() || !/^1[3456789]\d{9}$/.test($('#tel').val().trim())) {
                 $('.required-warn').html('*请输入正确的手机号');
                 $(this).prop('disabled',false);
                 return false;
@@ -164,6 +164,7 @@
                 $('.required-warn').html('');
                 if($('.authorization-outer').hasClass('active')) {
                     //提交
+                    $('#query-form').submit();
                 }else {
                     //未授权不能提价破
                     $(this).prop('disabled',false);

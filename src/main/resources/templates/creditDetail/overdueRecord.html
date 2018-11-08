@@ -47,70 +47,63 @@
                 <div class="detection-species-box">
                     <div class="hit-account">
                         <!--黑名单只有总数-->
-                        <div class="total-hit">
-                            <div class="species-desc">
-                                不良命中：<span class="colorY">12个</span>
-                            </div>
-                            <div class="pipe">
-                                <div class="inner-pipe"></div>
-                            </div>
-                            <div class="species-desc-item species-id-item" data-id-num="4">
-                                身份证命中：<span>4个</span>
-                            </div>
-                            <div class="species-desc-item species-tel-item" data-tel-num="8">
-                                手机号命中：<span>8个</span>
-                            </div>
-                        </div>
-                        <div class="hit-species" data-num="6">
-                            <div class="pipe colorY1"></div>
-                            <div class="species-desc">
-                                小贷机构类：<span class="">6个</span>
-                            </div>
-                        </div>
-                        <div class="hit-species" data-num="3">
-                            <div class="pipe colorY1"></div>
-                            <div class="species-desc">
-                                银行类：<span class="">3个</span>
-                            </div>
-                        </div>
-                        <div class="hit-species"  data-num="3">
+                        <!--<div class="total-hit">-->
+                            <!--<div class="species-desc">-->
+                                <!--不良命中：<span class="colorY">12个</span>-->
+                            <!--</div>-->
+                            <!--<div class="pipe">-->
+                                <!--<div class="inner-pipe"></div>-->
+                            <!--</div>-->
+                            <!--<div class="species-desc-item species-id-item" data-id-num="4">-->
+                                <!--身份证命中：<span>4个</span>-->
+                            <!--</div>-->
+                            <!--<div class="species-desc-item species-tel-item" data-tel-num="8">-->
+                                <!--手机号命中：<span>8个</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="hit-species" data-num="6">-->
+                            <!--<div class="pipe colorY1"></div>-->
+                            <!--<div class="species-desc">-->
+                                <!--小贷机构类：<span class="">6个</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="hit-species" data-num="3">-->
+                            <!--<div class="pipe colorY1"></div>-->
+                            <!--<div class="species-desc">-->
+                                <!--银行类：<span class="">3个</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="hit-species"  data-num="3">-->
 
-                            <div class="pipe colorY2"></div>
-                            <div class="species-desc">
-                                P2P机构类：<span class="">3个</span>
-                            </div>
-                        </div>
-                        <div class="hit-species"  data-num="2">
+                            <!--<div class="pipe colorY2"></div>-->
+                            <!--<div class="species-desc">-->
+                                <!--P2P机构类：<span class="">3个</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="hit-species"  data-num="2">-->
 
-                            <div class="pipe colorY2"></div>
-                            <div class="species-desc">
-                                小贷机构类：<span class="">2个</span>
-                            </div>
-                        </div>
+                            <!--<div class="pipe colorY2"></div>-->
+                            <!--<div class="species-desc">-->
+                                <!--小贷机构类：<span class="">2个</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
                     </div>
                     <div class="hit-detail">
-                        <div class="hit-detail-item">
+                        <div class="hit-detail-item" th:each="overdueRecord: ${overdueRecords}">
                             <div class="hit-item-title">
-                                身份证命中故意违章乘车名单
+                                <span th:text="${overdueRecord.type}"></span>
                                 <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
                             </div>
                             <div class="hit-item-info">
-                                <p>描述：<span>身份证命中故意违章乘车名单</span></p>
-                                <p>风险类型：<span>故意违章停车</span></p>
-                                <p>匹配类型：<span>借款人身份证</span></p>
-                                <p>详情：<span>无</span></p>
-                            </div>
-                        </div>
-                        <div class="hit-detail-item">
-                            <div class="hit-item-title">
-                                身份证命中欠税
-                                <img class="hit-down" th:src="@{/image/more.png}" alt=""/>
-                            </div>
-                            <div class="hit-item-info">
-                                <p>描述：<span>身份证命中故意违章乘车名单</span></p>
-                                <p>风险类型：<span>故意违章停车</span></p>
-                                <p>匹配类型：<span>借款人身份证</span></p>
-                                <p>详情：<span>无</span></p>
+                                <p>描述：<span th:text="${overdueRecord.type}"></span></p>
+                                <p>详情：<span></span></p>
+                                <div th:each="dataItem:${overdueRecord.datas}">
+                                    <p>开始时间：<span  th:text="${dataItem.containsKey('overdue_time')?dataItem.overdue_time:''}"></span></p>
+                                    <p>金额： <span  th:text="${dataItem.containsKey('overdue_amount_range')?dataItem.overdue_amount_range:''}"></span></p>
+                                    <p>时间范围：<span  th:text="${dataItem.containsKey('overdue_day_range')?dataItem.overdue_day_range:''}"></span></p>
+                                    <p>次数：<span  th:text="${dataItem.containsKey('overdue_count')?dataItem.overdue_count:''}"></span></p>
+                                </div>
+
                             </div>
                         </div>
                     </div>

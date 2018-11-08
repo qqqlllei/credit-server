@@ -71,8 +71,8 @@
                                 <div class="detection-num notEmpty" th:text="${namelistRecords.size()}" ></div>
                                 <div class="detection-desc">黑名单记录</div>
                             </div>
-                            <div class="detection-item t-c detection-item2" id="overdue"  data-index="detection-item2">
-                                <div class="detection-num">0</div>
+                            <div class="detection-item t-c detection-item2"  id="overdue"  data-index="detection-item2">
+                                <div  th:class="${overdueRecords.size()==0?'detection-num':'detection-num notEmpty'}" th:text="${overdueRecords.size()}"></div>
                                 <div class="detection-desc">逾期记录</div>
                             </div>
                             <div class="detection-item t-c detection-item3" id="judicial"   data-index="detection-item3">
