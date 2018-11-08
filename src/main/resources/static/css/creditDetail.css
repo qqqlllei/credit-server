@@ -29,12 +29,24 @@ html,body,.container,.warrper,.wh100 {
     margin-top: .35rem;
     margin-bottom: .2rem;
 }
+.circle-rate-box canvas {
+    width: 1.88rem;
+    height: 1.88rem;
+}
 .circle-rate-box strong{
     color: #fff;
     position: absolute;
     top: 50%;
     left: 50%;
     font-size: .64rem;
+    transform: translate(-50%,-50%);
+}
+.circle-rate-box .dashed-line {
+    width: 1.37rem;
+    height: 1.37rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
     transform: translate(-50%,-50%);
 }
 .info p {
@@ -410,4 +422,14 @@ html,body,.container,.warrper,.wh100 {
     line-height: 1.02rem;
     background: #fff;
     cursor: pointer;
+}
+.noHit img{
+    width: 1.76rem;
+    margin-top: .6rem;
+    margin-bottom: .4rem;
+}
+.allNoHit img{
+    width: 1.76rem;
+    margin-top: .4rem;
+    margin-bottom: .4rem;
 }

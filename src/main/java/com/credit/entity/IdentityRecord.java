@@ -1,4 +1,5 @@
 package com.credit.entity;
+import com.alibaba.fastjson.JSONArray;
 import com.credit.base.BaseEntity;
 
 public class IdentityRecord extends BaseEntity{
@@ -7,6 +8,8 @@ public class IdentityRecord extends BaseEntity{
 	private String frequencyDetailList;
 	private String data;
 	private String detail;
+
+	private JSONArray datas;
 
 
 
@@ -33,6 +36,14 @@ public class IdentityRecord extends BaseEntity{
 	}
 	public String getDetail() {
 		return this.detail;
+	}
+
+	public JSONArray getDatas() {
+		return datas;
+	}
+
+	public void setDatas(JSONArray datas) {
+		this.datas = datas;
 	}
 }
 

@@ -354,3 +354,6 @@ input,button {
     border: none;
     background: transparent;
 }
+canvas {
+    vertical-align: top;
+}

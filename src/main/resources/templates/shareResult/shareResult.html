@@ -47,13 +47,13 @@
 <script  th:inline="javascript">
     /*<![CDATA[*/
     $(function () {
-
+        var totalScore = Math.floor(Math.random() * (100 - 0)) + 0;
         var htmlSize = '';
         var oWidth = document.body.clientWidth || document.documentElement.clientWidth;
         htmlSize = oWidth/750*100;
         $('.circle-rate-box').circleProgress({
-            value: 0.98, //进度条进度
-            size:htmlSize*1.55, //直径
+            value: totalScore/100, //进度条进度
+            size:parseInt(htmlSize*1.55), //直径
             thickness:10, //圆环宽度
             startAngle: Math.PI / 6 * 1, //起点
             fill:{
@@ -63,7 +63,7 @@
 
         }).on('circle-animation-progress', function(event, progress) {
             //进度条显示内容
-            $(this).find('strong').html(parseInt(98 * progress));
+            $(this).find('strong').html(parseInt(totalScore * progress));
         });
     })
     /*]]>*/

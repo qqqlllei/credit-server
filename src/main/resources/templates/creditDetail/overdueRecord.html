@@ -11,35 +11,35 @@
 <body>
 
     <!--检测结果记录-->
-    <div class="detection-record-box detection-item2 active" id="" style="padding-top: 0">
+    <div class="detection-record-box detection-item2" id="" style="padding-top: 0" th:fragment ="overdueRecord" >
         <!--逾期记录-->
         <div class="detection-t detection-record-t">
             <div class="detection-title" style="padding-left: .69rem"><span>逾期记录</span></div>
         </div>
-        <div class="detection-record-contain">
+        <div class="detection-record-contain overdue hit">
             <div class="pass-rate-box">
                 <div class="pass-rate-top">
                     <div class="pass-rate-l">
                         <img th:src="@{/image/down-icon.png}"  alt=""/>
                         <div class="pass-rate-desc">
-                            申贷通过率 <span>大幅降低</span>
+                            申贷通过率 <span>降低</span>
                         </div>
                     </div>
                     <div class="pass-rate-r">
                         <img th:src="@{/image/down-icon.png}"  alt=""/>
                         <div class="pass-rate-desc">
-                            下款额度 <span>大幅降低</span>
+                            下款速度 <span>降低</span>
                         </div>
                     </div>
                 </div>
                 <div class="pass-rate-bottom">
-                    存在严重逾期等失信行为将可能被平台列入黑名单。大多数平台在获知您的此类记录时，会直接拒绝您的借款申请。
+                    发生逾期后您将被列入放贷平台的观察名单，在申请贷款时，可能需要补充更多信用相关资料，或转为人工审核。逾期严重时，将进入黑名单，一般将被放贷平台直接拒绝。通过率和额度都将受到影响。
                 </div>
             </div>
             <div class="warn-info-box">
                 <img class="w100 warn-line" th:src="@{/image/warn-line.png}" alt=""/>
                 <div class="more-warn-info">
-                    由于不良记录的共享范围有限，您可以尝试其他放款机构，但是需要注意申请的节奏，切勿频繁申请，以免引起信用恶化。
+                    逾期类负面信息移除操作较简单，请尽快还清逾期欠款，并在后续用款过程中，保持良好使用习惯，按需借款，及时还款。
                 </div>
                 <div class="more-btn t-c active">查看更多<img class="w28 more-down" th:src="@{/image/more.png}"  alt=""/></div>
             </div>
@@ -54,10 +54,10 @@
                             <div class="pipe">
                                 <div class="inner-pipe"></div>
                             </div>
-                            <div class="species-desc-item">
+                            <div class="species-desc-item species-id-item" data-id-num="4">
                                 身份证命中：<span>4个</span>
                             </div>
-                            <div class="species-desc-item">
+                            <div class="species-desc-item species-tel-item" data-tel-num="8">
                                 手机号命中：<span>8个</span>
                             </div>
                         </div>
@@ -117,22 +117,16 @@
                 </div>
             </div>
         </div>
+        <div class="detection-record-contain overdue noHit t-c">
+            <img class="" th:src="@{/image/nohit-icon.png}" alt=""/>
+            <div style="color:#666;text-align: left;line-height: 1.4;">哇~您的《逾期记录》没有风险命中信息哦！请保持良好的借贷习惯，将有利于持续提高您的神代成功率与下款额度。</div>
+        </div>
+        <script type="text/javascript" th:src="@{/js/overdueRecord.js}"></script>
     </div>
 
 <script  th:inline="javascript">
     /*<![CDATA[*/
-    $(function () {
-        //其他命中计算 不清楚规则
-        $('.hit-species').each(function () {
-            var rate = $(this).attr('data-num')?$(this).attr('data-num'):0;
-            if(rate>=10) {
-                $(this).find('.pipe').css('width','100%');
-            }else {
-                $(this).find('.pipe').css('width',rate/10*100+'%');
-            }
-        });
 
-    })
     /*]]>*/
 </script>
 

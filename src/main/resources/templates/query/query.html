@@ -25,12 +25,14 @@
                 <div class="circle-rate-warrper">
                     <div class="circle-rate circle-rate1">
                         <strong></strong>
+                        <img class="dashed-line" th:src="@{/image/line-index.png}" alt=""/>
                     </div>
                     <div class="circle-rate-info">精准率</div>
                 </div>
                 <div class="circle-rate-warrper">
                     <div class="circle-rate circle-rate2">
                         <strong></strong>
+                        <img class="dashed-line" th:src="@{/image/line-index.png}" alt=""/>
                     </div>
                     <div class="circle-rate-info">申贷成功率提高</div>
 
@@ -38,6 +40,7 @@
                 <div class="circle-rate-warrper">
                     <div class="circle-rate circle-rate3">
                         <strong></strong>
+                        <img class="dashed-line" th:src="@{/image/line-index.png}" alt=""/>
                     </div>
                     <div class="circle-rate-info">信息安全</div>
 
@@ -86,7 +89,7 @@
         htmlSize = oWidth/750*100;
         $('.circle-rate1').circleProgress({
             value: 0.98, //进度条进度
-            size:htmlSize*1.26, //直径
+            size:parseInt(htmlSize*1.26), //直径
             thickness:5, //圆环宽度
             startAngle: Math.PI / 6 * 1, //起点
             fill:{
@@ -102,7 +105,7 @@
         });
         $('.circle-rate2').circleProgress({
             value: 0.62, //进度条进度
-            size:htmlSize*1.26, //直径
+            size:parseInt(htmlSize*1.26), //直径
             thickness:5, //圆环宽度
             startAngle: Math.PI / 6 * 1, //起点
             fill:{
@@ -118,7 +121,7 @@
         });
         $('.circle-rate3').circleProgress({
             value: 100, //进度条进度
-            size:htmlSize*1.26, //直径
+            size:parseInt(htmlSize*1.26), //直径
             thickness:5, //圆环宽度
             startAngle: Math.PI / 6 * 1, //起点
             fill:{

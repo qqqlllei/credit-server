@@ -41,6 +41,14 @@ html,body,.container,.warrper,.wh100 {
     font-size: .28rem;
     transform: translate(-50%,-50%);
 }
+.circle-rate-box .dashed-line {
+    width: .9rem;
+    height: .9rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
 .circle-rate-info {
     padding-top: .18rem;
     padding-bottom: .37rem;

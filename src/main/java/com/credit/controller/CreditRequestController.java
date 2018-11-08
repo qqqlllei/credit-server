@@ -42,6 +42,7 @@ public class CreditRequestController {
     public String submit(HttpServletRequest request, Model model){
         String phone = request.getParameter("phone");
         String name = request.getParameter("name");
+        phone="15555555555";
         String idcard = request.getParameter("idcard");
         CreditRequest creditRequest = creditRequestService.getCreditRequestByPhone(phone);
         if(creditRequest !=null){
@@ -68,6 +69,10 @@ public class CreditRequestController {
 
                 //黑名单
                 List<NamelistRecord> namelistRecords = creditRequestService.namelistRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+                for (IdentityRecord identityRecord :identityRecords) {
+                    identityRecord.setDatas(JSONArray.parseArray(identityRecord.getData()));
+                }
 
                 model.addAttribute("courtInfoList",courtInfoList);
                 model.addAttribute("identityRecords",identityRecords);
@@ -124,11 +129,11 @@ public class CreditRequestController {
 
 
 
-                model.addAttribute("totalScore",totalScore);
+                model.addAttribute("totalScore",totalScore<0?0:totalScore);
 
 
 
-                return "/user/userInfo";
+                return "/creditDetail/creditDetail";
             }
         }
         Long timestamp = System.currentTimeMillis();
@@ -175,7 +180,7 @@ public class CreditRequestController {
 //        model.addAttribute("identityRecords",identityRecords);
 //        model.addAttribute("overdueRecords",overdueRecords);
 //        model.addAttribute("loanRecords",loanRecords);
-        return "/user/userInfo";
+        return "/creditDetail/creditDetail";
     }
 
     @RequestMapping("/query")
