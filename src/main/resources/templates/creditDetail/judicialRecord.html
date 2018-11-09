@@ -38,10 +38,8 @@
         </div>
         <div class="detection-record-detail">
             <div class="detection-species-box"  style="padding-top: 0">
-                <div class="hit-account">
                     <!--黑名单只有总数-->
-                </div>
-                <div class="hit-detail">
+                <div class="hit-detail" style="padding-top: 0">
                     <div class="hit-detail-item" th:each="courtInfo : ${courtInfoList}">
                         <div class="hit-item-title">
                             <span  th:text="${courtInfo.fraudType}"></span>

@@ -45,50 +45,7 @@
         </div>
         <div class="detection-record-detail">
             <div class="detection-species-box" style="padding-top: 0">
-                <div class="hit-account">
-                    <!--黑名单只有总数-->
-                    <!--<div class="total-hit">-->
-                        <!--<div class="species-desc">-->
-                            <!--不良命中：<span class="colorY">12个</span>-->
-                        <!--</div>-->
-                        <!--<div class="pipe">-->
-                            <!--<div class="inner-pipe"></div>-->
-                        <!--</div>-->
-                        <!--<div class="species-desc-item species-id-item" data-id-num="4">-->
-                            <!--身份证命中：<span>4个</span>-->
-                        <!--</div>-->
-                        <!--<div class="species-desc-item species-tel-item" data-tel-num="8">-->
-                            <!--手机号命中：<span>8个</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="hit-species" data-num="6">-->
-                        <!--<div class="pipe colorY1"></div>-->
-                        <!--<div class="species-desc">-->
-                            <!--小贷机构类：<span class="">6个</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="hit-species" data-num="3">-->
-                        <!--<div class="pipe colorY1"></div>-->
-                        <!--<div class="species-desc">-->
-                            <!--银行类：<span class="">3个</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="hit-species" data-num="3">-->
-
-                        <!--<div class="pipe colorY2"></div>-->
-                        <!--<div class="species-desc">-->
-                            <!--P2P机构类：<span class="">3个</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="hit-species" data-num="2">-->
-
-                        <!--<div class="pipe colorY2"></div>-->
-                        <!--<div class="species-desc">-->
-                            <!--小贷机构类：<span class="">2个</span>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                </div>
-                <div class="hit-detail">
+                <div class="hit-detail"  style="padding-top: 0">
                     <div class="hit-detail-item" th:each="identityRecord: ${identityRecords}">
                         <div class="hit-item-title">
                             <span th:text="${identityRecord.type}"></span>

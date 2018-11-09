@@ -45,7 +45,7 @@
         </div>
         <div class="detection-record-detail borrowing-record">
             <div class="time-list t-c">
-                <div class="time-item active" data-index="detection-species-box">7天内</div>
+                <div class="time-item active" data-index="time-item1">7天内</div>
                 <div class="time-item" data-index="time-item2">1个月</div>
                 <div class="time-item" data-index="time-item3">3个月+</div>
             </div>
@@ -59,10 +59,11 @@
                         <div class="pipe">
                             <div class="inner-pipe"></div>
                         </div>
-                        <div class="species-desc-item species-id-item" >
+
+                        <div class="species-desc-item species-id-item"  th:attr="data-id-num=${sevenDays.idCardCount}" >
                             身份证命中：<span th:text="${sevenDays.idCardCount}"></span>
                         </div>
-                        <div class="species-desc-item species-tel-item" >
+                        <div class="species-desc-item species-tel-item" th:attr="data-tel-num=${sevenDays.phoneCount}">
                             手机号命中：<span th:text="${sevenDays.phoneCount}"></span>
                         </div>
                     </div>
@@ -87,10 +88,10 @@
                         <div class="pipe">
                             <div class="inner-pipe"></div>
                         </div>
-                        <div class="species-desc-item species-id-item" >
+                        <div class="species-desc-item species-id-item" th:attr="data-id-num=${oneMonth.idCardCount}" >
                             身份证命中：<span th:text="${oneMonth.idCardCount}"></span>
                         </div>
-                        <div class="species-desc-item species-tel-item" >
+                        <div class="species-desc-item species-tel-item" th:attr="data-tel-num=${oneMonth.phoneCount}" >
                             手机号命中：<span th:text="${oneMonth.phoneCount}"></span>
                         </div>
                     </div>
@@ -115,10 +116,10 @@
                         <div class="pipe">
                             <div class="inner-pipe"></div>
                         </div>
-                        <div class="species-desc-item species-id-item">
+                        <div class="species-desc-item species-id-item" th:attr="data-id-num=${threeMonth.idCardCount}">
                             身份证命中：<span th:text="${threeMonth.idCardCount}"></span>
                         </div>
-                        <div class="species-desc-item species-tel-item" >
+                        <div class="species-desc-item species-tel-item" th:attr="data-tel-num=${threeMonth.phoneCount}">
                             手机号命中：<span th:text="${threeMonth.phoneCount}"></span>
                         </div>
                     </div>

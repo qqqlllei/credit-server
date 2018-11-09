@@ -425,6 +425,8 @@ public class CreditRequestController {
 
         int totalScore=100;
 
+
+        //司法记录分数计算
         int courInfoScore = 5*courtInfoList.size();
         if(courInfoScore >= 20){
             totalScore= 80;
@@ -432,48 +434,86 @@ public class CreditRequestController {
             totalScore= totalScore-courInfoScore;
         }
 
+        //黑名单分数计算
+        int namelistScore = namelistRecords.size()*4;
+        totalScore= totalScore-namelistScore;
 
-        int overdueScore = 15*overdueRecords.size();
-        totalScore= totalScore - overdueScore;
+        //身份记录
+        if(identityRecords.size()>0){
+            totalScore= totalScore-12;
+        }
+
+        //借贷记录
+
+        int loanRecordScore = 2*loanRecords.size();
+        if(loanRecordScore >= 18){
+            totalScore= totalScore-18;
+        }else {
+            totalScore= totalScore-loanRecordScore;
+        }
 
 
-
+        // 逾期记录扣分
         for (int j=0;j<overdueRecords.size();j++){
             OverdueRecord overdueRecord = overdueRecords.get(j);
             JSONArray overdue_details = JSONObject.parseArray(overdueRecord.getDescription());
-
+            int currentMaxScore=0;
             for (int i=0;i<overdue_details.size();i++){
                 JSONObject overdue_detail = (JSONObject) overdue_details.get(i);
                 String range = overdue_detail.getString("overdue_amount_range");
+
                 if("(0, 1000]".equals(range)){
-                    totalScore=totalScore-5;
+                    if(currentMaxScore < 5){
+                        currentMaxScore = 5;
+                    }
                 }
                 if("(1000, 5000]".equals(range)){
-                    totalScore=totalScore-10;
+                    if(currentMaxScore < 10){
+                        currentMaxScore = 10;
+                    }
                 }
                 if("(5000, 10000]".equals(range)){
-                    totalScore=totalScore-20;
+                    if(currentMaxScore < 20){
+                        currentMaxScore = 20;
+                    }
                 }
                 if("(10000, 50000]".equals(range)){
-                    totalScore=totalScore-20;
+                    if(currentMaxScore < 20){
+                        currentMaxScore = 20;
+                    }
                 }
                 if("(50000, 100000]".equals(range)){
-                    totalScore=totalScore-20;
+                    if(currentMaxScore < 20){
+                        currentMaxScore = 20;
+                    }
                 }
                 if("(100000, 500000]".equals(range)){
-                    totalScore=totalScore-20;
+                    if(currentMaxScore < 20){
+                        currentMaxScore = 20;
+                    }
                 }
                 if("500000+".equals(range)){
-                    totalScore=totalScore-20;
+                    if(currentMaxScore < 20){
+                        currentMaxScore = 20;
+                    }
                 }
+
+
             }
+            totalScore= totalScore-currentMaxScore;
         }
 
 
 
-        model.addAttribute("totalScore",totalScore<0?0:totalScore);
 
-        model.addAttribute("totalScore",totalScore>90?90:totalScore);
+        if(totalScore<0){
+            totalScore=0;
+        }else if(totalScore >90){
+            totalScore=90;
+        }
+
+
+        model.addAttribute("totalScore",totalScore);
     }
 
 }
