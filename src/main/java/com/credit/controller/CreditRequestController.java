@@ -42,7 +42,6 @@ public class CreditRequestController {
     public String submit(HttpServletRequest request, Model model){
         String phone = request.getParameter("phone");
         String name = request.getParameter("name");
-        phone="15555555555";
         String idcard = request.getParameter("idcard");
         CreditRequest creditRequest = creditRequestService.getCreditRequestByPhone(phone);
         if(creditRequest !=null){
@@ -54,167 +53,172 @@ public class CreditRequestController {
                 JSONObject riskBody = JSONObject.parseObject(queryInfoBody.getString("body"));
                 JSONArray jsonArray = riskBody.getJSONArray("risk_items");
 
-                //法院信息
-                List<JudicialRecord> courtInfoList = creditRequestService.courtcInfoHandle(jsonArray,creditRequest,creditRequest.getRemark());
 
-                //身份记录
-                List<IdentityRecord> identityRecords =  creditRequestService.identityRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+                handleData(model,jsonArray,creditRequest);
 
-                //逾期记录
-                List<OverdueRecord> overdueRecords =   creditRequestService.overdueRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
-
-                //借贷记录
-                List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
-
-
-                //黑名单
-                List<NamelistRecord> namelistRecords = creditRequestService.namelistRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
-
-                for (IdentityRecord identityRecord :identityRecords) {
-                    identityRecord.setDatas(JSONArray.parseArray(identityRecord.getData()));
-                }
-
-
-                for (OverdueRecord overdueRecord :overdueRecords) {
-                    overdueRecord.setDatas(JSONArray.parseArray(overdueRecord.getDescription()));
-                }
-
-                JSONObject sevenDays = new JSONObject();
-                JSONObject oneMonth = new JSONObject();
-                JSONObject threeMonth = new JSONObject();
-                for (LoanRecord loanRecord :loanRecords) {
-                    if(loanRecord.getDescription().startsWith("7天内")){
-
-                        if(loanRecord.getType().contains("手机")){
-                            sevenDays.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
-                        }
-                        if(loanRecord.getType().contains("身份证")){
-                            sevenDays.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
-                        }
-
-                        JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
-                        Iterator<Object> iterable =  list.iterator();
-                        while (iterable.hasNext()){
-                            String data  = (String) iterable.next();
-                            String[] temp = data.split(":");
-                            Integer count = 0 ;
-                            if(sevenDays.containsKey("sevenDay"+temp[0])){
-                                count = Integer.valueOf(sevenDays.getString("sevenDay"+temp[0]));
-                            }
-                            sevenDays.put("sevenDay"+temp[0],count+Integer.valueOf(temp[1]));
-                        }
-                    }else if(loanRecord.getDescription().startsWith("1个月内")){
-
-                        if(loanRecord.getType().contains("手机")){
-                            oneMonth.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
-                        }
-                        if(loanRecord.getType().contains("身份证")){
-                            oneMonth.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
-                        }
-
-                        JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
-                        Iterator<Object> iterable =  list.iterator();
-                        while (iterable.hasNext()){
-                            String data  = (String) iterable.next();
-                            String[] temp = data.split(":");
-                            Integer count = 0 ;
-                            if(oneMonth.containsKey("oneMonth"+temp[0])){
-                                count = Integer.valueOf(oneMonth.getString("oneMonth"+temp[0]));
-                            }
-                            oneMonth.put("oneMonth"+temp[0],count+Integer.valueOf(temp[1]));
-                        }
-                    }else{
-                        if(loanRecord.getType().contains("手机")){
-                            threeMonth.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
-                        }
-                        if(loanRecord.getType().contains("身份证")){
-                            threeMonth.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
-                        }
-
-                        JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
-                        Iterator<Object> iterable =  list.iterator();
-                        while (iterable.hasNext()){
-                            String data  = (String) iterable.next();
-                            String[] temp = data.split(":");
-                            Integer count = 0 ;
-                            if(threeMonth.containsKey("threeMonth"+temp[0])){
-                                count = Integer.valueOf(threeMonth.getString("threeMonth"+temp[0]));
-                            }
-                            threeMonth.put("threeMonth"+temp[0],count+Integer.valueOf(temp[1]));
-                        }
-                    }
-
-                }
-
-                if(!sevenDays.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
-                if(!sevenDays.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
-
-                if(!oneMonth.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
-                if(!oneMonth.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
-
-                if(!threeMonth.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
-                if(!threeMonth.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
-
-                model.addAttribute("sevenDays",sevenDays);
-                model.addAttribute("oneMonth",oneMonth);
-                model.addAttribute("threeMonth",threeMonth);
-
-                model.addAttribute("courtInfoList",courtInfoList);
-                model.addAttribute("identityRecords",identityRecords);
-                model.addAttribute("overdueRecords",overdueRecords);
-                model.addAttribute("loanRecords",loanRecords);
-
-                model.addAttribute("namelistRecords",namelistRecords);
-
-                int totalScore=100;
-
-               int courInfoScore = 5*courtInfoList.size();
-                if(courInfoScore >= 20){
-                    totalScore= 80;
-                }else {
-                    totalScore= totalScore-courInfoScore;
-                }
-
-
-                int overdueScore = 15*overdueRecords.size();
-                totalScore= totalScore - overdueScore;
-
-
-
-                for (int j=0;j<overdueRecords.size();j++){
-                    OverdueRecord overdueRecord = overdueRecords.get(j);
-                    JSONArray overdue_details = JSONObject.parseArray(overdueRecord.getDescription());
-
-                    for (int i=0;i<overdue_details.size();i++){
-                        JSONObject overdue_detail = (JSONObject) overdue_details.get(i);
-                        String range = overdue_detail.getString("overdue_amount_range");
-                        if("(0, 1000]".equals(range)){
-                            totalScore=totalScore-5;
-                        }
-                        if("(1000, 5000]".equals(range)){
-                            totalScore=totalScore-10;
-                        }
-                        if("(5000, 10000]".equals(range)){
-                            totalScore=totalScore-20;
-                        }
-                        if("(10000, 50000]".equals(range)){
-                            totalScore=totalScore-20;
-                        }
-                        if("(50000, 100000]".equals(range)){
-                            totalScore=totalScore-20;
-                        }
-                        if("(100000, 500000]".equals(range)){
-                            totalScore=totalScore-20;
-                        }
-                        if("500000+".equals(range)){
-                            totalScore=totalScore-20;
-                        }
-                    }
-                }
-
-
-
-                model.addAttribute("totalScore",totalScore<0?0:totalScore);
+//                //法院信息
+//                List<JudicialRecord> courtInfoList = creditRequestService.courtcInfoHandle(jsonArray,creditRequest,creditRequest.getRemark());
+//
+//                //身份记录
+//                List<IdentityRecord> identityRecords =  creditRequestService.identityRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+//
+//                //逾期记录
+//                List<OverdueRecord> overdueRecords =   creditRequestService.overdueRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+//
+//                //借贷记录
+//                List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+//
+//
+//                //黑名单
+//                List<NamelistRecord> namelistRecords = creditRequestService.namelistRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+//
+//                for (IdentityRecord identityRecord :identityRecords) {
+//                    identityRecord.setDatas(JSONArray.parseArray(identityRecord.getData()));
+//                }
+//
+//
+//                for (OverdueRecord overdueRecord :overdueRecords) {
+//                    overdueRecord.setDatas(JSONArray.parseArray(overdueRecord.getDescription()));
+//                }
+//
+//                JSONObject sevenDays = new JSONObject();
+//                JSONObject oneMonth = new JSONObject();
+//                JSONObject threeMonth = new JSONObject();
+//                for (LoanRecord loanRecord :loanRecords) {
+//                    if(loanRecord.getDescription().startsWith("7天内")){
+//
+//                        if(loanRecord.getType().contains("手机")){
+//                            sevenDays.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
+//                        }
+//                        if(loanRecord.getType().contains("身份证")){
+//                            sevenDays.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
+//                        }
+//
+//                        JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
+//                        Iterator<Object> iterable =  list.iterator();
+//                        while (iterable.hasNext()){
+//                            String data  = (String) iterable.next();
+//                            String[] temp = data.split(":");
+//                            Integer count = 0 ;
+//                            if(sevenDays.containsKey("sevenDay"+temp[0])){
+//                                count = Integer.valueOf(sevenDays.getString("sevenDay"+temp[0]));
+//                            }
+//                            sevenDays.put("sevenDay"+temp[0],count+Integer.valueOf(temp[1]));
+//                        }
+//                    }else if(loanRecord.getDescription().startsWith("1个月内")){
+//
+//                        if(loanRecord.getType().contains("手机")){
+//                            oneMonth.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
+//                        }
+//                        if(loanRecord.getType().contains("身份证")){
+//                            oneMonth.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
+//                        }
+//
+//                        JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
+//                        Iterator<Object> iterable =  list.iterator();
+//                        while (iterable.hasNext()){
+//                            String data  = (String) iterable.next();
+//                            String[] temp = data.split(":");
+//                            Integer count = 0 ;
+//                            if(oneMonth.containsKey("oneMonth"+temp[0])){
+//                                count = Integer.valueOf(oneMonth.getString("oneMonth"+temp[0]));
+//                            }
+//                            oneMonth.put("oneMonth"+temp[0],count+Integer.valueOf(temp[1]));
+//                        }
+//                    }else{
+//                        if(loanRecord.getType().contains("手机")){
+//                            threeMonth.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
+//                        }
+//                        if(loanRecord.getType().contains("身份证")){
+//                            threeMonth.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
+//                        }
+//
+//                        JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
+//                        Iterator<Object> iterable =  list.iterator();
+//                        while (iterable.hasNext()){
+//                            String data  = (String) iterable.next();
+//                            String[] temp = data.split(":");
+//                            Integer count = 0 ;
+//                            if(threeMonth.containsKey("threeMonth"+temp[0])){
+//                                count = Integer.valueOf(threeMonth.getString("threeMonth"+temp[0]));
+//                            }
+//                            threeMonth.put("threeMonth"+temp[0],count+Integer.valueOf(temp[1]));
+//                        }
+//                    }
+//
+//                }
+//
+//                if(!sevenDays.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
+//                if(!sevenDays.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
+//
+//                if(!oneMonth.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
+//                if(!oneMonth.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
+//
+//                if(!threeMonth.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
+//                if(!threeMonth.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
+//
+//                model.addAttribute("sevenDays",sevenDays);
+//                model.addAttribute("oneMonth",oneMonth);
+//                model.addAttribute("threeMonth",threeMonth);
+//
+//                model.addAttribute("courtInfoList",courtInfoList);
+//                model.addAttribute("identityRecords",identityRecords);
+//                model.addAttribute("overdueRecords",overdueRecords);
+//                model.addAttribute("loanRecords",loanRecords);
+//
+//                model.addAttribute("namelistRecords",namelistRecords);
+//
+//                int totalScore=100;
+//
+//               int courInfoScore = 5*courtInfoList.size();
+//                if(courInfoScore >= 20){
+//                    totalScore= 80;
+//                }else {
+//                    totalScore= totalScore-courInfoScore;
+//                }
+//
+//
+//                int overdueScore = 15*overdueRecords.size();
+//                totalScore= totalScore - overdueScore;
+//
+//
+//
+//                for (int j=0;j<overdueRecords.size();j++){
+//                    OverdueRecord overdueRecord = overdueRecords.get(j);
+//                    JSONArray overdue_details = JSONObject.parseArray(overdueRecord.getDescription());
+//
+//                    for (int i=0;i<overdue_details.size();i++){
+//                        JSONObject overdue_detail = (JSONObject) overdue_details.get(i);
+//                        String range = overdue_detail.getString("overdue_amount_range");
+//                        if("(0, 1000]".equals(range)){
+//                            totalScore=totalScore-5;
+//                        }
+//                        if("(1000, 5000]".equals(range)){
+//                            totalScore=totalScore-10;
+//                        }
+//                        if("(5000, 10000]".equals(range)){
+//                            totalScore=totalScore-20;
+//                        }
+//                        if("(10000, 50000]".equals(range)){
+//                            totalScore=totalScore-20;
+//                        }
+//                        if("(50000, 100000]".equals(range)){
+//                            totalScore=totalScore-20;
+//                        }
+//                        if("(100000, 500000]".equals(range)){
+//                            totalScore=totalScore-20;
+//                        }
+//                        if("500000+".equals(range)){
+//                            totalScore=totalScore-20;
+//                        }
+//                    }
+//                }
+//
+//
+//
+//                model.addAttribute("totalScore",totalScore<0?0:totalScore);
+//
+//                model.addAttribute("totalScore",totalScore>90?90:totalScore);
 
 
 
@@ -233,7 +237,9 @@ public class CreditRequestController {
 
         System.out.println("======================="+requestBody.toJSONString()+"======================");
         String submitInfo = HttpClientUtil.unEncodingPost(requestBody.toJSONString(),appUrl+"submit");
-
+        System.out.println("=======================submitInfo"+submitInfo+"======================");
+        JSONObject submitResult = JSONObject.parseObject(submitInfo);
+        if(!submitResult.containsKey("code") || !"200".equals(submitResult.getString("code"))) return "/error";
         String queryInfo = HttpClientUtil.unEncodingPost(requestBody.toJSONString(),appUrl+"query");
         CreditRequest creditRequestInfo = new CreditRequest();
         creditRequestInfo.setName(name);
@@ -251,16 +257,18 @@ public class CreditRequestController {
         creditRequestService.saveCreditRequest(creditRequestInfo);
 
 
-//        JSONArray jsonArray = riskBody.getJSONArray("risk_items");
-//
+        JSONArray jsonArray = riskBody.getJSONArray("risk_items");
+
+        handleData(model,jsonArray,creditRequestInfo);
+
 //        List<JudicialRecord> courtInfoList = creditRequestService.courtcInfoHandle(jsonArray,creditRequest,reportId);
 //
 //        List<IdentityRecord> identityRecords =  creditRequestService.identityRecordHandle(jsonArray,creditRequest,reportId);
 //
-//        List<OverdueRecord> overdueRecords =   creditRequestService.OverdueRecordHandle(jsonArray,creditRequest);
+//        List<OverdueRecord> overdueRecords =   creditRequestService.overdueRecordHandle(jsonArray,creditRequest);
 //
 //        List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,reportId);
-//
+
 //        model.addAttribute("courtInfoList",courtInfoList);
 //        model.addAttribute("identityRecords",identityRecords);
 //        model.addAttribute("overdueRecords",overdueRecords);
@@ -292,6 +300,172 @@ public class CreditRequestController {
     public String share(){
 
         return "/shareResult/shareResult";
+    }
+
+    private void handleData(Model model,JSONArray jsonArray,CreditRequest creditRequest){
+        //法院信息
+        List<JudicialRecord> courtInfoList = creditRequestService.courtcInfoHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+        //身份记录
+        List<IdentityRecord> identityRecords =  creditRequestService.identityRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+        //逾期记录
+        List<OverdueRecord> overdueRecords =   creditRequestService.overdueRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+        //借贷记录
+        List<LoanRecord> loanRecords =   creditRequestService.loanRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+
+        //黑名单
+        List<NamelistRecord> namelistRecords = creditRequestService.namelistRecordHandle(jsonArray,creditRequest,creditRequest.getRemark());
+
+        for (IdentityRecord identityRecord :identityRecords) {
+            identityRecord.setDatas(JSONArray.parseArray(identityRecord.getData()));
+        }
+
+
+        for (OverdueRecord overdueRecord :overdueRecords) {
+            overdueRecord.setDatas(JSONArray.parseArray(overdueRecord.getDescription()));
+        }
+
+        JSONObject sevenDays = new JSONObject();
+        JSONObject oneMonth = new JSONObject();
+        JSONObject threeMonth = new JSONObject();
+        for (LoanRecord loanRecord :loanRecords) {
+            if(loanRecord.getDescription().startsWith("7天内")){
+
+                if(loanRecord.getType().contains("手机")){
+                    sevenDays.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
+                }
+                if(loanRecord.getType().contains("身份证")){
+                    sevenDays.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
+                }
+
+                JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
+                Iterator<Object> iterable =  list.iterator();
+                while (iterable.hasNext()){
+                    String data  = (String) iterable.next();
+                    String[] temp = data.split(":");
+                    Integer count = 0 ;
+                    if(sevenDays.containsKey("sevenDay"+temp[0])){
+                        count = Integer.valueOf(sevenDays.getString("sevenDay"+temp[0]));
+                    }
+                    sevenDays.put("sevenDay"+temp[0],count+Integer.valueOf(temp[1]));
+                }
+            }else if(loanRecord.getDescription().startsWith("1个月内")){
+
+                if(loanRecord.getType().contains("手机")){
+                    oneMonth.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
+                }
+                if(loanRecord.getType().contains("身份证")){
+                    oneMonth.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
+                }
+
+                JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
+                Iterator<Object> iterable =  list.iterator();
+                while (iterable.hasNext()){
+                    String data  = (String) iterable.next();
+                    String[] temp = data.split(":");
+                    Integer count = 0 ;
+                    if(oneMonth.containsKey("oneMonth"+temp[0])){
+                        count = Integer.valueOf(oneMonth.getString("oneMonth"+temp[0]));
+                    }
+                    oneMonth.put("oneMonth"+temp[0],count+Integer.valueOf(temp[1]));
+                }
+            }else{
+                if(loanRecord.getType().contains("手机")){
+                    threeMonth.put("phoneCount",Integer.valueOf(loanRecord.getCount()));
+                }
+                if(loanRecord.getType().contains("身份证")){
+                    threeMonth.put("idCardCount",Integer.valueOf(loanRecord.getCount()));
+                }
+
+                JSONArray list = JSONArray.parseArray(loanRecord.getDetail());
+                Iterator<Object> iterable =  list.iterator();
+                while (iterable.hasNext()){
+                    String data  = (String) iterable.next();
+                    String[] temp = data.split(":");
+                    Integer count = 0 ;
+                    if(threeMonth.containsKey("threeMonth"+temp[0])){
+                        count = Integer.valueOf(threeMonth.getString("threeMonth"+temp[0]));
+                    }
+                    threeMonth.put("threeMonth"+temp[0],count+Integer.valueOf(temp[1]));
+                }
+            }
+
+        }
+
+        if(!sevenDays.containsKey("phoneCount")) sevenDays.put("phoneCount",0);
+        if(!sevenDays.containsKey("idCardCount")) sevenDays.put("idCardCount",0);
+
+        if(!oneMonth.containsKey("phoneCount")) oneMonth.put("phoneCount",0);
+        if(!oneMonth.containsKey("idCardCount")) oneMonth.put("idCardCount",0);
+
+        if(!threeMonth.containsKey("phoneCount")) threeMonth.put("phoneCount",0);
+        if(!threeMonth.containsKey("idCardCount")) threeMonth.put("idCardCount",0);
+
+        model.addAttribute("sevenDays",sevenDays);
+        model.addAttribute("oneMonth",oneMonth);
+        model.addAttribute("threeMonth",threeMonth);
+
+        model.addAttribute("courtInfoList",courtInfoList);
+        model.addAttribute("identityRecords",identityRecords);
+        model.addAttribute("overdueRecords",overdueRecords);
+        model.addAttribute("loanRecords",loanRecords);
+
+        model.addAttribute("namelistRecords",namelistRecords);
+
+        int totalScore=100;
+
+        int courInfoScore = 5*courtInfoList.size();
+        if(courInfoScore >= 20){
+            totalScore= 80;
+        }else {
+            totalScore= totalScore-courInfoScore;
+        }
+
+
+        int overdueScore = 15*overdueRecords.size();
+        totalScore= totalScore - overdueScore;
+
+
+
+        for (int j=0;j<overdueRecords.size();j++){
+            OverdueRecord overdueRecord = overdueRecords.get(j);
+            JSONArray overdue_details = JSONObject.parseArray(overdueRecord.getDescription());
+
+            for (int i=0;i<overdue_details.size();i++){
+                JSONObject overdue_detail = (JSONObject) overdue_details.get(i);
+                String range = overdue_detail.getString("overdue_amount_range");
+                if("(0, 1000]".equals(range)){
+                    totalScore=totalScore-5;
+                }
+                if("(1000, 5000]".equals(range)){
+                    totalScore=totalScore-10;
+                }
+                if("(5000, 10000]".equals(range)){
+                    totalScore=totalScore-20;
+                }
+                if("(10000, 50000]".equals(range)){
+                    totalScore=totalScore-20;
+                }
+                if("(50000, 100000]".equals(range)){
+                    totalScore=totalScore-20;
+                }
+                if("(100000, 500000]".equals(range)){
+                    totalScore=totalScore-20;
+                }
+                if("500000+".equals(range)){
+                    totalScore=totalScore-20;
+                }
+            }
+        }
+
+
+
+        model.addAttribute("totalScore",totalScore<0?0:totalScore);
+
+        model.addAttribute("totalScore",totalScore>90?90:totalScore);
     }
 
 }
