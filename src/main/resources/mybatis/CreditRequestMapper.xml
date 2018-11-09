@@ -37,6 +37,10 @@
     SELECT * FROM t_credit_request WHERE phone = #{phone}
   </select>
 
+  <select id="getCreditRequestByPhoneAndIdCard" parameterType="java.util.Map" resultMap="CreditRequestResultMap" >
+       SELECT * FROM t_credit_request WHERE phone = #{phone} AND idcard = #{idcard}
+  </select>
+
   <select id="getCreditRequestByStatus" parameterType="java.lang.String" resultMap="CreditRequestResultMap">
     SELECT * FROM t_credit_request WHERE status = #{status}
   </select>

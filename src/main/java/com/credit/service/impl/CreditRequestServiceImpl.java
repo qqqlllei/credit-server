@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/10/20 0020.
@@ -385,6 +382,14 @@ public class CreditRequestServiceImpl extends BaseServiceImpl<CreditRequest> imp
         }
 
             return namelistRecords;
+    }
+
+    @Override
+    public CreditRequest getCreditRequestByPhoneAndIdCard(String phone, String idcard) {
+        Map<String,String> query = new HashMap<>();
+        query.put("phone",phone);
+        query.put("idcard",idcard);
+        return creditRequestMapper.getCreditRequestByPhoneAndIdCard(query);
     }
 
     @Override

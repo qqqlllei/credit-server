@@ -102,7 +102,7 @@
                     </div>
                 </div>
                 <!--检测结果记录-->
-                <div class="detection-record-b">
+                <div class="detection-record-b" th:if="${hasData}">
                     <div class="detection-record-box detection-item1 active" id="" >
                         <!--默认黑名单记录-->
                         <div class="detection-t detection-record-t">
@@ -233,6 +233,7 @@
     var oneMonth=[[${oneMonth}]];
     var threeMonth=[[${threeMonth}]];
     var namelistRecords = [[${namelistRecords}]];
+    var hasData = [[${hasData}]];
 
 
     /*]]>*/

@@ -29,4 +29,6 @@ public interface CreditRequestService extends BaseService<CreditRequest> {
     List<LoanRecord> loanRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId);
 
     List<NamelistRecord> namelistRecordHandle(JSONArray jsonArray, CreditRequest creditRequest,String reportId);
+
+    CreditRequest getCreditRequestByPhoneAndIdCard(String phone, String idcard);
 }

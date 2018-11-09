@@ -43,7 +43,7 @@ public class CreditRequestController {
         String phone = request.getParameter("phone");
         String name = request.getParameter("name");
         String idcard = request.getParameter("idcard");
-        CreditRequest creditRequest = creditRequestService.getCreditRequestByPhone(phone);
+        CreditRequest creditRequest = creditRequestService.getCreditRequestByPhoneAndIdCard(phone,idcard);
         if(creditRequest !=null){
             DateTime createTime = new DateTime(creditRequest.getCreateTime().getTime());
             int days = createTime.dayNumFrom(new DateTime(System.currentTimeMillis()));
@@ -303,6 +303,14 @@ public class CreditRequestController {
     }
 
     private void handleData(Model model,JSONArray jsonArray,CreditRequest creditRequest){
+
+        model.addAttribute("hasData",true);
+        if(jsonArray.size()==0){
+            model.addAttribute("hasData",false);
+
+        }
+
+
         //法院信息
         List<JudicialRecord> courtInfoList = creditRequestService.courtcInfoHandle(jsonArray,creditRequest,creditRequest.getRemark());
 
