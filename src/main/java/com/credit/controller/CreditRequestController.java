@@ -423,13 +423,13 @@ public class CreditRequestController {
 
         model.addAttribute("namelistRecords",namelistRecords);
 
-        int totalScore=100;
+        int totalScore=95;
 
 
         //司法记录分数计算
         int courInfoScore = 5*courtInfoList.size();
         if(courInfoScore >= 20){
-            totalScore= 80;
+            totalScore= 75;
         }else {
             totalScore= totalScore-courInfoScore;
         }
@@ -503,15 +503,51 @@ public class CreditRequestController {
             totalScore= totalScore-currentMaxScore;
         }
 
-
-
-
-        if(totalScore<0){
-            totalScore=0;
-        }else if(totalScore >90){
-            totalScore=90;
+        if(totalScore >= 90){
+            model.addAttribute("homeCount",0);
+            model.addAttribute("percent",0);
         }
 
+
+
+
+        int a = (90-totalScore) / 5 ;
+
+        int b = (90-totalScore) % 5 ;
+        int c=0;
+        if(a >0 ) {
+            c = a;
+        }
+        if( b>0){
+            c= c+1;
+        }
+
+
+        int d = (90-totalScore) / 2 ;
+
+        int e = (90-totalScore) % 2 ;
+        int f=0;
+        if(d >0 ) {
+            f = d;
+        }
+        if( e>0){
+            f= f+1;
+        }
+
+        if(f >0){
+            f=f+5;
+        }
+
+        if(c>=9) c=9;
+
+        model.addAttribute("homeCount",c);
+        model.addAttribute("percent",f);
+
+
+
+        if(totalScore<0) {
+            totalScore = 23;
+        }
 
         model.addAttribute("totalScore",totalScore);
     }

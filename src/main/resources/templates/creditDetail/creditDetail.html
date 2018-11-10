@@ -46,13 +46,13 @@
                     <div class="attention-info">
                         <div class="attention-item mb1">
                             <div>
-                                <span style="display: inline-block;width: .9rem;"><span class="num">2</span>家</span>
+                                <span style="display: inline-block;width: .9rem;"><span class="num" th:text="${homeCount}"></span>家</span>
                                 <span class="pl4">金融风险信息平台存在您的不良记录</span>
                             </div>
                         </div>
                         <div class="attention-item">
                             <div>
-                                <span style="display: inline-block;width: .9rem;"><span class="num">12</span>%</span>
+                                <span style="display: inline-block;width: .9rem;"><span class="num" th:text="${percent}"></span>%</span>
                                 <span class="pl4">的放款平台申贷通过率将受到影响</span>
                             </div>
                         </div>
@@ -178,7 +178,7 @@
                 <img th:src="@{/image/share-wechart.png}" alt=""/>
                 <div>微信好友</div>
                 <!--需要复制的值在 input的value中-->
-                <input type="text" style=" opacity:0; z-index:-1" id="copyLink" value=""/>
+                <input type="text" style=" opacity:0; z-index:-1" id="copyLink" value="123"/>
             </div>
             <div class="cancel-share" id="cancel-share">取消</div>
         </div>
@@ -200,6 +200,9 @@
     var namelistRecords = [[${namelistRecords}]];
     var hasData = [[${hasData}]];
 
+
+    var homeCount = [[${homeCount}]];
+    var percent = [[${percent}]];
 
     /*]]>*/
 </script>

@@ -67,7 +67,7 @@
                     <div class="authorization-box">
                         <span class="authorization-outer"><span class="authorization-inner"></span></span>
                         <span>我已同意大数据查询</span>
-                        <span class="blue">《授权协议》</span>
+                        <span class="blue" id="show-license">《授权协议》</span>
                     </div>
                 </form>
             </div>
@@ -75,6 +75,7 @@
         <div class="attention">
             <div class="attention-title"><span>注意事项</span></div>
             <div class="attention-item">请输入本人名下真实姓名、身份证号、手机号，提高查询准确率</div>
+            <div class="license-agreement" th:replace="/query/licenseAgreement :: licenseAgreement"></div>
         </div>
 
     </div>
@@ -171,6 +172,15 @@
 
         })
 
+
+        //查看授权协议
+        $('#show-license').on('click',function () {
+            $('.license-agreement').addClass('active');
+        });
+        //关闭授权协议
+        $('#close').on('click',function () {
+            $('.license-agreement').removeClass('active');
+        })
 
     })
     /*]]>*/
