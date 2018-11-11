@@ -7,16 +7,14 @@ import com.credit.service.CreditRequestService;
 import com.credit.utils.DateTime;
 import com.credit.utils.HttpClientUtil;
 import com.credit.utils.MD5;
+import com.credit.utils.SortMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -159,9 +157,9 @@ public class CreditRequestController {
             overdueRecord.setDatas(JSONArray.parseArray(overdueRecord.getDescription()));
         }
 
-        JSONObject sevenDays = new JSONObject();
-        JSONObject oneMonth = new JSONObject();
-        JSONObject threeMonth = new JSONObject();
+        Map<String, Integer> sevenDays = new HashMap<>();
+        Map<String, Integer> oneMonth = new HashMap();
+        Map<String, Integer> threeMonth = new HashMap();
         for (LoanRecord loanRecord :loanRecords) {
             if(loanRecord.getDescription().startsWith("7天内")){
 
@@ -179,7 +177,7 @@ public class CreditRequestController {
                     String[] temp = data.split(":");
                     Integer count = 0 ;
                     if(sevenDays.containsKey("sevenDay"+temp[0])){
-                        count = Integer.valueOf(sevenDays.getString("sevenDay"+temp[0]));
+                        count = Integer.valueOf(sevenDays.get("sevenDay"+temp[0]));
                     }
                     sevenDays.put("sevenDay"+temp[0],count+Integer.valueOf(temp[1]));
                 }
@@ -199,7 +197,7 @@ public class CreditRequestController {
                     String[] temp = data.split(":");
                     Integer count = 0 ;
                     if(oneMonth.containsKey("oneMonth"+temp[0])){
-                        count = Integer.valueOf(oneMonth.getString("oneMonth"+temp[0]));
+                        count = Integer.valueOf(oneMonth.get("oneMonth"+temp[0]));
                     }
                     oneMonth.put("oneMonth"+temp[0],count+Integer.valueOf(temp[1]));
                 }
@@ -218,7 +216,7 @@ public class CreditRequestController {
                     String[] temp = data.split(":");
                     Integer count = 0 ;
                     if(threeMonth.containsKey("threeMonth"+temp[0])){
-                        count = Integer.valueOf(threeMonth.getString("threeMonth"+temp[0]));
+                        count = Integer.valueOf(threeMonth.get("threeMonth"+temp[0]));
                     }
                     threeMonth.put("threeMonth"+temp[0],count+Integer.valueOf(temp[1]));
                 }
@@ -235,9 +233,19 @@ public class CreditRequestController {
         if(!threeMonth.containsKey("phoneCount")) threeMonth.put("phoneCount",0);
         if(!threeMonth.containsKey("idCardCount")) threeMonth.put("idCardCount",0);
 
-        model.addAttribute("sevenDays",sevenDays);
-        model.addAttribute("oneMonth",oneMonth);
-        model.addAttribute("threeMonth",threeMonth);
+
+
+
+
+
+        Map<String, Integer> sortSevenDays = SortMap.sortMapByValue(sevenDays);
+        model.addAttribute("sevenDays",sortSevenDays);
+
+        Map<String, Integer> sortOneMonth = SortMap.sortMapByValue(oneMonth);
+        model.addAttribute("oneMonth",sortOneMonth);
+
+        Map<String, Integer> sortThreeMonth = SortMap.sortMapByValue(threeMonth);
+        model.addAttribute("threeMonth",sortThreeMonth);
 
         model.addAttribute("courtInfoList",courtInfoList);
         model.addAttribute("identityRecords",identityRecords);
@@ -375,5 +383,7 @@ public class CreditRequestController {
 
         model.addAttribute("totalScore",totalScore);
     }
+
+
 
 }

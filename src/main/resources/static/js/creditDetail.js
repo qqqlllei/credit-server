@@ -24,22 +24,22 @@ $(function () {
     });
     //分数描述
     if(totalScore<=100 && totalScore>=80) {
-        $('#score-desc').html('<i class="crown-icon"/>'+'哇！您的人品爆发');
+        $('#score-desc').html('<i class="crown-icon"/>'+'哇！您的人品爆发</br>');
         $('#sub-score-desc').html('贷款申请易通过，且额度较高哦～');
         $('#credit-rating').attr('src','/image/you.png');
     }else if(totalScore<=79 && totalScore>=60) {
-        $('#score-desc').html('<i class="crown-icon"/>'+'还不错！');
+        $('#score-desc').html('<i class="crown-icon"/>'+'还不错！</br>');
         $('#sub-score-desc').html('您的贷款申请较易通过，且额度不低哦～');
         $('#credit-rating').attr('src','/image/liang.png');
 
     }else if(totalScore<=59 && totalScore>=40) {
         $('#score-desc').html('<i class="crown-icon"/>'+'啊哦！');
-        $('#sub-score-desc').html('您的贷款申请通过率一般，且额度不高哦～请仔细阅读报告负面信息，以便提高信用');
+        $('#sub-score-desc').html('您的贷款申请通过率一般，且额度不高哦～</br>请仔细阅读报告负面信息，以便提高信用');
         $('#credit-rating').attr('src','/image/zhong.png');
 
     }else if(totalScore<40) {
         $('#score-desc').html('<i class="crown-icon"/>'+'Opps！');
-        $('#sub-score-desc').html('您的贷款申请通过率较低，且额度不高哦～请仔细阅读报告负面信息，以便提高信用');
+        $('#sub-score-desc').html('您的贷款申请通过率较低，且额度不高哦～</br>请仔细阅读报告负面信息，以便提高信用');
         $('#credit-rating').attr('src','/image/cha.png');
 
     }
