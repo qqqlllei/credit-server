@@ -25,7 +25,7 @@
             <img class="w100" th:src="@{/image/share-bg.png}" alt=""/>
             <div class="share-info">
                 <div class="share-title">
-                    您的朋友，<span>刘先生</span>，新蜂信用分为：
+                    您的朋友，<span th:text="${name}"></span>，新蜂信用分为：
                 </div>
                 <div class="circle-rate-box"><strong></strong></div>
                 <div class="credit-icon"><img th:src="@{/image/credit-icon.png}" alt=""/></div>
@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="btn-box w100">
-            <button type="button" class="w100" id="queryBtn"><img th:src="@{/image/query-my-credit-btn.png}" alt=""/></button>
+            <button th:id="queryMyInfo" type="button" class="w100" id="queryBtn"><img th:src="@{/image/query-my-credit-btn.png}" alt=""/></button>
             <button type="button" class="w100" id="applyVip"><img th:src="@{/image/vip-btn.png}" alt=""/></button>
         </div>
         <div class="warn-info t-c">新蜂x小二为所有会员提供x信用分查询服务</div>
@@ -46,8 +46,9 @@
 </div>
 <script  th:inline="javascript">
     /*<![CDATA[*/
+    var path=window.document.location.href.substring(0,window.document.location.href.indexOf(window.document.location.pathname));
+    var totalScore = [[${totalScore}]];
     $(function () {
-        var totalScore = Math.floor(Math.random() * (100 - 0)) + 0;
         var htmlSize = '';
         var oWidth = document.body.clientWidth || document.documentElement.clientWidth;
         htmlSize = oWidth/750*100;
@@ -64,6 +65,11 @@
         }).on('circle-animation-progress', function(event, progress) {
             //进度条显示内容
             $(this).find('strong').html(parseInt(totalScore * progress));
+        });
+
+
+        $("#queryMyInfo").click(function () {
+            window.location.href=path+"/credit/query"
         });
     })
     /*]]>*/

@@ -135,21 +135,24 @@ $(function () {
     });
     //点击分享
     //实例化clipboard
-    var shareLink = window.location.href;
+    var shareLink = path+"/credit/share?name="+name+"&totalScore="+totalScore;
+    shareLink = encodeURI(shareLink);
     $('#copyLink').val(shareLink);
-    var clipboard = new ClipboardJS('#copyLinkBtn');
-    $('body').on('click','#copyLinkBtn',function () {
-
-        window.location.href = 'weixin://';
+    var clipboard = new ClipboardJS('#share');
+    //分享 弹框
+    $('body').on('click','#share',function () {
+        $('.share-dialog-shade').fadeIn('slow');
         clipboard.on('success', function(e) {
-            console.log(e);
             e.clearSelection();
+            clipboard.destroy();
         });
 
         clipboard.on('error', function(e) {
             console.log(e);
         });
     });
+
+    //点击分享
     //取消分享
     $('body').on('click','#cancel-share',function () {
         $('.share-dialog-shade').fadeOut('slow');
@@ -157,6 +160,6 @@ $(function () {
 
 
     $('#queryButton').click(function(){
-        window.location.href=path+'/query'
+        window.location.href=path+'/credit/query'
     });
 })

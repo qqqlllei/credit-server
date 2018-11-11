@@ -33,7 +33,7 @@
                     <p id="sub-score-desc" style="padding: 0 10px;" class="pb30">贷款申请易通过，且额度较高哦~</p>
                 </div>
                 <div class="btn-box t-c">
-                    <button id="share" type="button"><img th:src="@{/image/share-score.png}" alt=""/></button>
+                    <button id="share" data-clipboard-target="#copyLink" type="button"><img th:src="@{/image/share-score.png}" alt=""/></button>
                     <button type="button" id="queryButton"><img th:src="@{/image/re-query.png}" alt=""/></button>
                 </div>
                 <!--注意事项-->
@@ -175,19 +175,19 @@
     <div class="share-dialog-shade">
         <div class="share-dialog-box">
             <div class="share-wechart" id="copyLinkBtn"  data-clipboard-target="#copyLink" >
-                <img th:src="@{/image/share-wechart.png}" alt=""/>
-                <div>微信好友</div>
+                <!--<img th:src="@{/image/share-wechart.png}" alt=""/>-->
+                <div>bingo！已为您复制分享链接！打开微信好友对话框，粘贴即可分享~</div>
                 <!--需要复制的值在 input的value中-->
-                <input type="text" style=" opacity:0; z-index:-1" id="copyLink" value="123"/>
+
             </div>
-            <div class="cancel-share" id="cancel-share">取消</div>
+            <div class="cancel-share" id="cancel-share">确定</div>
         </div>
+        <input type="text" style=" opacity:0; z-index:-1" id="copyLink" value="123"/>
     </div>
 </div>
 <script  th:inline="javascript">
     /*<![CDATA[*/
-
-    var path = "/" + window.location.pathname.split("/")[1];
+    var path=window.document.location.href.substring(0,window.document.location.href.indexOf(window.document.location.pathname));
     var totalScore = [[${totalScore}]];
 
     var courtInfoList = [[${courtInfoList}]];
@@ -203,6 +203,7 @@
 
     var homeCount = [[${homeCount}]];
     var percent = [[${percent}]];
+    var name = [[${name}]];
 
     /*]]>*/
 </script>
