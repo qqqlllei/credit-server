@@ -301,7 +301,6 @@ html,body,.container,.warrper,.wh100 {
 }
 .detection-species-box {
     font-size: .24rem;
-    padding-top: .6rem;
 }
 .colorY {
     color: #ffc61a;
@@ -356,13 +355,14 @@ html,body,.container,.warrper,.wh100 {
     /*transition: all 2s;*/
 }
 /*.hit-item-title.active+.hit-item-info {*/
-/*display: block;*/
+    /*display: block;*/
 /*}*/
 .hit-detail-item:nth-last-child(1) .hit-item-title  {
     border-bottom: none;
 }
 .borrowing-record .detection-species-box{
     display: none;
+    padding-top: .6rem;
 }
 .borrowing-record .detection-species-box.active{
     display: block;
@@ -404,12 +404,23 @@ html,body,.container,.warrper,.wh100 {
 .share-dialog-shade .share-wechart {
     position: relative;
     padding: .4rem;
-    text-align: center;
     color: #50b674;
     font-size: .3rem;
     border-bottom: 1px solid #eee;
     z-index: 12;
     cursor: pointer;
+    line-height: 1.4;
+}
+#copyLink {
+    opacity: 0;
+    z-index: -1;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border: 0;
 }
 .share-dialog-shade .share-wechart img {
     margin-bottom: .3rem;
