@@ -91,7 +91,14 @@
 
 
     $("#updateButton").click(function(){
-
+        WeixinJSBridge.invoke('sendAppMessage',{
+            title: "标题",
+            desc: "描述",
+            link: "http://www.baidu.com",
+            imgUrl: "",
+            type: 'link',
+            dataUrl: ''
+        });
     });
 
     $("#saveButton").click(function(){
