@@ -25,67 +25,80 @@
                 <p>姓名</p>
             </div>
             <div class="weui-cell__ft" th:text="${queryBody!=null?queryBody.risk_items:''}"></div>
+
+            <a href="javascript:void(0)" id="updateButton" class="weui-btn weui-order-btn">修改信息</a>
         </div>
 
-
-
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <div class="weui_btn_area">
-                    <a href="javascript:void(0)" id="updateButton" class="weui-btn weui-order-btn">修改信息</a>
-
-
-                </div>
-
-                <div class="weui_btn_area">
-                    <a href="javascript:void(0)" style="display:none;" id="saveButton" class="weui-btn weui-order-btn">保存信息</a>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 <script  th:inline="javascript">
     /*<![CDATA[*/
 //    window.location.href="";
 
+    var wxJsapiSignature=[[${wxJsapiSignature}]];
+    var timestamp = wxJsapiSignature.timestamp;
+    var nonceStr = wxJsapiSignature.nonceStr;
+    var signature = wxJsapiSignature.signature;
+    var appId = wxJsapiSignature.appId;
+    console.log(wxJsapiSignature);
+    // 分享配置
+
+    wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: appId, // 必填，企业号的唯一标识
+        timestamp: timestamp, // 必填，生成签名的时间戳
+        nonceStr: nonceStr, // 必填，生成签名的随机串
+        signature: signature,// 必填，签名，见附录1
+        jsApiList: ["onMenuShareTimeline","onMenuShareAppMessage","onMenuShareQQ","onMenuShareWeibo","onMenuShareQZone"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
 
 
-    console.info( [[${courtInfoList}]]);
-    console.info( [[${identityRecords}]]);
-    console.info( [[${overdueRecords}]]);
-    console.info( [[${loanRecords}]]);
+    wx.ready(function () {
+        setShare();  //定义函数
+    });
 
-    var path ="/"+window.location.pathname.split("/")[1];
+    function setShare(){
+
+        var config = {
+            title: "标题",
+            desc: "描述",
+            link: "http://www.baidu.com",
+            imgUrl: "",
+            type: 'link',
+            dataUrl: '',
+            success: function () {
+                alert('分享成功');
+            },
+            cancel: function () {
+                alert('分享失败');
+            }
+        };/*分享给朋友*/
+        wx.onMenuShareAppMessage(config);
+
+        /*分享到QQ*/
+        wx.onMenuShareQQ(config);
+
+        /*分享到腾讯微博*/
+        wx.onMenuShareWeibo(config);
+
+        /*分享到QQ空间*/
+        wx.onMenuShareQZone(config);
+
+        /*分享到朋友圈*/
+        wx.onMenuShareTimeline(config);
+    }
+
 
 
     $("#updateButton").click(function(){
-        $("#area").removeAttr("disabled");
-        $("#updateButton").hide();
-        $("#saveButton").show();
+
     });
 
     $("#saveButton").click(function(){
 
-        $("#area").attr("disabled","disabled");
-
-        $.ajax({
-            type: 'POST',
-            dataType    : 'json',
-            url: path+'/user/updateArea',
-            data:{"area":$("#area").val()},
-            success: function(res){
-                if (res.resultCode == '0000') {
-                    weui.alert(res.resultMsg);
-                }
-            },
-            error: function(xhr, type){
-                weui.alert("系统繁忙，稍后再试!");
-            }
-        });
-
-        $("#updateButton").show();
-        $("#saveButton").hide();
     });
+
+
     /*]]>*/
 </script>
 </body>
