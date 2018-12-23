@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.credit.dao.LogInfoMapper" >
+    <insert id="saveLogInfo"  parameterType="com.credit.entity.LogInfo"  >
+
+          insert into log_info (id, name,phone,idcard,create_time
+      )
+    values (#{id}, #{name}
+    , #{phone}
+    , #{idcard}
+    , #{createTime}
+      )
+
+    </insert>
+
+</mapper>

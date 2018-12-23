@@ -116,7 +116,7 @@ html,body,.container,.warrper,.wh100 {
 }
 .attention-info {
     position: absolute;
-    top: 1.65rem;
+    top: 1.85rem;
 }
 .attention-item {
     font-size: .24rem;
@@ -404,7 +404,7 @@ html,body,.container,.warrper,.wh100 {
 .share-dialog-shade .share-wechart {
     position: relative;
     padding: .4rem;
-    color: #50b674;
+    color: #333;
     font-size: .3rem;
     border-bottom: 1px solid #eee;
     z-index: 12;

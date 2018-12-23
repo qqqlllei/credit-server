@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.credit.entity.*;
 import com.credit.service.CreditRequestService;
+import com.credit.service.LogInfoService;
 import com.credit.utils.DateTime;
 import com.credit.utils.HttpClientUtil;
 import com.credit.utils.MD5;
 import com.credit.utils.SortMap;
+import com.mysql.jdbc.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -36,11 +38,25 @@ public class CreditRequestController {
     @Autowired
     private CreditRequestService creditRequestService;
 
+    @Autowired
+    private LogInfoService logInfoService;
+
+
+
     @RequestMapping("/submit")
     public String submit(HttpServletRequest request, Model model){
         String phone = request.getParameter("phone");
         String name = request.getParameter("name");
         String idcard = request.getParameter("idcard");
+
+        LogInfo logInfo = new LogInfo();
+        logInfo.setId(UUID.randomUUID().toString());
+        logInfo.setName(name);
+        logInfo.setPhone(phone);
+        logInfo.setIdcard(idcard);
+        logInfo.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        logInfoService.saveLogInfo(logInfo);
+
         CreditRequest creditRequest = creditRequestService.getCreditRequestByPhoneAndIdCard(phone,idcard);
         if(creditRequest !=null){
             DateTime createTime = new DateTime(creditRequest.getCreateTime().getTime());

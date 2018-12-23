@@ -34,12 +34,12 @@ $(function () {
 
     }else if(totalScore<=59 && totalScore>=40) {
         $('#score-desc').html('<i class="crown-icon"/>'+'啊哦！');
-        $('#sub-score-desc').html('您的贷款申请通过率一般，且额度不高哦～</br>请仔细阅读报告负面信息，以便提高信用');
+        $('#sub-score-desc').html('您的贷款申请通过率一般，且额度不高哦～</br>请仔细阅读报告负面信息，以便提高信用').css('line-height','1.5');
         $('#credit-rating').attr('src','/image/zhong.png');
 
     }else if(totalScore<40) {
         $('#score-desc').html('<i class="crown-icon"/>'+'Opps！');
-        $('#sub-score-desc').html('您的贷款申请通过率较低，且额度不高哦～</br>请仔细阅读报告负面信息，以便提高信用');
+        $('#sub-score-desc').html('您的贷款申请通过率较低，且额度不高哦～</br>请仔细阅读报告负面信息，以便提高信用').css('line-height','1.5');
         $('#credit-rating').attr('src','/image/cha.png');
 
     }

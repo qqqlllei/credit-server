@@ -22,6 +22,11 @@ $(function () {
     //其他命中计算 不清楚规则
     $('.risk .hit-species').each(function () {
         var rate = $(this).attr('data-num')?$(this).attr('data-num'):0;
+        if($(this).attr('data-num')>=5) {
+            $(this).find('.pipe').removeClass('colorY2').addClass('colorY1');
+        }else {
+            $(this).find('.pipe').removeClass('colorY1').addClass('colorY2');
+        }
         if(rate>=10) {
             $(this).find('.pipe').css('width','100%');
         }else {
