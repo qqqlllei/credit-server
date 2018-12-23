@@ -148,6 +148,14 @@
 		</dependency>
 
 
+
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-mp</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
