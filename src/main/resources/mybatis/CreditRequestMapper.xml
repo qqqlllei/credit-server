@@ -38,7 +38,7 @@
   </select>
 
   <select id="getCreditRequestByPhoneAndIdCard" parameterType="java.util.Map" resultMap="CreditRequestResultMap" >
-       SELECT * FROM t_credit_request WHERE phone = #{phone} AND idcard = #{idcard}
+       SELECT * FROM t_credit_request WHERE phone = #{phone} AND idcard = #{idcard} ORDER BY create_time DESC limit 1
   </select>
 
   <select id="getCreditRequestByStatus" parameterType="java.lang.String" resultMap="CreditRequestResultMap">
