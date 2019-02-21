@@ -86,7 +86,28 @@ public class CreditRequestController {
         String submitInfo = HttpClientUtil.unEncodingPost(requestBody.toJSONString(),appUrl+"submit");
         System.out.println("=======================submitInfo"+submitInfo+"======================");
         JSONObject submitResult = JSONObject.parseObject(submitInfo);
-        if(!submitResult.containsKey("code") || !"200".equals(submitResult.getString("code"))) return "/error";
+        if(!submitResult.containsKey("code") || !"200".equals(submitResult.getString("code"))){
+            model.addAttribute("name",name);
+            model.addAttribute("hasData",false);
+
+            model.addAttribute("sevenDays",new ArrayList());
+
+            Map<String, Integer> sortOneMonth = new HashMap<>();
+            model.addAttribute("oneMonth",sortOneMonth);
+
+            Map<String, Integer> sortThreeMonth = new HashMap<>();
+            model.addAttribute("threeMonth",sortThreeMonth);
+
+            model.addAttribute("courtInfoList",new ArrayList());
+            model.addAttribute("identityRecords",new ArrayList());
+            model.addAttribute("overdueRecords",new ArrayList());
+            model.addAttribute("loanRecords",new ArrayList());
+
+            model.addAttribute("namelistRecords",new ArrayList());
+            model.addAttribute("totalScore","98");
+
+            return "/creditDetail/creditDetail";
+        }
         String queryInfo = HttpClientUtil.unEncodingPost(requestBody.toJSONString(),appUrl+"query");
         CreditRequest creditRequestInfo = new CreditRequest();
         creditRequestInfo.setName(name);
